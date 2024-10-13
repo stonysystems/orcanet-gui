@@ -36,7 +36,8 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   int _selectedIndex = 0;
-  bool _isDrawerOpen = true; // Track whether the Drawer is open
+  bool _isDrawerOpen = true;
+  int? _hoveredIndex; // Track the index of the currently hovered item
 
   static const List<Widget> _pages = <Widget>[
     HomePage(),
@@ -51,6 +52,7 @@ class _MyHomePageState extends State<MyHomePage> {
   void _onItemTapped(int index) {
     setState(() {
       _selectedIndex = index;
+      _hoveredIndex = null; // Clear the hover effect after click
     });
   }
 
@@ -63,12 +65,9 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      // appBar: AppBar(
-      //   title: const Text('OrcaNet'),
-      // ),
       body: Row(
         children: [
-          // The Drawer Menu itself as a side panel with toggleable visibility
+          // The Drawer Menu as a side panel with toggleable visibility
           if (_isDrawerOpen)
             SizedBox(
               width: 250, // Adjust width as necessary
@@ -85,34 +84,17 @@ class _MyHomePageState extends State<MyHomePage> {
                         style: TextStyle(color: Colors.white, fontSize: 24),
                       ),
                     ),
-                    ListTile(
-                      title: const Text('Home'),
-                      onTap: () => _onItemTapped(0),
-                    ),
-                    ListTile(
-                      title: const Text('Status'),
-                      onTap: () => _onItemTapped(1),
-                    ),
-                    ListTile(
-                      title: const Text('Peer'),
-                      onTap: () => _onItemTapped(2),
-                    ),
-                    ListTile(
-                      title: const Text('Market'),
-                      onTap: () => _onItemTapped(3),
-                    ),
-                    ListTile(
-                      title: const Text('Wallet'),
-                      onTap: () => _onItemTapped(4),
-                    ),
-                    ListTile(
-                      title: const Text('Mining'),
-                      onTap: () => _onItemTapped(5),
-                    ),
-                    ListTile(
-                      title: const Text('Settings'),
-                      onTap: () => _onItemTapped(6),
-                    ),
+                    _buildDrawerItem(index: 0, title: 'Home', icon: Icons.home),
+                    _buildDrawerItem(
+                        index: 1, title: 'Status', icon: Icons.info),
+                    _buildDrawerItem(
+                        index: 2, title: 'Peer', icon: Icons.people),
+                    _buildDrawerItem(
+                        index: 3, title: 'Market', icon: Icons.show_chart),
+                    _buildDrawerItem(
+                        index: 4, title: 'Wallet', icon: Icons.wallet),
+                    _buildDrawerItem(
+                        index: 5, title: 'Mining', icon: Icons.work),
                   ],
                 ),
               ),
@@ -123,7 +105,9 @@ class _MyHomePageState extends State<MyHomePage> {
               GestureDetector(
                 onTap: _toggleDrawer,
                 child: Icon(
-                  _isDrawerOpen ? Icons.arrow_back_ios : Icons.arrow_forward_ios,
+                  _isDrawerOpen
+                      ? Icons.arrow_back_ios
+                      : Icons.arrow_forward_ios,
                   size: 24,
                 ),
               ),
@@ -136,6 +120,39 @@ class _MyHomePageState extends State<MyHomePage> {
             ),
           ),
         ],
+      ),
+    );
+  }
+
+  // Helper function to build each drawer item with hover and click functionality
+  Widget _buildDrawerItem(
+      {required int index, required String title, required IconData icon}) {
+    return MouseRegion(
+      onEnter: (_) => setState(() {
+        _hoveredIndex = index;
+      }),
+      onExit: (_) => setState(() {
+        _hoveredIndex = null;
+      }),
+      child: ListTile(
+        leading: Icon(icon,
+            color: _selectedIndex == index || _hoveredIndex == index
+                ? Colors.blue
+                : Colors.black),
+        title: Text(
+          title,
+          style: TextStyle(
+            color: _selectedIndex == index || _hoveredIndex == index
+                ? Colors.blue
+                : Colors.black,
+          ),
+        ),
+        tileColor: _selectedIndex == index
+            ? Colors.blue.withOpacity(0.1)
+            : (_hoveredIndex == index
+                ? Colors.blue.withOpacity(0.05)
+                : Colors.transparent),
+        onTap: () => _onItemTapped(index),
       ),
     );
   }
