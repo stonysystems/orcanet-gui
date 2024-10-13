@@ -144,7 +144,7 @@ class WalletPage extends StatelessWidget {
                     TextFormField(
                       decoration: InputDecoration(
                         labelText: 'Wallet Address',
-                        border: OutlineInputBorder(),
+                        border: const OutlineInputBorder(),
                         fillColor: Colors.lightBlue[50],
                         filled: true,
                         labelStyle: TextStyle(color: Colors.blue[900]),
@@ -157,7 +157,7 @@ class WalletPage extends StatelessWidget {
                     TextFormField(
                       decoration: InputDecoration(
                         labelText: 'Amount (BTC)',
-                        border: OutlineInputBorder(),
+                        border: const OutlineInputBorder(),
                         fillColor: Colors.lightBlue[50],
                         filled: true,
                         labelStyle: TextStyle(color: Colors.blue[900]),
@@ -171,7 +171,7 @@ class WalletPage extends StatelessWidget {
                     TextFormField(
                       decoration: InputDecoration(
                         labelText: 'Comment',
-                        border: OutlineInputBorder(),
+                        border: const OutlineInputBorder(),
                         fillColor: Colors.lightBlue[50],
                         filled: true,
                         labelStyle: TextStyle(color: Colors.blue[900]),

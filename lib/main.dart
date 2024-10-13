@@ -36,8 +36,6 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   int _selectedIndex = 0;
-  bool _isDrawerOpen = true;
-  int? _hoveredIndex; // Track the index of the currently hovered item
 
   static const List<Widget> _pages = <Widget>[
     HomePage(),
@@ -52,13 +50,6 @@ class _MyHomePageState extends State<MyHomePage> {
   void _onItemTapped(int index) {
     setState(() {
       _selectedIndex = index;
-      _hoveredIndex = null; // Clear the hover effect after click
-    });
-  }
-
-  void _toggleDrawer() {
-    setState(() {
-      _isDrawerOpen = !_isDrawerOpen;
     });
   }
 
@@ -67,92 +58,67 @@ class _MyHomePageState extends State<MyHomePage> {
     return Scaffold(
       body: Row(
         children: [
-          // The Drawer Menu as a side panel with toggleable visibility
-          if (_isDrawerOpen)
-            SizedBox(
-              width: 250, // Adjust width as necessary
-              child: Drawer(
-                child: ListView(
-                  padding: EdgeInsets.zero,
-                  children: <Widget>[
-                    const DrawerHeader(
-                      decoration: BoxDecoration(
-                        color: Colors.blue,
-                      ),
-                      child: Text(
-                        'OrcaNet Menu',
-                        style: TextStyle(color: Colors.white, fontSize: 24),
-                      ),
-                    ),
-                    _buildDrawerItem(index: 0, title: 'Home', icon: Icons.home),
-                    _buildDrawerItem(
-                        index: 1, title: 'Status', icon: Icons.info),
-                    _buildDrawerItem(
-                        index: 2, title: 'Peer', icon: Icons.people),
-                    _buildDrawerItem(
-                        index: 3, title: 'Market', icon: Icons.show_chart),
-                    _buildDrawerItem(
-                        index: 4, title: 'Wallet', icon: Icons.wallet),
-                    _buildDrawerItem(
-                        index: 5, title: 'Mining', icon: Icons.work),
-                  ],
-                ),
+          // Navigation Rail for the side menu
+          NavigationRail(
+            selectedIndex: _selectedIndex,
+            onDestinationSelected: _onItemTapped,
+            labelType: NavigationRailLabelType.all, // Show all labels
+            destinations: const <NavigationRailDestination>[
+              NavigationRailDestination(
+                icon: Icon(Icons.home),
+                selectedIcon: Icon(Icons.home_filled),
+                label: Text('Home'),
               ),
-            ),
-          // Column for the arrow button placed at the top
-          Column(
-            children: [
-              GestureDetector(
-                onTap: _toggleDrawer,
-                child: Icon(
-                  _isDrawerOpen
-                      ? Icons.arrow_back_ios
-                      : Icons.arrow_forward_ios,
-                  size: 24,
-                ),
+              NavigationRailDestination(
+                icon: Icon(Icons.info),
+                selectedIcon: Icon(Icons.info_outline),
+                label: Text('Status'),
+              ),
+              NavigationRailDestination(
+                icon: Icon(Icons.people),
+                selectedIcon: Icon(Icons.people_outline),
+                label: Text('Peer'),
+              ),
+              NavigationRailDestination(
+                icon: Icon(Icons.show_chart),
+                selectedIcon: Icon(Icons.show_chart_outlined),
+                label: Text('Market'),
+              ),
+              NavigationRailDestination(
+                icon: Icon(Icons.wallet),
+                selectedIcon: Icon(Icons.wallet_travel),
+                label: Text('Wallet'),
+              ),
+              NavigationRailDestination(
+                icon: Icon(Icons.work),
+                selectedIcon: Icon(Icons.work_outline),
+                label: Text('Mining'),
+              ),
+              NavigationRailDestination(
+                icon: Icon(Icons.settings),
+                selectedIcon: Icon(Icons.settings_outlined),
+                label: Text('Settings'),
               ),
             ],
           ),
-          // Main content view
+          // Main content view wrapped in a Container for styling
           Expanded(
-            child: Center(
-              child: _pages.elementAt(_selectedIndex),
+            child: Container(
+              decoration: BoxDecoration(
+                color: Colors.white,
+                border: Border(
+                  left: BorderSide(
+                    color: Colors.grey.shade300,
+                    width: 1,
+                  ),
+                ),
+              ),
+              child: Center(
+                child: _pages.elementAt(_selectedIndex),
+              ),
             ),
           ),
         ],
-      ),
-    );
-  }
-
-  // Helper function to build each drawer item with hover and click functionality
-  Widget _buildDrawerItem(
-      {required int index, required String title, required IconData icon}) {
-    return MouseRegion(
-      onEnter: (_) => setState(() {
-        _hoveredIndex = index;
-      }),
-      onExit: (_) => setState(() {
-        _hoveredIndex = null;
-      }),
-      child: ListTile(
-        leading: Icon(icon,
-            color: _selectedIndex == index || _hoveredIndex == index
-                ? Colors.blue
-                : Colors.black),
-        title: Text(
-          title,
-          style: TextStyle(
-            color: _selectedIndex == index || _hoveredIndex == index
-                ? Colors.blue
-                : Colors.black,
-          ),
-        ),
-        tileColor: _selectedIndex == index
-            ? Colors.blue.withOpacity(0.1)
-            : (_hoveredIndex == index
-                ? Colors.blue.withOpacity(0.05)
-                : Colors.transparent),
-        onTap: () => _onItemTapped(index),
       ),
     );
   }

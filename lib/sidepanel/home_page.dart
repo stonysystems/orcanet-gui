@@ -15,7 +15,7 @@ class _HomePageState extends State<HomePage> {
   String? _fileSize;
 
   final List<Map<String, String>> _downloadableFiles = [
-    {'name': 'Document1.pdf', 'size': '500 KB', 'hash': 'abcd1234'},
+    {'name': 'Document123.pdf', 'size': '500 KB', 'hash': 'abcd1234'},
     {'name': 'Image2.png', 'size': '1.2 MB', 'hash': 'efgh5678'},
     {'name': 'Presentation.ppt', 'size': '2 MB', 'hash': 'ijkl9101'},
   ];
@@ -46,7 +46,7 @@ class _HomePageState extends State<HomePage> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Dashboard'),
-        backgroundColor: Colors.lightBlue[800],
+        // backgroundColor: Colors.lightBlue[800],
       ),
       body: Container(
         padding: const EdgeInsets.all(16.0),
