@@ -20,6 +20,45 @@ class _HomePageState extends State<HomePage> {
     {'name': 'Presentation.ppt', 'size': '2 MB', 'hash': 'ijkl9101'},
   ];
 
+    final List<Map<String, String>> _providedFiles = [
+    {'name': 'Document123.pdf', 'size': '500 KB', 'hash': 'abcd1234'},
+    {'name': 'Image2.png', 'size': '1.2 MB', 'hash': 'efgh5678'},
+    {'name': 'Presentation.ppt', 'size': '2 MB', 'hash': 'ijkl9101'},
+  ];
+
+   // Function to show confirmation dialog
+  void _showStopProvidingDialog(int index,String filename) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Stop Providing File'),
+          content: const Text('Are you sure you want to stop providing this file?'),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop(); // Close the dialog
+              },
+              child: const Text('Cancel'),
+            ),
+            TextButton(
+              onPressed: () {
+                setState(() {
+                  _providedFiles.removeAt(index); // Remove file from the list
+                });
+                Navigator.of(context).pop(); // Close the dialog
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(content: Text('Providing stopped $filename')),
+                );
+              },
+              child: const Text('Yes'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
   Future<void> _pickFile() async {
     final result = await FilePicker.platform.pickFiles();
     if (result != null) {
@@ -32,11 +71,27 @@ class _HomePageState extends State<HomePage> {
     }
   }
 
+  // Function to upload and append file details to _providedFiles
   void _uploadFile() {
-    if (_selectedFile != null) {
-      // Implement your upload logic here
+    if (_selectedFile != null && _fileName != null && _fileSize != null) {
+      // Create a map with file details (you can add hash logic as per your need)
+      final newFile = {
+        'name': _fileName!, // File name
+        'size': _fileSize!, // File size
+        'hash': 'hash_placeholder', // Placeholder for file hash
+      };
+
+      // Update the state to add the file to the provided list
+      setState(() {
+        _providedFiles.add(newFile); // Append new file to the list
+        _fileName = null;
+        _fileSize = null;
+        _selectedFile =null;
+      });
+
+      // Show success message
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('File uploaded successfully!')),
+        const SnackBar(content: Text('File uploaded and added successfully!')),
       );
     }
   }
@@ -46,29 +101,30 @@ class _HomePageState extends State<HomePage> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Dashboard'),
-        // backgroundColor: Colors.lightBlue[800],
+        backgroundColor: const Color.fromARGB(255, 209, 241, 255),
       ),
       body: Container(
         padding: const EdgeInsets.all(16.0),
-        color: Colors.lightBlue[50], // Light blue background
+        // color: Colors.lightBlue[50], // Light blue background
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             // Dashboard Header
-            Container(
-              padding: const EdgeInsets.all(12.0),
-              decoration: BoxDecoration(
-                color: Colors.lightBlue[100],
-                borderRadius: BorderRadius.circular(8.0),
-              ),
-              child: Text(
-                'Welcome to the Dashboard',
-                style: Theme.of(context)
-                    .textTheme
-                    .headlineSmall!
-                    .copyWith(color: Colors.blue[900]),
-              ),
-            ),
+            // Container(
+            //   padding: const EdgeInsets.all(12.0),
+            //   decoration: BoxDecoration(
+            //     color: Colors.lightBlue[100],
+            //     borderRadius: BorderRadius.circular(8.0),
+            //   ),
+            //   child: Text(
+            //     'Welcome to the Dashboard',
+            //     style: Theme.of(context)
+            //         .textTheme
+            //         .headlineSmall!
+            //         .copyWith(color: Colors.blue[900]),
+            //   ),
+            // ),
+
             const SizedBox(height: 16),
 
             // Upload Section
@@ -80,48 +136,199 @@ class _HomePageState extends State<HomePage> {
                   .copyWith(color: Colors.blue[800]),
             ),
             const SizedBox(height: 8),
-            Container(
-              padding: const EdgeInsets.all(12.0),
-              decoration: BoxDecoration(
-                color: Colors.lightBlue[100],
-                borderRadius: BorderRadius.circular(8.0),
-              ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  ElevatedButton(
-                    onPressed: _pickFile,
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.lightBlue[700],
-                      padding: const EdgeInsets.all(16.0),
+            Card(
+              elevation: 4,
+              child: Container(
+                padding: const EdgeInsets.all(12.0),
+                decoration: BoxDecoration(
+                  color: const Color.fromARGB(255, 209, 241, 255),
+                  borderRadius: BorderRadius.circular(8.0),
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    ElevatedButton(
+                      onPressed: _pickFile,
+                      style: ElevatedButton.styleFrom(
+                        // backgroundColor: Colors.lightBlue[700],
+                        padding: const EdgeInsets.all(16.0),
+                      ),
+                      child: const Text('Browse File'),
                     ),
-                    child: const Text('Browse File'),
-                  ),
-                  const SizedBox(height: 8),
-                  if (_fileName != null)
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(
-                          'File: $_fileName ($_fileSize)',
-                          style: TextStyle(color: Colors.blue[900]),
-                        ),
-                        ElevatedButton(
-                          onPressed: _uploadFile,
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: Colors.lightBlue[700],
-                            padding: const EdgeInsets.all(16.0),
+                    const SizedBox(height: 8),
+                    if (_fileName != null)
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            'File: $_fileName ($_fileSize)',
+                            style: TextStyle(color: Colors.blue[900]),
                           ),
-                          child: const Text('Upload'),
-                        ),
-                      ],
-                    ),
-                ],
+                          ElevatedButton(
+                            onPressed: _uploadFile,
+                            style: ElevatedButton.styleFrom(
+                              // backgroundColor: Colors.lightBlue[700],
+                              padding: const EdgeInsets.all(16.0),
+                            ),
+                            child: const Text('Upload'),
+                          ),
+                        ],
+                      ),
+                  ],
+                ),
               ),
             ),
             const SizedBox(height: 16),
 
-            // Download Section
+            //Provided files table
+
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween, // Align items to the edges
+              children: [
+                Text(
+                  'Provided Files',
+                  style: Theme.of(context)
+                      .textTheme
+                      .titleLarge!
+                      .copyWith(color: Colors.blue[800]),
+                ),
+                Row(
+                  children: [
+                     // Check if _providedFiles is null or empty
+                    (_providedFiles == null || _providedFiles.isEmpty) 
+                    ? ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: const Color.fromARGB(255, 40, 42, 42),
+                      ),
+                       onPressed:  _pickFile,
+                      child: Text(
+                        '+ Import',
+                        style: const TextStyle(color: Colors.white), // Set the text color to white
+                      ),
+                    ):
+                    Text(
+                      'File: $_fileName ($_fileSize)',
+                    ),
+                    ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: const Color.fromARGB(255, 40, 42, 42),
+                      ),
+                       onPressed: _uploadFile,
+                      child: Text(
+                        'Provide',
+                        style: const TextStyle(color: Colors.white), // Set the text color to white
+                      ),
+                    ),
+                  ],
+                )
+              
+              ],
+            ),
+            const SizedBox(height: 8),
+            
+            Expanded(
+              child: Card(
+                elevation: 4,
+                child: Container(
+                  decoration: BoxDecoration(
+                    color: const Color.fromARGB(255, 209, 241, 255),
+                    borderRadius: BorderRadius.circular(8.0),
+                  ),
+                  child: Scrollbar(
+                    thumbVisibility: true,
+                    child: SingleChildScrollView(
+                      child: LayoutBuilder(
+                        builder: (context, constraints) {
+                          return Column(
+                            children: [
+                              DataTable(
+                                columnSpacing: 0,
+                                columns: [
+                                  DataColumn(
+                                    label: Container(
+                                      width: constraints.maxWidth * 0.25,
+                                      child: Text('File Name', style: TextStyle(fontSize: 16)),
+                                    ),
+                                  ),
+                                  DataColumn(
+                                    label: Container(
+                                      width: constraints.maxWidth * 0.25,
+                                      child: Text('Size', style: TextStyle(fontSize: 16)),
+                                    ),
+                                  ),
+                                  DataColumn(
+                                    label: Container(
+                                      width: constraints.maxWidth * 0.25,
+                                      child: Text('Hash', style: TextStyle(fontSize: 16)),
+                                    ),
+                                  ),
+                                  DataColumn(
+                                    label: Container(
+                                      width: constraints.maxWidth * 0.25,
+                                      child: Text('Action', style: TextStyle(fontSize: 16)),
+                                    ),
+                                  ),
+                                ],
+                                rows: _providedFiles.isNotEmpty
+                                  ? _providedFiles
+                                      .asMap()
+                                      .entries
+                                      .map(
+                                        (entry) => DataRow(
+                                          cells: [
+                                            DataCell(Container(
+                                              width: constraints.maxWidth * 0.25,
+                                              child: Text(entry.value['name']!)
+                                            )),
+                                            DataCell(Container(
+                                              width: constraints.maxWidth * 0.25,
+                                              child: Text(entry.value['size']!)
+                                            )),
+                                            DataCell(Container(
+                                              width: constraints.maxWidth * 0.25,
+                                              child: Text(entry.value['hash']!)
+                                            )),
+                                            DataCell(
+                                               ElevatedButton(
+                                                  onPressed: () {
+                                                    _showStopProvidingDialog(entry.key, entry.value['name']!);
+                                                  },
+                                                  style: ElevatedButton.styleFrom(),
+                                                  child: const Text('Stop Providing'),
+                                                ),
+                                            ),
+                                          ],
+                                        ),
+                                      )
+                                      .toList()
+                                  : [
+                                      DataRow(
+                                        cells: [
+                                          DataCell(Text('')),
+                                          DataCell(Text('')),
+                                          DataCell(Text('')),
+                                          DataCell(Text('')),
+                                        ],
+                                      ),
+                                    ],
+                              ),
+                              if (_providedFiles.isEmpty)
+                                Padding(
+                                  padding: const EdgeInsets.all(16.0),
+                                  child: Text(
+                                    'No files provided.',
+                                    style: TextStyle(fontSize: 16, fontStyle: FontStyle.italic),
+                                  ),
+                                ),
+                            ],
+                          );
+                        },
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ),   // Download Section
             Text(
               'Downloadable Files',
               style: Theme.of(context)
@@ -131,55 +338,70 @@ class _HomePageState extends State<HomePage> {
             ),
             const SizedBox(height: 8),
             Expanded(
-              child: Container(
-                decoration: BoxDecoration(
-                  color: Colors.lightBlue[100],
-                  borderRadius: BorderRadius.circular(8.0),
-                ),
-                child: Scrollbar(
-                  thumbVisibility: true,
-                  child: ListView(
-                    padding: const EdgeInsets.all(12.0),
-                    children: [
-                      DataTable(
-                        columns: const [
-                          DataColumn(
-                            label: Text('File Name'),
-                          ),
-                          DataColumn(
-                            label: Text('Size'),
-                          ),
-                          DataColumn(
-                            label: Text('Hash'),
-                          ),
-                          DataColumn(
-                            label: Text('Action'),
-                          ),
-                        ],
-                        rows: _downloadableFiles
-                            .map(
-                              (file) => DataRow(
-                                cells: [
-                                  DataCell(Text(file['name']!)),
-                                  DataCell(Text(file['size']!)),
-                                  DataCell(Text(file['hash']!)),
-                                  DataCell(
-                                    ElevatedButton(
-                                      onPressed: () {
-                                        // Implement download logic here
-                                      },
-                                      style: ElevatedButton.styleFrom(
-                                        backgroundColor: Colors.lightBlue[700],
-                                      ),
-                                      child: const Text('Download'),
-                                    ),
-                                  ),
-                                ],
+              child: Card(
+                elevation: 4,
+                child: Container(
+                  decoration: BoxDecoration(
+                    color: const Color.fromARGB(255, 209, 241, 255),
+                    borderRadius: BorderRadius.circular(8.0),
+                  ),
+                  child: Scrollbar(
+                    thumbVisibility: true,
+                    child: ListView(
+                      padding: const EdgeInsets.all(12.0),
+                      children: [
+                        DataTable(
+                          columns: const [
+                            DataColumn(
+                              label: Text(
+                                'File Name',
+                                style: TextStyle(fontSize: 16), // Increase font size
                               ),
-                            )
-                            .toList(),
-                      ),
-                    ],
+                            ),
+                            DataColumn(
+                              label: Text(
+                                'Size',
+                                style: TextStyle(fontSize: 16), // Increase font size
+                              ),
+                            ),
+                            DataColumn(
+                              label: Text(
+                                'Hash',
+                                style: TextStyle(fontSize: 16), // Increase font size
+                              ),
+                            ),
+                            DataColumn(
+                              label: Text(
+                                'Action',
+                                style: TextStyle(fontSize: 16), // Increase font size
+                              ),
+                            ),
+                          ],
+                          rows: _downloadableFiles
+                              .map(
+                                (file) => DataRow(
+                                  cells: [
+                                    DataCell(Text(file['name']!)),
+                                    DataCell(Text(file['size']!)),
+                                    DataCell(Text(file['hash']!)),
+                                    DataCell(
+                                      ElevatedButton(
+                                        onPressed: () {
+                                          // Implement download logic here
+                                        },
+                                        style: ElevatedButton.styleFrom(
+                                          // backgroundColor: Colors.lightBlue[700],
+                                        ),
+                                        child: const Text('Download'),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              )
+                              .toList(),
+                        ),
+                      ],
+                    ),
                   ),
                 ),
               ),

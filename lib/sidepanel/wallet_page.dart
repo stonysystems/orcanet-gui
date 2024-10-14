@@ -11,11 +11,11 @@ class WalletPage extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Wallet Page'),
-        backgroundColor: Colors.lightBlue[800],
+        // backgroundColor: Colors.lightBlue[800],
       ),
       body: Container(
         padding: const EdgeInsets.all(16.0),
-        color: Colors.lightBlue[50], // Light blue background
+        // color: Colors.lightBlue[50], // Light blue background
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -23,7 +23,7 @@ class WalletPage extends StatelessWidget {
             Container(
               padding: const EdgeInsets.all(12.0),
               decoration: BoxDecoration(
-                color: Colors.lightBlue[100],
+                color: const Color.fromARGB(255, 209, 241, 255),
                 borderRadius: BorderRadius.circular(8.0),
               ),
               child: Column(
@@ -135,7 +135,8 @@ class WalletPage extends StatelessWidget {
             Container(
               padding: const EdgeInsets.all(12.0),
               decoration: BoxDecoration(
-                color: Colors.lightBlue[100],
+                // color: const Color.fromARGB(255, 209, 241, 255),
+                // color: Colors.lightBlue[100],
                 borderRadius: BorderRadius.circular(8.0),
               ),
               child: Form(
