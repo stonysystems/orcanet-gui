@@ -1,420 +1,80 @@
 import 'package:flutter/material.dart';
-import 'dart:io';
-import 'package:file_picker/file_picker.dart'; // Add file_picker dependency in pubspec.yaml
 
-class HomePage extends StatefulWidget {
+class HomePage extends StatelessWidget {
   const HomePage({super.key});
-
-  @override
-  State<HomePage> createState() => _HomePageState();
-}
-
-class _HomePageState extends State<HomePage> {
-  File? _selectedFile;
-  String? _fileName;
-  String? _fileSize;
-
-  final List<Map<String, String>> _downloadableFiles = [
-    {'name': 'Document123.pdf', 'size': '500 KB', 'hash': 'abcd1234'},
-    {'name': 'Image2.png', 'size': '1.2 MB', 'hash': 'efgh5678'},
-    {'name': 'Presentation.ppt', 'size': '2 MB', 'hash': 'ijkl9101'},
-  ];
-
-    final List<Map<String, String>> _providedFiles = [
-    {'name': 'Document123.pdf', 'size': '500 KB', 'hash': 'abcd1234'},
-    {'name': 'Image2.png', 'size': '1.2 MB', 'hash': 'efgh5678'},
-    {'name': 'Presentation.ppt', 'size': '2 MB', 'hash': 'ijkl9101'},
-  ];
-
-   // Function to show confirmation dialog
-  void _showStopProvidingDialog(int index,String filename) {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: const Text('Stop Providing File'),
-          content: const Text('Are you sure you want to stop providing this file?'),
-          actions: [
-            TextButton(
-              onPressed: () {
-                Navigator.of(context).pop(); // Close the dialog
-              },
-              child: const Text('Cancel'),
-            ),
-            TextButton(
-              onPressed: () {
-                setState(() {
-                  _providedFiles.removeAt(index); // Remove file from the list
-                });
-                Navigator.of(context).pop(); // Close the dialog
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(content: Text('Providing stopped $filename')),
-                );
-              },
-              child: const Text('Yes'),
-            ),
-          ],
-        );
-      },
-    );
-  }
-
-  Future<void> _pickFile() async {
-    final result = await FilePicker.platform.pickFiles();
-    if (result != null) {
-      setState(() {
-        _selectedFile = File(result.files.single.path!);
-        _fileName = result.files.single.name;
-        _fileSize =
-            '${(result.files.single.size / 1024).toStringAsFixed(2)} KB';
-      });
-    }
-  }
-
-  // Function to upload and append file details to _providedFiles
-  void _uploadFile() {
-    if (_selectedFile != null && _fileName != null && _fileSize != null) {
-      // Create a map with file details (you can add hash logic as per your need)
-      final newFile = {
-        'name': _fileName!, // File name
-        'size': _fileSize!, // File size
-        'hash': 'hash_placeholder', // Placeholder for file hash
-      };
-
-      // Update the state to add the file to the provided list
-      setState(() {
-        _providedFiles.add(newFile); // Append new file to the list
-        _fileName = null;
-        _fileSize = null;
-        _selectedFile =null;
-      });
-
-      // Show success message
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('File uploaded and added successfully!')),
-      );
-    }
-  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
+       appBar: AppBar(
         title: const Text('Dashboard'),
         backgroundColor: const Color.fromARGB(255, 209, 241, 255),
       ),
-      body: Container(
+      body: Padding(
         padding: const EdgeInsets.all(16.0),
-        // color: Colors.lightBlue[50], // Light blue background
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Dashboard Header
-            // Container(
-            //   padding: const EdgeInsets.all(12.0),
-            //   decoration: BoxDecoration(
-            //     color: Colors.lightBlue[100],
-            //     borderRadius: BorderRadius.circular(8.0),
-            //   ),
-            //   child: Text(
-            //     'Welcome to the Dashboard',
-            //     style: Theme.of(context)
-            //         .textTheme
-            //         .headlineSmall!
-            //         .copyWith(color: Colors.blue[900]),
-            //   ),
-            // ),
-
-            const SizedBox(height: 16),
-
-            // Upload Section
-
-            // Text(
-            //   'Upload Document',
-            //   style: Theme.of(context)
-            //       .textTheme
-            //       .titleLarge!
-            //       .copyWith(color: Colors.blue[800]),
-            // ),
-            // const SizedBox(height: 8),
-            // Card(
-            //   elevation: 4,
-            //   child: Container(
-            //     padding: const EdgeInsets.all(12.0),
-            //     decoration: BoxDecoration(
-            //       color: const Color.fromARGB(255, 209, 241, 255),
-            //       borderRadius: BorderRadius.circular(8.0),
-            //     ),
-            //     child: Column(
-            //       crossAxisAlignment: CrossAxisAlignment.start,
-            //       children: [
-            //         ElevatedButton(
-            //           onPressed: _pickFile,
-            //           style: ElevatedButton.styleFrom(
-            //             // backgroundColor: Colors.lightBlue[700],
-            //             padding: const EdgeInsets.all(16.0),
-            //           ),
-            //           child: const Text('Browse File'),
-            //         ),
-            //         const SizedBox(height: 8),
-            //         if (_fileName != null)
-            //           Row(
-            //             mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            //             children: [
-            //               Text(
-            //                 'File: $_fileName ($_fileSize)',
-            //                 style: TextStyle(color: Colors.blue[900]),
-            //               ),
-            //               ElevatedButton(
-            //                 onPressed: _uploadFile,
-            //                 style: ElevatedButton.styleFrom(
-            //                   // backgroundColor: Colors.lightBlue[700],
-            //                   padding: const EdgeInsets.all(16.0),
-            //                 ),
-            //                 child: const Text('Upload'),
-            //               ),
-            //             ],
-            //           ),
-            //       ],
-            //     ),
-            //   ),
-            // ),
-            // const SizedBox(height: 16),
-
-            //Provided files table
-
+            const SizedBox(height: 36),
             Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween, // Align items to the edges
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
-                Text(
-                  'Provided Files',
-                  style: Theme.of(context)
-                      .textTheme
-                      .titleLarge!
-                      .copyWith(color: Colors.blue[800]),
-                ),
-                Row(
-                  children: [
-                     // Check if _providedFiles is null or empty
-                    (_fileName == null) 
-                    ? ElevatedButton(
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: const Color.fromARGB(255, 40, 42, 42),
-                      ),
-                       onPressed:  _pickFile,
-                      child: Text(
-                        '+ Import',
-                        style: const TextStyle(color: Colors.white), // Set the text color to white
-                      ),
-                    ):
-                    Row(
-                      children: [
-                        Text(
-                          'File: $_fileName ($_fileSize)',
-                        ),
-                        ElevatedButton(
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: const Color.fromARGB(255, 40, 42, 42),
-                          ),
-                          onPressed: _uploadFile,
-                          child: Text(
-                            'Provide',
-                            style: const TextStyle(color: Colors.white), // Set the text color to white
-                          ),
-                        ),
-                      ],
-                    )
-                  ],
-                )
-              
+                // Total Uploads
+                _buildStatusCard('Total Upload', '51 files', Colors.blue),
+                // Incoming Traffic
+                _buildStatusCard('Incoming Traffic', '100 kB/s', Colors.green),
               ],
             ),
-            const SizedBox(height: 8),
-            
-            Expanded(
-              child: Card(
-                elevation: 4,
-                child: Container(
-                  decoration: BoxDecoration(
-                    color: const Color.fromARGB(255, 209, 241, 255),
-                    borderRadius: BorderRadius.circular(8.0),
-                  ),
-                  child: Scrollbar(
-                    thumbVisibility: true,
-                    child: SingleChildScrollView(
-                      child: LayoutBuilder(
-                        builder: (context, constraints) {
-                          return Column(
-                            children: [
-                              DataTable(
-                                columnSpacing: 0,
-                                columns: [
-                                  DataColumn(
-                                    label: Container(
-                                      width: constraints.maxWidth * 0.25,
-                                      child: Text('File Name', style: TextStyle(fontSize: 16)),
-                                    ),
-                                  ),
-                                  DataColumn(
-                                    label: Container(
-                                      width: constraints.maxWidth * 0.25,
-                                      child: Text('Size', style: TextStyle(fontSize: 16)),
-                                    ),
-                                  ),
-                                  DataColumn(
-                                    label: Container(
-                                      width: constraints.maxWidth * 0.25,
-                                      child: Text('Hash', style: TextStyle(fontSize: 16)),
-                                    ),
-                                  ),
-                                  DataColumn(
-                                    label: Container(
-                                      width: constraints.maxWidth * 0.25,
-                                      child: Text('Action', style: TextStyle(fontSize: 16)),
-                                    ),
-                                  ),
-                                ],
-                                rows: _providedFiles.isNotEmpty
-                                  ? _providedFiles
-                                      .asMap()
-                                      .entries
-                                      .map(
-                                        (entry) => DataRow(
-                                          cells: [
-                                            DataCell(Container(
-                                              width: constraints.maxWidth * 0.25,
-                                              child: Text(entry.value['name']!)
-                                            )),
-                                            DataCell(Container(
-                                              width: constraints.maxWidth * 0.25,
-                                              child: Text(entry.value['size']!)
-                                            )),
-                                            DataCell(Container(
-                                              width: constraints.maxWidth * 0.25,
-                                              child: Text(entry.value['hash']!)
-                                            )),
-                                            DataCell(
-                                               ElevatedButton(
-                                                  onPressed: () {
-                                                    _showStopProvidingDialog(entry.key, entry.value['name']!);
-                                                  },
-                                                  style: ElevatedButton.styleFrom(),
-                                                  child: const Text('Stop Providing'),
-                                                ),
-                                            ),
-                                          ],
-                                        ),
-                                      )
-                                      .toList()
-                                  : [
-                                      DataRow(
-                                        cells: [
-                                          DataCell(Text('')),
-                                          DataCell(Text('')),
-                                          DataCell(Text('')),
-                                          DataCell(Text('')),
-                                        ],
-                                      ),
-                                    ],
-                              ),
-                              if (_providedFiles.isEmpty)
-                                Padding(
-                                  padding: const EdgeInsets.all(16.0),
-                                  child: Text(
-                                    'No files provided.',
-                                    style: TextStyle(fontSize: 16, fontStyle: FontStyle.italic),
-                                  ),
-                                ),
-                            ],
-                          );
-                        },
-                      ),
-                    ),
-                  ),
-                ),
-              ),
+            const SizedBox(height: 16),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                // Total Downloads
+                _buildStatusCard('Total Download', '10 files', Colors.orange),
+                // Outgoing Traffic
+                _buildStatusCard('Outgoing Traffic', '10 kB/s', Colors.red),
+              ],
             ),
-            SizedBox(height: 16),
-            
-            //Download Files table
-            Text(
-              'Downloadable Files',
-              style: Theme.of(context)
-                  .textTheme
-                  .titleLarge!
-                  .copyWith(color: Colors.blue[800]),
-            ),
-            const SizedBox(height: 8),
+            const SizedBox(height: 16),
+            // Add charts or additional info here
             Expanded(
-              child: Card(
-                elevation: 4,
-                child: Container(
-                  decoration: BoxDecoration(
-                    color: const Color.fromARGB(255, 209, 241, 255),
-                    borderRadius: BorderRadius.circular(8.0),
-                  ),
-                  child: Scrollbar(
-                    thumbVisibility: true,
-                    child: ListView(
-                      padding: const EdgeInsets.all(12.0),
-                      children: [
-                        DataTable(
-                          columns: const [
-                            DataColumn(
-                              label: Text(
-                                'File Name',
-                                style: TextStyle(fontSize: 16), // Increase font size
-                              ),
-                            ),
-                            DataColumn(
-                              label: Text(
-                                'Size',
-                                style: TextStyle(fontSize: 16), // Increase font size
-                              ),
-                            ),
-                            DataColumn(
-                              label: Text(
-                                'Hash',
-                                style: TextStyle(fontSize: 16), // Increase font size
-                              ),
-                            ),
-                            DataColumn(
-                              label: Text(
-                                'Action',
-                                style: TextStyle(fontSize: 16), // Increase font size
-                              ),
-                            ),
-                          ],
-                          rows: _downloadableFiles
-                              .map(
-                                (file) => DataRow(
-                                  cells: [
-                                    DataCell(Text(file['name']!)),
-                                    DataCell(Text(file['size']!)),
-                                    DataCell(Text(file['hash']!)),
-                                    DataCell(
-                                      ElevatedButton(
-                                        onPressed: () {
-                                          // Implement download logic here
-                                        },
-                                        style: ElevatedButton.styleFrom(
-                                          // backgroundColor: Colors.lightBlue[700],
-                                        ),
-                                        child: const Text('Download'),
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              )
-                              .toList(),
-                        ),
-                      ],
-                    ),
-                  ),
+              child: Center(
+                child: Text(
+                  'Bandwidth Overtime and Activity Graphs',
+                  style: Theme.of(context).textTheme.bodyLarge,
                 ),
               ),
             ),
           ],
+        ),
+      ),
+    );
+  }
+
+  // Helper method to create each status card
+  Widget _buildStatusCard(String title, String value, Color color) {
+    return Expanded(
+      child: Card(
+        elevation: 4,
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            children: [
+              Text(
+                title,
+                style: TextStyle(
+                  fontSize: 16,
+                  color: color,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              const SizedBox(height: 8),
+              Text(
+                value,
+                style: const TextStyle(fontSize: 24),
+              )
+            ],
+          ),
         ),
       ),
     );
