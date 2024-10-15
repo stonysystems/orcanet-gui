@@ -128,57 +128,58 @@ class _HomePageState extends State<HomePage> {
             const SizedBox(height: 16),
 
             // Upload Section
-            Text(
-              'Upload Document',
-              style: Theme.of(context)
-                  .textTheme
-                  .titleLarge!
-                  .copyWith(color: Colors.blue[800]),
-            ),
-            const SizedBox(height: 8),
-            Card(
-              elevation: 4,
-              child: Container(
-                padding: const EdgeInsets.all(12.0),
-                decoration: BoxDecoration(
-                  color: const Color.fromARGB(255, 209, 241, 255),
-                  borderRadius: BorderRadius.circular(8.0),
-                ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    ElevatedButton(
-                      onPressed: _pickFile,
-                      style: ElevatedButton.styleFrom(
-                        // backgroundColor: Colors.lightBlue[700],
-                        padding: const EdgeInsets.all(16.0),
-                      ),
-                      child: const Text('Browse File'),
-                    ),
-                    const SizedBox(height: 8),
-                    if (_fileName != null)
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text(
-                            'File: $_fileName ($_fileSize)',
-                            style: TextStyle(color: Colors.blue[900]),
-                          ),
-                          ElevatedButton(
-                            onPressed: _uploadFile,
-                            style: ElevatedButton.styleFrom(
-                              // backgroundColor: Colors.lightBlue[700],
-                              padding: const EdgeInsets.all(16.0),
-                            ),
-                            child: const Text('Upload'),
-                          ),
-                        ],
-                      ),
-                  ],
-                ),
-              ),
-            ),
-            const SizedBox(height: 16),
+
+            // Text(
+            //   'Upload Document',
+            //   style: Theme.of(context)
+            //       .textTheme
+            //       .titleLarge!
+            //       .copyWith(color: Colors.blue[800]),
+            // ),
+            // const SizedBox(height: 8),
+            // Card(
+            //   elevation: 4,
+            //   child: Container(
+            //     padding: const EdgeInsets.all(12.0),
+            //     decoration: BoxDecoration(
+            //       color: const Color.fromARGB(255, 209, 241, 255),
+            //       borderRadius: BorderRadius.circular(8.0),
+            //     ),
+            //     child: Column(
+            //       crossAxisAlignment: CrossAxisAlignment.start,
+            //       children: [
+            //         ElevatedButton(
+            //           onPressed: _pickFile,
+            //           style: ElevatedButton.styleFrom(
+            //             // backgroundColor: Colors.lightBlue[700],
+            //             padding: const EdgeInsets.all(16.0),
+            //           ),
+            //           child: const Text('Browse File'),
+            //         ),
+            //         const SizedBox(height: 8),
+            //         if (_fileName != null)
+            //           Row(
+            //             mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            //             children: [
+            //               Text(
+            //                 'File: $_fileName ($_fileSize)',
+            //                 style: TextStyle(color: Colors.blue[900]),
+            //               ),
+            //               ElevatedButton(
+            //                 onPressed: _uploadFile,
+            //                 style: ElevatedButton.styleFrom(
+            //                   // backgroundColor: Colors.lightBlue[700],
+            //                   padding: const EdgeInsets.all(16.0),
+            //                 ),
+            //                 child: const Text('Upload'),
+            //               ),
+            //             ],
+            //           ),
+            //       ],
+            //     ),
+            //   ),
+            // ),
+            // const SizedBox(height: 16),
 
             //Provided files table
 
@@ -195,7 +196,7 @@ class _HomePageState extends State<HomePage> {
                 Row(
                   children: [
                      // Check if _providedFiles is null or empty
-                    (_providedFiles == null || _providedFiles.isEmpty) 
+                    (_fileName == null) 
                     ? ElevatedButton(
                       style: ElevatedButton.styleFrom(
                         backgroundColor: const Color.fromARGB(255, 40, 42, 42),
@@ -206,19 +207,23 @@ class _HomePageState extends State<HomePage> {
                         style: const TextStyle(color: Colors.white), // Set the text color to white
                       ),
                     ):
-                    Text(
-                      'File: $_fileName ($_fileSize)',
-                    ),
-                    ElevatedButton(
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: const Color.fromARGB(255, 40, 42, 42),
-                      ),
-                       onPressed: _uploadFile,
-                      child: Text(
-                        'Provide',
-                        style: const TextStyle(color: Colors.white), // Set the text color to white
-                      ),
-                    ),
+                    Row(
+                      children: [
+                        Text(
+                          'File: $_fileName ($_fileSize)',
+                        ),
+                        ElevatedButton(
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: const Color.fromARGB(255, 40, 42, 42),
+                          ),
+                          onPressed: _uploadFile,
+                          child: Text(
+                            'Provide',
+                            style: const TextStyle(color: Colors.white), // Set the text color to white
+                          ),
+                        ),
+                      ],
+                    )
                   ],
                 )
               
@@ -328,7 +333,10 @@ class _HomePageState extends State<HomePage> {
                   ),
                 ),
               ),
-            ),   // Download Section
+            ),
+            SizedBox(height: 16),
+            
+            //Download Files table
             Text(
               'Downloadable Files',
               style: Theme.of(context)
