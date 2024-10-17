@@ -96,6 +96,15 @@ class _HomePageState extends State<StatusPage> {
     }
   }
 
+  final TextEditingController _controller = TextEditingController();
+
+  void _onDownloadPressed() {
+    // Handle the download action here
+    String enteredText = _controller.text;
+    print('Downloading file for: $enteredText');
+    // Add your download functionality here.
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -334,7 +343,33 @@ class _HomePageState extends State<StatusPage> {
             ),
           ),
 
-            SizedBox(height: 26),
+            SizedBox(height: 30),
+
+            // Download button and input bar
+            Row(
+              children: [
+                // Text input field
+                Expanded(
+                  child: TextField(
+                    controller: _controller,
+                    decoration: InputDecoration(
+                      border: OutlineInputBorder(),
+                      labelText: 'Enter Hash of the File',
+                    ),
+                  ),
+                ),
+                SizedBox(width: 30),
+                // Download button
+                IconButton(
+                  icon: Icon(Icons.download),
+                  onPressed: _onDownloadPressed,
+                  tooltip: 'Download',
+                ),
+                SizedBox(width: 470),
+              ],
+            ),
+
+            SizedBox(height: 30),
             
             //Download Files table
             Text(
