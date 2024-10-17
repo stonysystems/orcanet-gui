@@ -70,9 +70,9 @@ class _MyHomePageState extends State<MyHomePage> {
                 label: Text('Home'),
               ),
               NavigationRailDestination(
-                icon: Icon(Icons.file_open),
-                selectedIcon: Icon(Icons.upload_sharp),
-                label: Text('Provide'),
+                icon: Icon(Icons.insert_drive_file),
+                selectedIcon: Icon(Icons.insert_drive_file_sharp),
+                label: Text('File'),
               ),
               NavigationRailDestination(
                 icon: Icon(Icons.people),

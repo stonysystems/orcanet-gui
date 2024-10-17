@@ -9,10 +9,11 @@ class StatusPage extends StatefulWidget {
   State<StatusPage> createState() => _HomePageState();
 }
 
-class _HomePageState extends State<StatusPage> {
+class _HomePageState extends State<StatusPage> with SingleTickerProviderStateMixin {
   File? _selectedFile;
   String? _fileName;
   String? _fileSize;
+  TabController? _tabController;
 
   final List<Map<String, String>> _downloadableFiles = [
     {'name': 'Document123.pdf', 'size': '500 KB', 'hash': 'abcd1234'},
@@ -20,14 +21,20 @@ class _HomePageState extends State<StatusPage> {
     {'name': 'Presentation.ppt', 'size': '2 MB', 'hash': 'ijkl9101'},
   ];
 
-    final List<Map<String, String>> _providedFiles = [
+  final List<Map<String, String>> _providedFiles = [
     {'name': 'Document123.pdf', 'size': '500 KB', 'hash': 'abcd1234'},
     {'name': 'Image2.png', 'size': '1.2 MB', 'hash': 'efgh5678'},
     {'name': 'Presentation.ppt', 'size': '2 MB', 'hash': 'ijkl9101'},
   ];
 
-   // Function to show confirmation dialog
-  void _showStopProvidingDialog(int index,String filename) {
+  @override
+  void initState() {
+    super.initState();
+    _tabController = TabController(length: 2, vsync: this);
+  }
+
+  // Function to show confirmation dialog
+  void _showStopProvidingDialog(int index, String filename) {
     showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -74,22 +81,19 @@ class _HomePageState extends State<StatusPage> {
   // Function to upload and append file details to _providedFiles
   void _uploadFile() {
     if (_selectedFile != null && _fileName != null && _fileSize != null) {
-      // Create a map with file details (you can add hash logic as per your need)
       final newFile = {
         'name': _fileName!, // File name
         'size': _fileSize!, // File size
         'hash': 'hash_placeholder', // Placeholder for file hash
       };
 
-      // Update the state to add the file to the provided list
       setState(() {
         _providedFiles.add(newFile); // Append new file to the list
         _fileName = null;
         _fileSize = null;
-        _selectedFile =null;
+        _selectedFile = null;
       });
 
-      // Show success message
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('File uploaded and added successfully!')),
       );
@@ -99,7 +103,6 @@ class _HomePageState extends State<StatusPage> {
   final TextEditingController _controller = TextEditingController();
 
   void _onDownloadPressed() {
-    // Handle the download action here
     String enteredText = _controller.text;
     print('Downloading file for: $enteredText');
     // Add your download functionality here.
@@ -107,331 +110,208 @@ class _HomePageState extends State<StatusPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Container(
-        padding: const EdgeInsets.all(16.0),
-        // color: Colors.lightBlue[50], // Light blue background
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-
-            const SizedBox(height: 36),
-
-            // Upload Section
-
-            Text(
-              'Provide File',
-              style: Theme.of(context)
-                  .textTheme
-                  .titleLarge!
-                  .copyWith(color: Colors.blue[800]),
-            ),
-            const SizedBox(height: 8),
-            Card(
-              elevation: 4,
-              child: Container(
-                padding: const EdgeInsets.all(12.0),
-                decoration: BoxDecoration(
-                  color: const Color.fromARGB(255, 209, 241, 255),
-                  borderRadius: BorderRadius.circular(8.0),
+    return DefaultTabController(
+      length: 2, // Two tabs: Provide and Download
+      child: Scaffold(
+        appBar: AppBar(
+          toolbarHeight: 0,
+          title: null,
+          bottom: TabBar(
+            controller: _tabController,
+            tabs: const [
+              Tab(
+                  icon: Icon(Icons.upload_file), // Add an icon for the 'Provide File' tab
+                  text: 'Provide File',
                 ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    ElevatedButton(
-                      onPressed: _pickFile,
-                      style: ElevatedButton.styleFrom(
-                        // backgroundColor: Colors.lightBlue[700],
-                        padding: const EdgeInsets.all(16.0),
+              Tab(
+                icon: Icon(Icons.download), // Add an icon for the 'Download File' tab
+                text: 'Download File',
+              ),
+            ],
+          ),
+        ),
+        body: TabBarView(
+          controller: _tabController,
+          children: [
+            // Provide Section
+            Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    'Provide File',
+                    style: Theme.of(context).textTheme.titleLarge!.copyWith(color: Colors.blue[800]),
+                  ),
+                  const SizedBox(height: 8),
+                  Card(
+                    elevation: 4,
+                    child: Container(
+                      padding: const EdgeInsets.all(12.0),
+                      decoration: BoxDecoration(
+                        color: const Color.fromARGB(255, 209, 241, 255),
+                        borderRadius: BorderRadius.circular(8.0),
                       ),
-                      child: const Text('Browse File'),
-                    ),
-                    const SizedBox(height: 8),
-                    if (_fileName != null)
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text(
-                            'File: $_fileName ($_fileSize)',
-                            style: TextStyle(color: Colors.blue[900]),
-                          ),
                           ElevatedButton(
-                            onPressed: _uploadFile,
+                            onPressed: _pickFile,
                             style: ElevatedButton.styleFrom(
-                              // backgroundColor: Colors.lightBlue[700],
                               padding: const EdgeInsets.all(16.0),
                             ),
-                            child: const Text('Upload'),
+                            child: const Text('Browse File'),
                           ),
-                        ],
-                      ),
-                  ],
-                ),
-              ),
-            ),
-            const SizedBox(height: 36),
-
-            //Provided files table
-
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween, // Align items to the edges
-              children: [
-                Text(
-                  'Provided Files',
-                  style: Theme.of(context)
-                      .textTheme
-                      .titleLarge!
-                      .copyWith(color: Colors.blue[800]),
-                ),
-                Row(
-                  children: [
-                     // Check if _providedFiles is null or empty
-                    (_fileName == null) 
-                    ? ElevatedButton(
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: const Color.fromARGB(255, 40, 42, 42),
-                      ),
-                       onPressed:  _pickFile,
-                      child: Text(
-                        '+ Import',
-                        style: const TextStyle(color: Colors.white), // Set the text color to white
-                      ),
-                    ):
-                    Row(
-                      children: [
-                        Text(
-                          'File: $_fileName ($_fileSize)',
-                        ),
-                        ElevatedButton(
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: const Color.fromARGB(255, 40, 42, 42),
-                          ),
-                          onPressed: _uploadFile,
-                          child: Text(
-                            'Provide',
-                            style: const TextStyle(color: Colors.white), // Set the text color to white
-                          ),
-                        ),
-                      ],
-                    )
-                  ],
-                )
-              
-              ],
-            ),
-            const SizedBox(height: 8),
-            
-          Expanded(
-            child: Card(
-              elevation: 4,
-              child: Container(
-                decoration: BoxDecoration(
-                  color: const Color.fromARGB(255, 209, 241, 255),
-                  borderRadius: BorderRadius.circular(8.0),
-                ),
-                child: Scrollbar(
-                  thumbVisibility: true,
-                  child: SingleChildScrollView(
-                    child: LayoutBuilder(
-                      builder: (context, constraints) {
-                        return Column(
-                          children: [
-                            DataTable(
-                              columnSpacing: 0,
-                              columns: [
-                                DataColumn(
-                                  label: SizedBox(
-                                    width: constraints.maxWidth * 0.25,
-                                    child: Text('File Name', style: TextStyle(fontSize: 16)),
-                                  ),
+                          const SizedBox(height: 8),
+                          if (_fileName != null)
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Text(
+                                  'File: $_fileName ($_fileSize)',
+                                  style: TextStyle(color: Colors.blue[900]),
                                 ),
-                                DataColumn(
-                                  label: SizedBox(
-                                    width: constraints.maxWidth * 0.25,
-                                    child: Text('Size', style: TextStyle(fontSize: 16)),
+                                ElevatedButton(
+                                  onPressed: _uploadFile,
+                                  style: ElevatedButton.styleFrom(
+                                    padding: const EdgeInsets.all(16.0),
                                   ),
-                                ),
-                                DataColumn(
-                                  label: SizedBox(
-                                    width: constraints.maxWidth * 0.25,
-                                    child: Text('Hash', style: TextStyle(fontSize: 16)),
-                                  ),
-                                ),
-                                DataColumn(
-                                  label: SizedBox(
-                                    width: constraints.maxWidth * 0.25,
-                                    child: Text('Action', style: TextStyle(fontSize: 16)),
-                                  ),
+                                  child: const Text('Upload'),
                                 ),
                               ],
-                              rows: _providedFiles.isNotEmpty
-                                  ? _providedFiles
-                                      .asMap()
-                                      .entries
-                                      .map(
-                                        (entry) => DataRow(
-                                          cells: [
-                                            DataCell(
-                                              ConstrainedBox(
-                                                constraints: BoxConstraints(minHeight: 30),
-                                                child: SizedBox(
-                                                  width: constraints.maxWidth * 0.25,
-                                                  child: Text(entry.value['name']!),
-                                                ),
-                                              ),
-                                            ),
-                                            DataCell(
-                                              ConstrainedBox(
-                                                constraints: BoxConstraints(minHeight: 30),
-                                                child: SizedBox(
-                                                  width: constraints.maxWidth * 0.25,
-                                                  child: Text(entry.value['size']!),
-                                                ),
-                                              ),
-                                            ),
-                                            DataCell(
-                                              ConstrainedBox(
-                                                constraints: BoxConstraints(minHeight: 30),
-                                                child: SizedBox(
-                                                  width: constraints.maxWidth * 0.25,
-                                                  child: Text(entry.value['hash']!),
-                                                ),
-                                              ),
-                                            ),
-                                            DataCell(
-                                              ConstrainedBox(
-                                                constraints: BoxConstraints(minHeight: 30),
-                                                child: ElevatedButton(
-                                                  onPressed: () {
-                                                    _showStopProvidingDialog(entry.key, entry.value['name']!);
-                                                  },
-                                                  style: ElevatedButton.styleFrom(),
-                                                  child: const Text('Stop Providing'),
-                                                ),
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                      )
-                                      .toList()
-                                  : [
-                                      DataRow(
+                            ),
+                        ],
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 36),
+                  Text(
+                    'Provided Files',
+                    style: Theme.of(context).textTheme.titleLarge!.copyWith(color: Colors.blue[800]),
+                  ),
+                  const SizedBox(height: 8),
+                  Expanded(
+                    child: Card(
+                      elevation: 4,
+                      child: Container(
+                        width: double.infinity,
+                        decoration: BoxDecoration(
+                          color: const Color.fromARGB(255, 209, 241, 255),
+                          borderRadius: BorderRadius.circular(8.0),
+                        ),
+                        child: SingleChildScrollView(
+                          child: DataTable(
+                            columns: const [
+                              DataColumn(label: Text('File Name')),
+                              DataColumn(label: Text('Size')),
+                              DataColumn(label: Text('Hash')),
+                              DataColumn(label: Text('Action')),
+                            ],
+                            rows: _providedFiles.isNotEmpty
+                                ? _providedFiles
+                                    .asMap()
+                                    .entries
+                                    .map(
+                                      (entry) => DataRow(
                                         cells: [
-                                          DataCell(Text('')),
-                                          DataCell(Text('')),
-                                          DataCell(Text('')),
-                                          DataCell(Text('')),
+                                          DataCell(Text(entry.value['name']!)),
+                                          DataCell(Text(entry.value['size']!)),
+                                          DataCell(Text(entry.value['hash']!)),
+                                          DataCell(
+                                            ElevatedButton(
+                                              onPressed: () {
+                                                _showStopProvidingDialog(entry.key, entry.value['name']!);
+                                              },
+                                              child: const Text('Stop Providing'),
+                                            ),
+                                          ),
                                         ],
                                       ),
-                                    ],
-                            ),
-                            if (_providedFiles.isEmpty)
-                              Padding(
-                                padding: const EdgeInsets.all(16.0),
-                                child: Text(
-                                  'No files provided.',
-                                  style: TextStyle(fontSize: 16, fontStyle: FontStyle.italic),
-                                ),
-                              ),
-                          ],
-                        );
-                      },
+                                    )
+                                    .toList()
+                                : const [
+                                    DataRow(cells: [DataCell(Text('No files provided')), DataCell(Text('')), DataCell(Text('')), DataCell(Text(''))]),
+                                  ],
+                          ),
+                        ),
+                      ),
                     ),
                   ),
-                ),
+                ],
               ),
             ),
-          ),
-
-            SizedBox(height: 30),
-
-            // Download button and input bar
-            Row(
-              children: [
-                // Text input field
-                Expanded(
-                  child: TextField(
-                    controller: _controller,
-                    decoration: InputDecoration(
-                      border: OutlineInputBorder(),
-                      labelText: 'Enter Hash of the File',
-                    ),
+            // Download Section
+            Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    'Download Files',
+                    style: Theme.of(context).textTheme.titleLarge!.copyWith(color: Colors.blue[800]),
                   ),
-                ),
-                SizedBox(width: 30),
-                // Download button
-                IconButton(
-                  icon: Icon(Icons.download),
-                  onPressed: _onDownloadPressed,
-                  tooltip: 'Download',
-                ),
-                SizedBox(width: 470),
-              ],
-            ),
-
-            SizedBox(height: 30),
-            
-            //Download Files table
-            Text(
-              'Downloadable Files',
-              style: Theme.of(context)
-                  .textTheme
-                  .titleLarge!
-                  .copyWith(color: Colors.blue[800]),
-            ),
-            const SizedBox(height: 8),
-            Expanded(
-              child: Card(
-                elevation: 4,
-                child: Container(
-                  decoration: BoxDecoration(
-                    color: const Color.fromARGB(255, 209, 241, 255),
-                    borderRadius: BorderRadius.circular(8.0),
-                  ),
-                  child: Scrollbar(
-                    thumbVisibility: true,
-                    child: ListView(
-                      padding: const EdgeInsets.all(12.0),
-                      children: [
-                        DataTable(
-                          columns: const [
-                            DataColumn(
-                              label: Text(
-                                'File Name',
-                                style: TextStyle(fontSize: 16), // Increase font size
-                              ),
-                            ),
-                            DataColumn(
-                              label: Text(
-                                'Size',
-                                style: TextStyle(fontSize: 16), // Increase font size
-                              ),
-                            ),
-                            DataColumn(
-                              label: Text(
-                                'Hash',
-                                style: TextStyle(fontSize: 16), // Increase font size
-                              ),
-                            ),
-                           
-                          ],
-                          rows: _downloadableFiles
-                              .map(
-                                (file) => DataRow(
-                                  cells: [
-                                    DataCell(Text(file['name']!)),
-                                    DataCell(Text(file['size']!)),
-                                    DataCell(Text(file['hash']!)),
-                                    
-                                  ],
-                                ),
-                              )
-                              .toList(),
+                  const SizedBox(height: 20),
+                  Row(
+                    children: [
+                      Expanded(
+                        child: TextField(
+                          controller: _controller,
+                          decoration: const InputDecoration(
+                            border: OutlineInputBorder(),
+                            labelText: 'Enter Hash of the File',
+                          ),
                         ),
-                      ],
+                      ),
+                      const SizedBox(width: 16),
+                      ElevatedButton.icon(
+                        onPressed: _onDownloadPressed,
+                        icon: const Icon(Icons.download),
+                        label: const Text('Download'),
+                      ),
+                      // IconButton(
+                      //   icon: const Icon(Icons.download),
+                      //   onPressed: _onDownloadPressed,
+                      //   tooltip: 'Download',
+                      // ),
+                    ],
+                  ), 
+                  const SizedBox(height: 30),
+                  Expanded(
+                    child: Card(
+                      elevation: 4,
+                      child: Container(
+                        decoration: BoxDecoration(
+                          color: const Color.fromARGB(255, 209, 241, 255),
+                          borderRadius: BorderRadius.circular(8.0),
+                        ),
+                        child: SingleChildScrollView(
+                          child: Container(
+                            width: double.infinity, // Makes the table take up all available width
+                            padding: const EdgeInsets.all(8.0), // Optional padding
+                            child: DataTable(
+                              columns: const [
+                                DataColumn(label: Text('File Name')),
+                                DataColumn(label: Text('Size')),
+                                DataColumn(label: Text('Hash')),
+                              ],
+                              rows: _downloadableFiles
+                                  .map(
+                                    (file) => DataRow(
+                                      cells: [
+                                        DataCell(Text(file['name']!)),
+                                        DataCell(Text(file['size']!)),
+                                        DataCell(Text(file['hash']!)),
+                                      ],
+                                    ),
+                                  )
+                                  .toList(),
+                            ),
+                          ),
+                        ),
+                      ),
                     ),
                   ),
-                ),
+                ],
               ),
             ),
           ],
@@ -440,3 +320,11 @@ class _HomePageState extends State<StatusPage> {
     );
   }
 }
+
+void main() {
+  runApp(MaterialApp(
+    debugShowCheckedModeBanner: false,
+    home: StatusPage(),
+  ));
+}
+
