@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'dart:io';
+import '../utils.dart';
 import './../api.dart';
 import 'package:file_picker/file_picker.dart'; // Add file_picker dependency in pubspec.yaml
 
@@ -110,7 +111,7 @@ class _HomePageState extends State<StatusPage>
 
   final TextEditingController _controller = TextEditingController();
 
-  void downloadFile(int index, String filename, String peerId) async {
+  void downloadFile(String filename, String peerId) async {
     try {
       String? destinationPath = await FilePicker.platform.saveFile(
         dialogTitle: "Save file from ${_downloadFileId!.substring(0, 16)}",
@@ -118,12 +119,7 @@ class _HomePageState extends State<StatusPage>
       );
       if (destinationPath != null) {
         debugPrint("Selected destination path: $destinationPath");
-
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-              content: Text('Selected download location: $destinationPath')),
-        );
-        startDownload(_downloadFileId, providers[index]['peer_id'], destinationPath);
+        startDownload(_downloadFileId, peerId, destinationPath);
       } else {
         debugPrint("User canceled directory selection");
       }
@@ -170,11 +166,14 @@ class _HomePageState extends State<StatusPage>
       );
       if (response['success']) {
         print("download successful");
+        Utils.showSuccessSnackBar(context, "File downloaded successfully");
       } else {
+        Utils.showSuccessSnackBar(context, "Download failed");
         print('Failed to start download.');
       }
     } catch (e) {
-      print('Error downloadin: $e');
+      Utils.showSuccessSnackBar(context, "Download failed");
+      print('Error downloading: $e');
     }
   }
 
@@ -424,7 +423,6 @@ class _HomePageState extends State<StatusPage>
                                             ElevatedButton.icon(
                                               onPressed: () {
                                                 downloadFile(
-                                                    entry.key,
                                                     entry.value['file_name']!,
                                                     entry.value['peer_id']!
                                                 );
