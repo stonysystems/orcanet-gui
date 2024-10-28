@@ -38,7 +38,7 @@ class Api {
         },
       );
 
-      log("Got response - ${response.statusCode}: ${response.body}");
+      log("Got response for $endpoint - ${response.statusCode}: "); // ${response.body}");
 
       if (response.statusCode == 200) {
         return json.decode(response.body);
@@ -62,7 +62,7 @@ class Api {
         body: body != null ? json.encode(body) : null,
       );
 
-      log("Got response - ${response.statusCode}: ${response.body}");
+      log("Got response $endpoint - - ${response.statusCode}"); //: ${response.body}");
 
       if (response.statusCode == 200) {
         return json.decode(response.body);

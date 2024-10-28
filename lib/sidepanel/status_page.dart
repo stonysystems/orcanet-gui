@@ -3,7 +3,6 @@ import 'dart:io';
 import './../api.dart';
 import 'package:file_picker/file_picker.dart'; // Add file_picker dependency in pubspec.yaml
 
-
 class StatusPage extends StatefulWidget {
   const StatusPage({super.key});
 
@@ -11,15 +10,14 @@ class StatusPage extends StatefulWidget {
   State<StatusPage> createState() => _HomePageState();
 }
 
-
-class _HomePageState extends State<StatusPage> with SingleTickerProviderStateMixin{
-  
+class _HomePageState extends State<StatusPage>
+    with SingleTickerProviderStateMixin {
   File? _selectedFile;
   String? _fileName;
   String? _fileSize;
   TabController? _tabController;
 
-  List<Map<String, dynamic>> providers=[];
+  List<Map<String, dynamic>> providers = [];
 
   final List<Map<String, String>> _downloadableFiles = [
     {'name': 'Document123.pdf', 'size': '500 KB', 'hash': 'abcd1234'},
@@ -46,7 +44,8 @@ class _HomePageState extends State<StatusPage> with SingleTickerProviderStateMix
       builder: (BuildContext context) {
         return AlertDialog(
           title: const Text('Stop Providing File'),
-          content: const Text('Are you sure you want to stop providing this file?'),
+          content:
+              const Text('Are you sure you want to stop providing this file?'),
           actions: [
             TextButton(
               onPressed: () {
@@ -78,7 +77,8 @@ class _HomePageState extends State<StatusPage> with SingleTickerProviderStateMix
       setState(() {
         _selectedFile = File(result.files.single.path!);
         _fileName = result.files.single.name;
-        _fileSize = '${(result.files.single.size / 1024).toStringAsFixed(2)} KB';
+        _fileSize =
+            '${(result.files.single.size / 1024).toStringAsFixed(2)} KB';
       });
       print(_selectedFile);
     }
@@ -87,7 +87,7 @@ class _HomePageState extends State<StatusPage> with SingleTickerProviderStateMix
   // Function to upload and append file details to _providedFiles
   void _uploadFile() {
     if (_selectedFile != null && _fileName != null && _fileSize != null) {
-      provideFile(_selectedFile);
+      provideFile(_selectedFile!.path.toString());
       final newFile = {
         'name': _fileName!, // File name
         'size': _fileSize!, // File size
@@ -117,7 +117,8 @@ class _HomePageState extends State<StatusPage> with SingleTickerProviderStateMix
         debugPrint("Selected directory path: $selectedDirectory");
         // Use the selected directory path as needed
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Selected download location: $selectedDirectory')),
+          SnackBar(
+              content: Text('Selected download location: $selectedDirectory')),
         );
         startDownload(filename, providers[index]['peer_id'], selectedDirectory);
       } else {
@@ -135,16 +136,16 @@ class _HomePageState extends State<StatusPage> with SingleTickerProviderStateMix
     String enteredText = _controller.text;
     _getProviders(enteredText);
     print('Downloading file for: $enteredText');
-    
   }
 
   // Api calls starts--->
   Future<void> _getProviders(fileId) async {
     try {
-      final response = await Api().getProviders(fileId);
+      final response = await Api.getProviders(fileId);
       if (response['success']) {
+        print(response['data']);
         setState(() {
-          providers = response['data'];
+          providers = List<Map<String, dynamic>>.from(response['data']);
         });
       } else {
         print('Failed to retrieve providers.');
@@ -154,15 +155,15 @@ class _HomePageState extends State<StatusPage> with SingleTickerProviderStateMix
     }
   }
 
-  Future<void> startDownload(fileId,peerId,destPath) async {
+  Future<void> startDownload(fileId, peerId, destPath) async {
     try {
-      final response = await Api().downloadFile(
+      final response = await Api.downloadFile(
         fileId: fileId,
         peerId: peerId,
         destPath: destPath,
       );
       if (response['success']) {
-       print("download successful");
+        print("download successful");
       } else {
         print('Failed to start download.');
       }
@@ -173,7 +174,10 @@ class _HomePageState extends State<StatusPage> with SingleTickerProviderStateMix
 
   Future<void> provideFile(filePath) async {
     try {
-      final response = await Api().provideFile(filePath.toString());
+      final response = await Api.provideFile(filePath.toString());
+
+      print(response);
+
       if (response['success']) {
         print("provided successfully");
       } else {
@@ -196,11 +200,13 @@ class _HomePageState extends State<StatusPage> with SingleTickerProviderStateMix
             controller: _tabController,
             tabs: const [
               Tab(
-                  icon: Icon(Icons.upload_file), // Add an icon for the 'Provide File' tab
-                  text: 'Provide File',
-                ),
+                icon: Icon(Icons.upload_file),
+                // Add an icon for the 'Provide File' tab
+                text: 'Provide File',
+              ),
               Tab(
-                icon: Icon(Icons.download), // Add an icon for the 'Download File' tab
+                icon: Icon(Icons.download),
+                // Add an icon for the 'Download File' tab
                 text: 'Download File',
               ),
             ],
@@ -217,7 +223,10 @@ class _HomePageState extends State<StatusPage> with SingleTickerProviderStateMix
                 children: [
                   Text(
                     'Provide File',
-                    style: Theme.of(context).textTheme.titleLarge!.copyWith(color: Colors.blue[800]),
+                    style: Theme.of(context)
+                        .textTheme
+                        .titleLarge!
+                        .copyWith(color: Colors.blue[800]),
                   ),
                   const SizedBox(height: 8),
                   Card(
@@ -263,7 +272,10 @@ class _HomePageState extends State<StatusPage> with SingleTickerProviderStateMix
                   const SizedBox(height: 36),
                   Text(
                     'Provided Files',
-                    style: Theme.of(context).textTheme.titleLarge!.copyWith(color: Colors.blue[800]),
+                    style: Theme.of(context)
+                        .textTheme
+                        .titleLarge!
+                        .copyWith(color: Colors.blue[800]),
                   ),
                   const SizedBox(height: 8),
                   Expanded(
@@ -296,9 +308,12 @@ class _HomePageState extends State<StatusPage> with SingleTickerProviderStateMix
                                           DataCell(
                                             ElevatedButton(
                                               onPressed: () {
-                                                _showStopProvidingDialog(entry.key, entry.value['name']!);
+                                                _showStopProvidingDialog(
+                                                    entry.key,
+                                                    entry.value['name']!);
                                               },
-                                              child: const Text('Stop Providing'),
+                                              child:
+                                                  const Text('Stop Providing'),
                                             ),
                                           ),
                                         ],
@@ -306,7 +321,12 @@ class _HomePageState extends State<StatusPage> with SingleTickerProviderStateMix
                                     )
                                     .toList()
                                 : const [
-                                    DataRow(cells: [DataCell(Text('No files provided')), DataCell(Text('')), DataCell(Text('')), DataCell(Text(''))]),
+                                    DataRow(cells: [
+                                      DataCell(Text('No files provided')),
+                                      DataCell(Text('')),
+                                      DataCell(Text('')),
+                                      DataCell(Text(''))
+                                    ]),
                                   ],
                           ),
                         ),
@@ -324,7 +344,10 @@ class _HomePageState extends State<StatusPage> with SingleTickerProviderStateMix
                 children: [
                   Text(
                     'Download Files',
-                    style: Theme.of(context).textTheme.titleLarge!.copyWith(color: Colors.blue[800]),
+                    style: Theme.of(context)
+                        .textTheme
+                        .titleLarge!
+                        .copyWith(color: Colors.blue[800]),
                   ),
                   const SizedBox(height: 20),
                   Row(
@@ -350,11 +373,14 @@ class _HomePageState extends State<StatusPage> with SingleTickerProviderStateMix
                       //   tooltip: 'Download',
                       // ),
                     ],
-                  ), 
+                  ),
                   const SizedBox(height: 20),
                   Text(
                     'Providers',
-                    style: Theme.of(context).textTheme.titleLarge!.copyWith(color: Colors.blue[800]),
+                    style: Theme.of(context)
+                        .textTheme
+                        .titleLarge!
+                        .copyWith(color: Colors.blue[800]),
                   ),
                   const SizedBox(height: 10),
                   Expanded(
@@ -381,34 +407,47 @@ class _HomePageState extends State<StatusPage> with SingleTickerProviderStateMix
                                     .map(
                                       (entry) => DataRow(
                                         cells: [
-                                          DataCell(Text(entry.value['file_name']!)),
-                                          DataCell(Text(entry.value['fee_rate_per_kb']!.toString())),
-                                          DataCell(Text(entry.value['peer_id']!)),
                                           DataCell(
-                                           ElevatedButton.icon(
-                                            onPressed: () {
-                                              downloadFile(entry.key, entry.value['peer_id']!);
-                                            },
-                                            icon: const Icon(Icons.download),
-                                            label: const Text('Download'),
-                                          ),
+                                              Text(entry.value['file_name']!)),
+                                          DataCell(Text(entry
+                                              .value['fee_rate_per_kb']!
+                                              .toString())),
+                                          DataCell(
+                                              Text(entry.value['peer_id']!)),
+                                          DataCell(
+                                            ElevatedButton.icon(
+                                              onPressed: () {
+                                                downloadFile(entry.key,
+                                                    entry.value['peer_id']!);
+                                              },
+                                              icon: const Icon(Icons.download),
+                                              label: const Text('Download'),
+                                            ),
                                           ),
                                         ],
                                       ),
                                     )
                                     .toList()
                                 : const [
-                                    DataRow(cells: [DataCell(Text('No Providers Found')), DataCell(Text('')), DataCell(Text('')), DataCell(Text(''))]),
+                                    DataRow(cells: [
+                                      DataCell(Text('No Providers Found')),
+                                      DataCell(Text('')),
+                                      DataCell(Text('')),
+                                      DataCell(Text(''))
+                                    ]),
                                   ],
                           ),
                         ),
                       ),
                     ),
                   ),
-                   const SizedBox(height: 20),
+                  const SizedBox(height: 20),
                   Text(
                     'Downloaded Files',
-                    style: Theme.of(context).textTheme.titleLarge!.copyWith(color: Colors.blue[800]),
+                    style: Theme.of(context)
+                        .textTheme
+                        .titleLarge!
+                        .copyWith(color: Colors.blue[800]),
                   ),
                   const SizedBox(height: 10),
                   Expanded(
@@ -421,8 +460,10 @@ class _HomePageState extends State<StatusPage> with SingleTickerProviderStateMix
                         ),
                         child: SingleChildScrollView(
                           child: Container(
-                            width: double.infinity, // Makes the table take up all available width
-                            padding: const EdgeInsets.all(8.0), // Optional padding
+                            width: double.infinity,
+                            // Makes the table take up all available width
+                            padding: const EdgeInsets.all(8.0),
+                            // Optional padding
                             child: DataTable(
                               columns: const [
                                 DataColumn(label: Text('File Name')),
@@ -462,4 +503,3 @@ void main() {
     home: StatusPage(),
   ));
 }
-
