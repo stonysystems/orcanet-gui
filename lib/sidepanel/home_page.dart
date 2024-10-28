@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
-import './../api.dart'; // Import your API file
+import './../api.dart';
 
 class HomePage extends StatelessWidget {
   const HomePage({super.key});
 
   Future<int> _fetchUploadedFileCount() async {
-    final response = await Api().getProvidedFiles();
+    final response = await Api.getProvidedFiles();
     if (response['success'] == true) {
       return (response['data'] as List).length;
     }
@@ -13,7 +13,7 @@ class HomePage extends StatelessWidget {
   }
 
   Future<int> _fetchDownloadedFileCount() async {
-    final response = await Api().getDownloadedFiles();
+    final response = await Api.getDownloadedFiles();
     if (response['success'] == true) {
       return (response['data'] as List).length;
     }
@@ -21,7 +21,7 @@ class HomePage extends StatelessWidget {
   }
 
   Future<String> _fetchSystemStatus() async {
-    final response = await Api().checkSystemStatus();
+    final response = await Api.checkSystemStatus();
     if (response['success'] == true) {
       return response['status'];
     }
@@ -29,7 +29,7 @@ class HomePage extends StatelessWidget {
   }
 
   Future<String> _fetchWalletStatus() async {
-    final response = await Api().checkWalletStatus();
+    final response = await Api.checkWalletStatus();
     if (response['success'] == true) {
       return response['status'];
     }

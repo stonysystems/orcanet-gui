@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../utils.dart';
 import './../api.dart'; // Import your API file
 
 class WalletPage extends StatefulWidget {
@@ -28,7 +29,8 @@ class _WalletPageState extends State<WalletPage> {
   // Method to fetch the balance
   Future<void> _fetchBalance() async {
     try {
-      final response = await Api().getBalance();
+      final response = await Api.getBalance();
+      print(response);
       if (response['success']) {
         setState(() {
           balance = response['data']; // Set the balance data
@@ -41,6 +43,7 @@ class _WalletPageState extends State<WalletPage> {
         });
       }
     } catch (e) {
+      print(e);
       setState(() {
         balance = 'Error occurred';
         isLoadingBalance = false;
@@ -51,8 +54,7 @@ class _WalletPageState extends State<WalletPage> {
   // Method to fetch the transactions
   Future<void> _fetchTransactions() async {
     try {
-      final response =
-          await Api().listTransactions(startOffset: 0, endOffset: 10);
+      final response = await Api.listTransactions(1, 10);
       if (response['success']) {
         setState(() {
           transactions = List<Map<String, dynamic>>.from(response['data']);
@@ -80,7 +82,7 @@ class _WalletPageState extends State<WalletPage> {
 
     if (address.isNotEmpty && amount > 0) {
       try {
-        final response = await Api().sendToAddress(
+        final response = await Api.sendToAddress(
           address: address,
           amount: amount,
           comment: comment,
@@ -193,27 +195,46 @@ class _WalletPageState extends State<WalletPage> {
                               DataTable(
                                 columns: const [
                                   DataColumn(
-                                    label: Text('Status'),
-                                  ),
-                                  DataColumn(
                                     label: Text('Transaction ID'),
                                   ),
                                   DataColumn(
                                     label: Text('Amount (BTC)'),
                                   ),
+                                  DataColumn(
+                                    label: Text('Status'),
+                                  ),
+                                  DataColumn(
+                                    label: Text('Category'),
+                                  ),
+                                  DataColumn(
+                                    label: Text('Time'),
+                                  ),
                                 ],
                                 rows: transactions.map((transaction) {
+                                  if (!transaction.containsKey('txid')) {
+                                    print("Not found $transaction");
+                                  }
+
+                                  // String status =
+                                  //     transaction['confirmations'] >= 6
+                                  //         ? 'Completed'
+                                  //         : transaction['confirmations'] > 0
+                                  //             ? 'Pending'
+                                  //             : 'Failed';
                                   String status =
-                                      transaction['confirmations'] >= 6
+                                      transaction['confirmations'] >= 3
                                           ? 'Completed'
-                                          : transaction['confirmations'] > 0
-                                              ? 'Pending'
-                                              : 'Failed';
+                                          : 'Pending';
+                                  var unixTimestamp = transaction['time'] as int;
+                                  var timeStr = Utils.convertUtcTimestampToLocal(unixTimestamp).toString();
+
                                   return DataRow(cells: [
-                                    DataCell(Text(status)),
-                                    DataCell(Text(transaction['tx_id'])),
+                                    DataCell(Text(transaction['txid'])),
                                     DataCell(
                                         Text(transaction['amount'].toString())),
+                                    DataCell(Text(status)),
+                                    DataCell(Text(transaction['category'])),
+                                    DataCell(Text(timeStr))
                                   ]);
                                 }).toList(),
                               ),
