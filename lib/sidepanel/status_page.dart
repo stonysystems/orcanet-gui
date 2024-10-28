@@ -13,6 +13,7 @@ class StatusPage extends StatefulWidget {
 class _HomePageState extends State<StatusPage>
     with SingleTickerProviderStateMixin {
   File? _selectedFile;
+  String? _downloadFileId;
   String? _fileName;
   String? _fileSize;
   TabController? _tabController;
@@ -109,18 +110,20 @@ class _HomePageState extends State<StatusPage>
 
   final TextEditingController _controller = TextEditingController();
 
-  void downloadFile(int index, String filename) async {
+  void downloadFile(int index, String filename, String peerId) async {
     try {
-      // Use FilePicker to select a directory
-      String? selectedDirectory = await FilePicker.platform.getDirectoryPath();
-      if (selectedDirectory != null) {
-        debugPrint("Selected directory path: $selectedDirectory");
-        // Use the selected directory path as needed
+      String? destinationPath = await FilePicker.platform.saveFile(
+        dialogTitle: "Save file from ${_downloadFileId!.substring(0, 16)}",
+        fileName: filename,
+      );
+      if (destinationPath != null) {
+        debugPrint("Selected destination path: $destinationPath");
+
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-              content: Text('Selected download location: $selectedDirectory')),
+              content: Text('Selected download location: $destinationPath')),
         );
-        startDownload(filename, providers[index]['peer_id'], selectedDirectory);
+        startDownload(_downloadFileId, providers[index]['peer_id'], destinationPath);
       } else {
         debugPrint("User canceled directory selection");
       }
@@ -133,9 +136,12 @@ class _HomePageState extends State<StatusPage>
   }
 
   void _searchProviders() async {
-    String enteredText = _controller.text;
-    _getProviders(enteredText);
-    print('Downloading file for: $enteredText');
+    String fileId = _controller.text;
+    _getProviders(fileId);
+    setState(() {
+      _downloadFileId = fileId;
+    });
+    print('Downloading file for: $fileId');
   }
 
   // Api calls starts--->
@@ -417,8 +423,11 @@ class _HomePageState extends State<StatusPage>
                                           DataCell(
                                             ElevatedButton.icon(
                                               onPressed: () {
-                                                downloadFile(entry.key,
-                                                    entry.value['peer_id']!);
+                                                downloadFile(
+                                                    entry.key,
+                                                    entry.value['file_name']!,
+                                                    entry.value['peer_id']!
+                                                );
                                               },
                                               icon: const Icon(Icons.download),
                                               label: const Text('Download'),
