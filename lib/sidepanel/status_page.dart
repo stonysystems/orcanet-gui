@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'dart:io';
+import './../api.dart';
 import 'package:file_picker/file_picker.dart'; // Add file_picker dependency in pubspec.yaml
+
 
 class StatusPage extends StatefulWidget {
   const StatusPage({super.key});
@@ -9,11 +11,15 @@ class StatusPage extends StatefulWidget {
   State<StatusPage> createState() => _HomePageState();
 }
 
-class _HomePageState extends State<StatusPage> with SingleTickerProviderStateMixin {
+
+class _HomePageState extends State<StatusPage> with SingleTickerProviderStateMixin{
+  
   File? _selectedFile;
   String? _fileName;
   String? _fileSize;
   TabController? _tabController;
+
+  List<Map<String, dynamic>> providers=[];
 
   final List<Map<String, String>> _downloadableFiles = [
     {'name': 'Document123.pdf', 'size': '500 KB', 'hash': 'abcd1234'},
@@ -72,15 +78,16 @@ class _HomePageState extends State<StatusPage> with SingleTickerProviderStateMix
       setState(() {
         _selectedFile = File(result.files.single.path!);
         _fileName = result.files.single.name;
-        _fileSize =
-            '${(result.files.single.size / 1024).toStringAsFixed(2)} KB';
+        _fileSize = '${(result.files.single.size / 1024).toStringAsFixed(2)} KB';
       });
+      print(_selectedFile);
     }
   }
 
   // Function to upload and append file details to _providedFiles
   void _uploadFile() {
     if (_selectedFile != null && _fileName != null && _fileSize != null) {
+      provideFile(_selectedFile);
       final newFile = {
         'name': _fileName!, // File name
         'size': _fileSize!, // File size
@@ -102,10 +109,79 @@ class _HomePageState extends State<StatusPage> with SingleTickerProviderStateMix
 
   final TextEditingController _controller = TextEditingController();
 
-  void _onDownloadPressed() {
+  void downloadFile(int index, String filename) async {
+    try {
+      // Use FilePicker to select a directory
+      String? selectedDirectory = await FilePicker.platform.getDirectoryPath();
+      if (selectedDirectory != null) {
+        debugPrint("Selected directory path: $selectedDirectory");
+        // Use the selected directory path as needed
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Selected download location: $selectedDirectory')),
+        );
+        startDownload(filename, providers[index]['peer_id'], selectedDirectory);
+      } else {
+        debugPrint("User canceled directory selection");
+      }
+    } catch (e) {
+      debugPrint("Error selecting directory: $e");
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Failed to select directory: $e')),
+      );
+    }
+  }
+
+  void _searchProviders() async {
     String enteredText = _controller.text;
+    _getProviders(enteredText);
     print('Downloading file for: $enteredText');
-    // Add your download functionality here.
+    
+  }
+
+  // Api calls starts--->
+  Future<void> _getProviders(fileId) async {
+    try {
+      final response = await Api().getProviders(fileId);
+      if (response['success']) {
+        setState(() {
+          providers = response['data'];
+        });
+      } else {
+        print('Failed to retrieve providers.');
+      }
+    } catch (e) {
+      print('Error fetching providers: $e');
+    }
+  }
+
+  Future<void> startDownload(fileId,peerId,destPath) async {
+    try {
+      final response = await Api().downloadFile(
+        fileId: fileId,
+        peerId: peerId,
+        destPath: destPath,
+      );
+      if (response['success']) {
+       print("download successful");
+      } else {
+        print('Failed to start download.');
+      }
+    } catch (e) {
+      print('Error downloadin: $e');
+    }
+  }
+
+  Future<void> provideFile(filePath) async {
+    try {
+      final response = await Api().provideFile(filePath.toString());
+      if (response['success']) {
+        print("provided successfully");
+      } else {
+        print('Failed to provide.');
+      }
+    } catch (e) {
+      print('Error providing: $e');
+    }
   }
 
   @override
@@ -264,9 +340,9 @@ class _HomePageState extends State<StatusPage> with SingleTickerProviderStateMix
                       ),
                       const SizedBox(width: 16),
                       ElevatedButton.icon(
-                        onPressed: _onDownloadPressed,
+                        onPressed: _searchProviders,
                         icon: const Icon(Icons.download),
-                        label: const Text('Download'),
+                        label: const Text('Search'),
                       ),
                       // IconButton(
                       //   icon: const Icon(Icons.download),
@@ -275,7 +351,66 @@ class _HomePageState extends State<StatusPage> with SingleTickerProviderStateMix
                       // ),
                     ],
                   ), 
-                  const SizedBox(height: 30),
+                  const SizedBox(height: 20),
+                  Text(
+                    'Providers',
+                    style: Theme.of(context).textTheme.titleLarge!.copyWith(color: Colors.blue[800]),
+                  ),
+                  const SizedBox(height: 10),
+                  Expanded(
+                    child: Card(
+                      elevation: 4,
+                      child: Container(
+                        width: double.infinity,
+                        decoration: BoxDecoration(
+                          color: const Color.fromARGB(255, 209, 241, 255),
+                          borderRadius: BorderRadius.circular(8.0),
+                        ),
+                        child: SingleChildScrollView(
+                          child: DataTable(
+                            columns: const [
+                              DataColumn(label: Text('File Name')),
+                              DataColumn(label: Text('Fee Rate per KB')),
+                              DataColumn(label: Text('Peer Id')),
+                              DataColumn(label: Text('Action')),
+                            ],
+                            rows: providers.isNotEmpty
+                                ? providers
+                                    .asMap()
+                                    .entries
+                                    .map(
+                                      (entry) => DataRow(
+                                        cells: [
+                                          DataCell(Text(entry.value['file_name']!)),
+                                          DataCell(Text(entry.value['fee_rate_per_kb']!.toString())),
+                                          DataCell(Text(entry.value['peer_id']!)),
+                                          DataCell(
+                                           ElevatedButton.icon(
+                                            onPressed: () {
+                                              downloadFile(entry.key, entry.value['peer_id']!);
+                                            },
+                                            icon: const Icon(Icons.download),
+                                            label: const Text('Download'),
+                                          ),
+                                          ),
+                                        ],
+                                      ),
+                                    )
+                                    .toList()
+                                : const [
+                                    DataRow(cells: [DataCell(Text('No Providers Found')), DataCell(Text('')), DataCell(Text('')), DataCell(Text(''))]),
+                                  ],
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                   const SizedBox(height: 20),
+                  Text(
+                    'Downloaded Files',
+                    style: Theme.of(context).textTheme.titleLarge!.copyWith(color: Colors.blue[800]),
+                  ),
+                  const SizedBox(height: 10),
                   Expanded(
                     child: Card(
                       elevation: 4,
