@@ -121,9 +121,58 @@ class _WalletPageState extends State<WalletPage> {
     }
   }
 
+  StatelessWidget getTransactionList() {
+    return DataTable(
+      columns: const [
+        DataColumn(
+          label: Text('Transaction ID'),
+        ),
+        DataColumn(
+          label: Text('Amount (BTC)'),
+        ),
+        DataColumn(
+          label: Text('Status'),
+        ),
+        DataColumn(
+          label: Text('Category'),
+        ),
+        DataColumn(
+          label: Text('Time'),
+        ),
+      ],
+      rows: transactions.map((transaction) {
+        // String status =
+        //     transaction['confirmations'] >= 6
+        //         ? 'Completed'
+        //         : transaction['confirmations'] > 0
+        //             ? 'Pending'
+        //             : 'Failed';
+        var status =
+            transaction['confirmations'] >= 3 ? 'Completed' : 'Pending';
+        var statusColor = status == 'Completed' ? Colors.green : Colors.red;
+        var amount = transaction['amount'] as double;
+        var amountStr = (amount > 0 ? '+' : '') + amount.toStringAsFixed(2);
+        var amountColor = amount > 0 ? Colors.green : Colors.red;
+        var unixTimestamp = transaction['time'] as int;
+        var timeStr =
+            Utils.convertUtcTimestampToLocal(unixTimestamp).toString();
+
+        return DataRow(cells: [
+          DataCell(Text(transaction['txid'])),
+          DataCell(Text(amountStr, style: TextStyle(color: amountColor, fontWeight: FontWeight.bold))),
+          DataCell(Text(
+            status,
+            style: TextStyle(color: statusColor),
+          )),
+          DataCell(Text(transaction['category'])),
+          DataCell(Text(timeStr))
+        ]);
+      }).toList(),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
-    // Create a ScrollController for the transactions list
     final ScrollController scrollController = ScrollController();
 
     return Scaffold(
@@ -191,54 +240,7 @@ class _WalletPageState extends State<WalletPage> {
                         : ListView(
                             controller: scrollController,
                             padding: const EdgeInsets.all(12.0),
-                            children: [
-                              DataTable(
-                                columns: const [
-                                  DataColumn(
-                                    label: Text('Transaction ID'),
-                                  ),
-                                  DataColumn(
-                                    label: Text('Amount (BTC)'),
-                                  ),
-                                  DataColumn(
-                                    label: Text('Status'),
-                                  ),
-                                  DataColumn(
-                                    label: Text('Category'),
-                                  ),
-                                  DataColumn(
-                                    label: Text('Time'),
-                                  ),
-                                ],
-                                rows: transactions.map((transaction) {
-                                  if (!transaction.containsKey('txid')) {
-                                    print("Not found $transaction");
-                                  }
-
-                                  // String status =
-                                  //     transaction['confirmations'] >= 6
-                                  //         ? 'Completed'
-                                  //         : transaction['confirmations'] > 0
-                                  //             ? 'Pending'
-                                  //             : 'Failed';
-                                  String status =
-                                      transaction['confirmations'] >= 3
-                                          ? 'Completed'
-                                          : 'Pending';
-                                  var unixTimestamp = transaction['time'] as int;
-                                  var timeStr = Utils.convertUtcTimestampToLocal(unixTimestamp).toString();
-
-                                  return DataRow(cells: [
-                                    DataCell(Text(transaction['txid'])),
-                                    DataCell(
-                                        Text(transaction['amount'].toString())),
-                                    DataCell(Text(status)),
-                                    DataCell(Text(transaction['category'])),
-                                    DataCell(Text(timeStr))
-                                  ]);
-                                }).toList(),
-                              ),
-                            ],
+                            children: [getTransactionList()],
                           ),
               ),
             ),

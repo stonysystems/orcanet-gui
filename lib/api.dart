@@ -3,7 +3,7 @@ import 'package:http/http.dart' as http;
 import 'dart:developer';
 
 class ApiEndpoints {
-  static const BASE_URL = "http://127.0.0.1:8000";
+  static const BASE_URL = "http://127.0.0.1:8000/api";
 
   // Wallet endpoints
   static const BLOCKS_COUNT = 'blocks-count';
