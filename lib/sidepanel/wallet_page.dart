@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:scrollable_table_view/scrollable_table_view.dart';
 import '../utils.dart';
 import './../api.dart'; // Import your API file
 
@@ -159,7 +160,9 @@ class _WalletPageState extends State<WalletPage> {
 
         return DataRow(cells: [
           DataCell(Text(transaction['txid'])),
-          DataCell(Text(amountStr, style: TextStyle(color: amountColor, fontWeight: FontWeight.bold))),
+          DataCell(Text(amountStr,
+              style:
+                  TextStyle(color: amountColor, fontWeight: FontWeight.bold))),
           DataCell(Text(
             status,
             style: TextStyle(color: statusColor),
@@ -217,6 +220,110 @@ class _WalletPageState extends State<WalletPage> {
             ),
             const SizedBox(height: 16),
 
+            // Send BTC Form
+            Container(
+              // padding: const EdgeInsets.all(12.0),
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(8.0),
+              ),
+              child: Form(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'Send BTC',
+                      style: Theme.of(context)
+                          .textTheme
+                          .titleLarge!
+                          .copyWith(color: Colors.blue[800]),
+                    ),
+                    const SizedBox(height: 10),
+                    const SizedBox(width: 10),
+                    Align(
+                      alignment: Alignment.centerLeft,
+                      child: SizedBox(
+                        width: MediaQuery.of(context).size.width *
+                            0.5, // 50% of screen width
+                        child: TextFormField(
+                          controller: _addressController,
+                          decoration: InputDecoration(
+                            labelText: 'Wallet Address',
+                            border: const OutlineInputBorder(),
+                            fillColor: Colors.lightBlue[50],
+                            filled: true,
+                            labelStyle: TextStyle(color: Colors.blue[900]),
+                            focusedBorder: OutlineInputBorder(
+                              borderSide: BorderSide(color: Colors.blue[600]!),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 8),
+                    Align(
+                      alignment: Alignment.centerLeft,
+                      child: SizedBox(
+                        width: MediaQuery.of(context).size.width *
+                            0.5, // 50% of screen width
+                        child: TextFormField(
+                          controller: _amountController,
+                          decoration: InputDecoration(
+                            labelText: 'Amount (BTC)',
+                            border: const OutlineInputBorder(),
+                            fillColor: Colors.lightBlue[50],
+                            filled: true,
+                            labelStyle: TextStyle(color: Colors.blue[900]),
+                            focusedBorder: OutlineInputBorder(
+                              borderSide: BorderSide(color: Colors.blue[600]!),
+                            ),
+                          ),
+                          keyboardType: TextInputType.number,
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 8),
+                    Align(
+                      alignment: Alignment.centerLeft,
+                      child: SizedBox(
+                        width: MediaQuery.of(context).size.width *
+                            0.5, // 50% of screen width
+                        child: TextFormField(
+                          controller: _commentController,
+                          decoration: InputDecoration(
+                            labelText: 'Comment',
+                            border: const OutlineInputBorder(),
+                            fillColor: Colors.lightBlue[50],
+                            filled: true,
+                            labelStyle: TextStyle(color: Colors.blue[900]),
+                            focusedBorder: OutlineInputBorder(
+                              borderSide: BorderSide(color: Colors.blue[600]!),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 16),
+                    Align(
+                      alignment: Alignment.centerLeft,
+                      child: SizedBox(
+                        width: MediaQuery.of(context).size.width *
+                            0.25, // 50% of screen width
+                        child: ElevatedButton(
+                          onPressed: _sendTransaction,
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Colors.lightBlue[700],
+                            padding: const EdgeInsets.all(16.0),
+                          ),
+                          child: const Text('Send'),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            const SizedBox(height: 16),
+
             // Transactions Table
             Text(
               'Transactions',
@@ -227,98 +334,69 @@ class _WalletPageState extends State<WalletPage> {
             ),
             const SizedBox(height: 8),
             Expanded(
-              child: Scrollbar(
-                thumbVisibility: true,
-                controller: scrollController,
-                child: isLoadingTransactions
-                    ? const Center(
-                        child:
-                            CircularProgressIndicator()) // Show loading indicator
-                    : transactions.isEmpty
-                        ? const Text(
-                            'No transactions available') // Show empty state
-                        : ListView(
-                            controller: scrollController,
-                            padding: const EdgeInsets.all(12.0),
-                            children: [getTransactionList()],
-                          ),
-              ),
-            ),
-            const SizedBox(height: 16),
-
-            // Transaction Form
-            Text(
-              'Send BTC',
-              style: Theme.of(context)
-                  .textTheme
-                  .titleLarge!
-                  .copyWith(color: Colors.blue[800]),
-            ),
-            const SizedBox(height: 8),
-            Container(
-              padding: const EdgeInsets.all(12.0),
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(8.0),
-              ),
-              child: Form(
-                child: Column(
-                  children: [
-                    TextFormField(
-                      controller: _addressController,
-                      decoration: InputDecoration(
-                        labelText: 'Wallet Address',
-                        border: const OutlineInputBorder(),
-                        fillColor: Colors.lightBlue[50],
-                        filled: true,
-                        labelStyle: TextStyle(color: Colors.blue[900]),
-                        focusedBorder: OutlineInputBorder(
-                          borderSide: BorderSide(color: Colors.blue[600]!),
-                        ),
-                      ),
-                    ),
-                    const SizedBox(height: 8),
-                    TextFormField(
-                      controller: _amountController,
-                      decoration: InputDecoration(
-                        labelText: 'Amount (BTC)',
-                        border: const OutlineInputBorder(),
-                        fillColor: Colors.lightBlue[50],
-                        filled: true,
-                        labelStyle: TextStyle(color: Colors.blue[900]),
-                        focusedBorder: OutlineInputBorder(
-                          borderSide: BorderSide(color: Colors.blue[600]!),
-                        ),
-                      ),
-                      keyboardType: TextInputType.number,
-                    ),
-                    const SizedBox(height: 8),
-                    TextFormField(
-                      controller: _commentController,
-                      decoration: InputDecoration(
-                        labelText: 'Comment',
-                        border: const OutlineInputBorder(),
-                        fillColor: Colors.lightBlue[50],
-                        filled: true,
-                        labelStyle: TextStyle(color: Colors.blue[900]),
-                        focusedBorder: OutlineInputBorder(
-                          borderSide: BorderSide(color: Colors.blue[600]!),
-                        ),
-                      ),
-                    ),
-                    const SizedBox(height: 16),
-                    SizedBox(
-                      width: double.infinity,
-                      child: ElevatedButton(
-                        onPressed: _sendTransaction,
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.lightBlue[700],
-                          padding: const EdgeInsets.all(16.0),
-                        ),
-                        child: const Text('Send'),
-                      ),
-                    ),
-                  ],
+              child: Container(
+                width: MediaQuery.of(context).size.width *
+                    0.4, // Set container to 50% width
+                // padding: const EdgeInsets.all(12.0),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(8.0),
+                  border: Border.all(color: Colors.blue[800]!),
                 ),
+                child: isLoadingTransactions
+                    ? const Center(child: CircularProgressIndicator())
+                    : ScrollableTableView(
+                        headers: [
+                          'Transaction ID',
+                          'Amount (BTC)',
+                          'Status',
+                          'Category',
+                          'Time'
+                        ]
+                            .map((label) => TableViewHeader(label: label))
+                            .toList(),
+                        rows: transactions.map((transaction) {
+                          var status = transaction['confirmations'] >= 3
+                              ? 'Completed'
+                              : 'Pending';
+                          var statusColor =
+                              status == 'Completed' ? Colors.green : Colors.red;
+                          var amount = transaction['amount'] as double;
+                          var amountStr = (amount > 0 ? '+' : '') +
+                              amount.toStringAsFixed(2);
+                          var amountColor =
+                              amount > 0 ? Colors.green : Colors.red;
+                          var unixTimestamp = transaction['time'] as int;
+                          var timeStr = DateTime.fromMillisecondsSinceEpoch(
+                                  unixTimestamp * 1000)
+                              .toLocal()
+                              .toString();
+
+                          return TableViewRow(
+                            height: 60,
+                            cells: [
+                              TableViewCell(child: Text(transaction['txid'])),
+                              TableViewCell(
+                                child: Text(
+                                  amountStr,
+                                  style: TextStyle(
+                                      color: amountColor,
+                                      fontWeight: FontWeight.bold),
+                                ),
+                              ),
+                              TableViewCell(
+                                child: Text(
+                                  status,
+                                  style: TextStyle(color: statusColor),
+                                ),
+                              ),
+                              TableViewCell(
+                                  child: Text(transaction['category'])),
+                              TableViewCell(child: Text(timeStr)),
+                            ],
+                          );
+                        }).toList(),
+                      ),
               ),
             ),
           ],

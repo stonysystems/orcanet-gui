@@ -105,7 +105,8 @@ class Api {
   }
 
   // List transactions with pagination
-  static Future<Map<String, dynamic>> listTransactions(int startOffset, int endOffset) async {
+  static Future<Map<String, dynamic>> listTransactions(
+      int startOffset, int endOffset) async {
     return Api.get(
       ApiEndpoints.LIST_TRANSACTIONS,
       queryParams: {
@@ -151,7 +152,8 @@ class Api {
   }
 
   // Stop providing a file
-  static Future<Map<String, dynamic>> stopProviding(String fileId, {bool permanent = false}) async {
+  static Future<Map<String, dynamic>> stopProviding(String fileId,
+      {bool permanent = false}) async {
     return Api.post(
       '${ApiEndpoints.STOP_PROVIDING}/$fileId',
       body: {'permanent': permanent},
@@ -192,6 +194,96 @@ class Api {
     return {
       'success': true,
       'status': 'Failed',
+    };
+  }
+
+  //Get proxy list
+
+  static Future<Map<String, dynamic>> getProxyList(String txId) async {
+    // Simulate a network request with a delay
+    await Future.delayed(const Duration(seconds: 2));
+
+    // Return sample proxy data
+    return {
+      'proxyList': [
+        {
+          'sno': 1,
+          'ip': '10.10.10.2',
+          'location': 'New York, USA',
+          'status': 'Available',
+          'bandwidth': '1 Gbps',
+        },
+        {
+          'sno': 2,
+          'ip': '10.10.10.3',
+          'location': 'London, UK',
+          'status': 'Available',
+          'bandwidth': '500 Mbps',
+        },
+        {
+          'sno': 3,
+          'ip': '10.10.10.4',
+          'location': 'Tokyo, Japan',
+          'status': 'Available',
+          'bandwidth': '2 Gbps',
+        },
+        {
+          'sno': 4,
+          'ip': '10.10.10.5',
+          'location': 'Paris, France',
+          'status': 'Available',
+          'bandwidth': '1.5 Gbps',
+        },
+        {
+          'sno': 5,
+          'ip': '10.10.10.6',
+          'location': 'Berlin, Germany',
+          'status': 'Available',
+          'bandwidth': '1 Gbps',
+        },
+        {
+          'sno': 6,
+          'ip': '10.10.10.7',
+          'location': 'Sydney, Australia',
+          'status': 'Available',
+          'bandwidth': '750 Mbps',
+        },
+        {
+          'sno': 7,
+          'ip': '10.10.10.8',
+          'location': 'Toronto, Canada',
+          'status': 'Available',
+          'bandwidth': '1 Gbps',
+        },
+        {
+          'sno': 8,
+          'ip': '10.10.10.9',
+          'location': 'Singapore, Singapore',
+          'status': 'Available',
+          'bandwidth': '2 Gbps',
+        },
+        {
+          'sno': 9,
+          'ip': '10.10.10.10',
+          'location': 'Seoul, South Korea',
+          'status': 'Available',
+          'bandwidth': '1.5 Gbps',
+        },
+        {
+          'sno': 10,
+          'ip': '10.10.10.11',
+          'location': 'Los Angeles, USA',
+          'status': 'Available',
+          'bandwidth': '500 Mbps',
+        },
+        {
+          'sno': 11,
+          'ip': '10.10.10.12',
+          'location': 'Madrid, Spain',
+          'status': 'Available',
+          'bandwidth': '1 Gbps',
+        }
+      ]
     };
   }
 }

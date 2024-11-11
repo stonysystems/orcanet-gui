@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'sidepanel/home_page.dart';
 import 'sidepanel/status_page.dart';
-import 'sidepanel/peer_page.dart';
 import 'sidepanel/market_page.dart';
 import 'sidepanel/wallet_page.dart';
 import 'sidepanel/mining_page.dart';
 import 'sidepanel/settings_page.dart';
+import 'sidepanel/proxy_page.dart';
 
 void main() {
   runApp(const MyApp());
@@ -40,7 +40,7 @@ class _MyHomePageState extends State<MyHomePage> {
   static const List<Widget> _pages = <Widget>[
     HomePage(),
     StatusPage(),
-    PeerPage(),
+    ProxyPage(),
     MarketPage(),
     WalletPage(),
     MiningPage(),
@@ -77,7 +77,7 @@ class _MyHomePageState extends State<MyHomePage> {
               NavigationRailDestination(
                 icon: Icon(Icons.people),
                 selectedIcon: Icon(Icons.people_outline),
-                label: Text('Peer'),
+                label: Text('Proxy'),
               ),
               NavigationRailDestination(
                 icon: Icon(Icons.show_chart),
