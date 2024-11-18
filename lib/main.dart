@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'sidepanel/home_page.dart';
-import 'sidepanel/status_page.dart';
+import 'sidepanel/file_page.dart';
 import 'sidepanel/market_page.dart';
 import 'sidepanel/wallet_page.dart';
 import 'sidepanel/mining_page.dart';
@@ -39,7 +39,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
   static const List<Widget> _pages = <Widget>[
     HomePage(),
-    StatusPage(),
+    FilePage(),
     ProxyPage(),
     MarketPage(),
     WalletPage(),

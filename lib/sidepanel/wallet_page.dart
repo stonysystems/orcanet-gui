@@ -243,7 +243,7 @@ class _WalletPageState extends State<WalletPage> {
                       alignment: Alignment.centerLeft,
                       child: SizedBox(
                         width: MediaQuery.of(context).size.width *
-                            0.5, // 50% of screen width
+                            0.4, // 50% of screen width
                         child: TextFormField(
                           controller: _addressController,
                           decoration: InputDecoration(
@@ -264,7 +264,7 @@ class _WalletPageState extends State<WalletPage> {
                       alignment: Alignment.centerLeft,
                       child: SizedBox(
                         width: MediaQuery.of(context).size.width *
-                            0.5, // 50% of screen width
+                            0.4, // 50% of screen width
                         child: TextFormField(
                           controller: _amountController,
                           decoration: InputDecoration(
@@ -286,7 +286,7 @@ class _WalletPageState extends State<WalletPage> {
                       alignment: Alignment.centerLeft,
                       child: SizedBox(
                         width: MediaQuery.of(context).size.width *
-                            0.5, // 50% of screen width
+                            0.4, // 50% of screen width
                         child: TextFormField(
                           controller: _commentController,
                           decoration: InputDecoration(

@@ -129,26 +129,26 @@ class HomePage extends StatelessWidget {
             ),
             const SizedBox(height: 16),
             // Wallet Loaded Status
-            // Row(
-            //   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            //   children: [
-            //     FutureBuilder<String>(
-            //       future: _fetchWalletStatus(),
-            //       builder: (context, snapshot) {
-            //         if (snapshot.connectionState == ConnectionState.waiting) {
-            //           return _buildStatusCardWithIcon(
-            //               'Wallet Loaded Status', 'Loading...', false);
-            //         } else if (snapshot.hasError) {
-            //           return _buildStatusCardWithIcon(
-            //               'Wallet Loaded Status', 'Error', false);
-            //         } else {
-            //           return _buildStatusCardWithIcon('Wallet Loaded Status',
-            //               snapshot.data!, snapshot.data! == 'Successful');
-            //         }
-            //       },
-            //     ),
-            //   ],
-            // ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                FutureBuilder<String>(
+                  future: _fetchWalletStatus(),
+                  builder: (context, snapshot) {
+                    if (snapshot.connectionState == ConnectionState.waiting) {
+                      return _buildStatusCardWithIcon(
+                          'Wallet Loaded Status', 'Loading...', false);
+                    } else if (snapshot.hasError) {
+                      return _buildStatusCardWithIcon(
+                          'Wallet Loaded Status', 'Error', false);
+                    } else {
+                      return _buildStatusCardWithIcon('Wallet Loaded Status',
+                          snapshot.data!, snapshot.data! == 'Successful');
+                    }
+                  },
+                ),
+              ],
+            ),
           ],
         ),
       ),
