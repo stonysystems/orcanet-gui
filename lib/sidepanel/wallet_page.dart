@@ -152,7 +152,7 @@ class _WalletPageState extends State<WalletPage> {
             transaction['confirmations'] >= 3 ? 'Completed' : 'Pending';
         var statusColor = status == 'Completed' ? Colors.green : Colors.red;
         var amount = transaction['amount'] as double;
-        var amountStr = (amount > 0 ? '+' : '') + amount.toStringAsFixed(2);
+        var amountStr = (amount > 0 ? '+' : '') + amount.toStringAsFixed(8);
         var amountColor = amount > 0 ? Colors.green : Colors.red;
         var unixTimestamp = transaction['time'] as int;
         var timeStr =
@@ -335,8 +335,8 @@ class _WalletPageState extends State<WalletPage> {
             const SizedBox(height: 8),
             Expanded(
               child: Container(
-                width: MediaQuery.of(context).size.width *
-                    0.4, // Set container to 50% width
+                // width: MediaQuery.of(context).size.width *
+                //     0.4, // Set container to 50% width
                 // padding: const EdgeInsets.all(12.0),
                 decoration: BoxDecoration(
                   color: Colors.white,
@@ -363,7 +363,7 @@ class _WalletPageState extends State<WalletPage> {
                               status == 'Completed' ? Colors.green : Colors.red;
                           var amount = transaction['amount'] as double;
                           var amountStr = (amount > 0 ? '+' : '') +
-                              amount.toStringAsFixed(2);
+                              amount.toStringAsFixed(8);
                           var amountColor =
                               amount > 0 ? Colors.green : Colors.red;
                           var unixTimestamp = transaction['time'] as int;

@@ -6,23 +6,25 @@ class ApiEndpoints {
   static const BASE_URL = "http://127.0.0.1:8000/api";
 
   // Wallet endpoints
-  static const BLOCKS_COUNT = 'blocks-count';
-  static const BALANCE = 'balance';
-  static const LOAD_WALLET = 'load-wallet';
-  static const SEND_TO_ADDRESS = 'send-to-address';
-  static const GENERATE_BLOCK = 'generate-block';
-  static const LIST_TRANSACTIONS = 'list-transactions';
-  static const GET_TRANSACTION_INFO = 'get-transaction-info';
+  static const WALLET_ENDPOINT = 'wallet';
+  static const BLOCKS_COUNT = '${WALLET_ENDPOINT}/blocks-count';
+  static const BALANCE = '${WALLET_ENDPOINT}/balance';
+  static const LOAD_WALLET = '${WALLET_ENDPOINT}/load-wallet';
+  static const SEND_TO_ADDRESS = '${WALLET_ENDPOINT}/send-to-address';
+  static const GENERATE_BLOCK = '${WALLET_ENDPOINT}/generate-block';
+  static const LIST_TRANSACTIONS = '${WALLET_ENDPOINT}/list-transactions';
+  static const GET_TRANSACTION_INFO = '${WALLET_ENDPOINT}/get-transaction-info';
 
   // File sharing endpoints
-  static const DIAL = 'dial';
-  static const GET_PROVIDED_FILES = 'get-provided-files';
-  static const GET_DOWNLOADED_FILES = 'get-downloaded-files';
-  static const GET_FILE_INFO = 'get-file-info';
-  static const PROVIDE_FILE = 'provide-file';
-  static const STOP_PROVIDING = 'stop-providing';
-  static const DOWNLOAD_FILE = 'download-file';
-  static const GET_PROVIDERS = 'get-providers';
+  static const FILE_ENDPOINT = 'file';
+  static const DIAL = '${FILE_ENDPOINT}/dial';
+  static const GET_PROVIDED_FILES = '${FILE_ENDPOINT}/get-provided-files';
+  static const GET_DOWNLOADED_FILES = '${FILE_ENDPOINT}/get-downloaded-files';
+  static const GET_FILE_INFO = '${FILE_ENDPOINT}/get-file-info';
+  static const PROVIDE_FILE = '${FILE_ENDPOINT}/provide-file';
+  static const STOP_PROVIDING = '${FILE_ENDPOINT}/stop-providing';
+  static const DOWNLOAD_FILE = '${FILE_ENDPOINT}/download-file';
+  static const GET_PROVIDERS = '${FILE_ENDPOINT}/get-providers';
 }
 
 class Api {
