@@ -15,12 +15,13 @@ class FilePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<FilePage>
-    with SingleTickerProviderStateMixin {
+    with TickerProviderStateMixin {
   File? _selectedFile;
   String? _downloadFileId;
   String? _fileName;
   String? _fileSize;
   TabController? _tabController;
+  late AnimationController _iconcontroller;
 
   List<Map<String, dynamic>> providers = [];
   List<Map<String, dynamic>> providedList = [];
@@ -39,12 +40,23 @@ class _HomePageState extends State<FilePage>
     super.initState();
     getProvidedFiles();
     getDownloadedFiles();
-    refreshApiCalls();
+    // refreshApiCalls();
     _tabController = TabController(length: 2, vsync: this);
     providedFilteredList = List.from(providedList); // Initialize filtered list
     downloadedFilteredList = List.from(downloadedList);
     _searchController.addListener(_onSearchChanged);
     _downloadSearchController.addListener(_onSearchChanged);
+    _iconcontroller = AnimationController(
+      duration: Duration(seconds: 1), // Animation duration
+      vsync: this, // Using TickerProviderStateMixin
+    );
+  }
+
+    void _refreshData() {
+      getProvidedFiles();
+      getDownloadedFiles();
+    _iconcontroller.reset(); // Reset the animation
+    _iconcontroller.forward(); // Start the animation
   }
 
   //search function
@@ -57,7 +69,7 @@ class _HomePageState extends State<FilePage>
 
   void _onSearchChanged() {
     setState(() {
-      if (_tabController?.index == 0) {
+      if (mounted && _tabController?.index == 0) {
         providedFilteredList = providedList
             .where((file) =>
                 file['file_name']
@@ -83,6 +95,8 @@ class _HomePageState extends State<FilePage>
 
   // Function to show confirmation dialog
   void _showStopProvidingDialog(int index, String filename) {
+    print(index);
+    print(filename);
     showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -101,7 +115,7 @@ class _HomePageState extends State<FilePage>
               onPressed: () {
                 stopProviding(filename, true);
                 setState(() {
-                  _providedFiles.removeAt(index); // Remove file from the list
+                  providedList.removeAt(index); // Remove file from the list
                   providedFilteredList.removeAt(index);
                 });
                 Navigator.of(context).pop(); // Close the dialog
@@ -263,26 +277,58 @@ class _HomePageState extends State<FilePage>
                                       child: Row(
                                         children: [
                                           Expanded(
-                                              child: Text(
-                                                  entry['file_name'] ?? '')),
+                                              child: Text(entry['file_metadata']?['file_name'] ??'')),
                                           Expanded(
                                               child: Text(
-                                                  entry['fee_rate_per_kb']
-                                                          ?.toString() ??
-                                                      '')),
+                                                  entry['file_metadata']?['fee_rate_per_kb']?.toString() ??'')),
                                           Expanded(
-                                              child:
-                                                  Text(entry['peer_id'] ?? '')),
+                                              // child:
+                                              //     Text(entry['peer_id'] ?? '').substring(0, 10) + '...'),
+                                              child: 
+                                                Text(
+                                                  (entry['peer_id'] ?? '').substring(0, 10) + '...',
+                                                  style: TextStyle(color: Colors.blue,),
+                                                  )
+                                            ),
+                                          // Expanded(
+                                          //   child: ElevatedButton.icon(
+                                          //     onPressed: () {
+                                          //       downloadFile(
+                                          //         entry['file_metadata']['file_name']!,
+                                          //         entry['peer_id']!,
+                                          //       );
+                                          //     },
+                                          //     icon: const Icon(Icons.download),
+                                          //     label: const Text('Download'),
+                                          //     style: ElevatedButton.styleFrom(
+                                          //       padding: EdgeInsets.symmetric(vertical: 8.0, horizontal: 8.0), // Adjust padding
+                                          //       minimumSize: Size(60, 40), // Set minimum size (width, height)
+                                          //       textStyle: TextStyle(fontSize: 14), // Optionally adjust text size
+                                          //     ),
+                                          //   ),
+                                          // ),
                                           Expanded(
-                                            child: ElevatedButton.icon(
-                                              onPressed: () {
-                                                downloadFile(
-                                                  entry['file_name']!,
-                                                  entry['peer_id']!,
-                                                );
-                                              },
-                                              icon: const Icon(Icons.download),
-                                              label: const Text('Download'),
+                                            child: Row(
+                                              mainAxisAlignment: MainAxisAlignment.start,
+                                              children: [
+                                                SizedBox(
+                                                  width: 120,
+                                                  height: 30,
+                                                  child: ElevatedButton(
+                                                        onPressed: () {
+                                                          downloadFile(
+                                                            entry['file_metadata']['file_name']!,
+                                                            entry['peer_id']!,
+                                                          );
+                                                        },
+                                                    style: ElevatedButton.styleFrom(
+                                                      padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),
+                                                      textStyle: const TextStyle(fontSize: 12),
+                                                    ),
+                                                    child: const Text('Download'),
+                                                  ),
+                                                ),
+                                              ],
                                             ),
                                           ),
                                         ],
@@ -338,22 +384,22 @@ class _HomePageState extends State<FilePage>
   void _uploadFile() {
     if (_selectedFile != null && _fileName != null && _fileSize != null) {
       provideFile(_selectedFile!.path.toString());
-      final newFile = {
-        'name': _fileName!, // File name
-        'size': _fileSize!, // File size
-        'hash': 'hash_placeholder', // Placeholder for file hash
-      };
+      // final newFile = {
+      //   'name': _fileName!, // File name
+      //   'size': _fileSize!, // File size
+      //   'hash': 'hash_placeholder', // Placeholder for file hash
+      // };
 
-      setState(() {
-        _providedFiles.add(newFile); // Append new file to the list
-        _fileName = null;
-        _fileSize = null;
-        _selectedFile = null;
-      });
+      // setState(() {
+      //   _providedFiles.add(newFile); // Append new file to the list
+      //   _fileName = null;
+      //   _fileSize = null;
+      //   _selectedFile = null;
+      // });
 
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('File uploaded and added successfully!')),
-      );
+      // ScaffoldMessenger.of(context).showSnackBar(
+      //   const SnackBar(content: Text('File uploaded and added successfully!')),
+      // );
     }
   }
 
@@ -382,18 +428,13 @@ class _HomePageState extends State<FilePage>
   void _searchProviders() async {
     String fileId = _controller.text;
     _getProviders(fileId);
-    showTableDialog(context, providers);
-    setState(() {
-      _downloadFileId = fileId;
-    });
-    print('Downloading file for: $fileId');
   }
 
   void refreshApiCalls() {
-    Timer.periodic(Duration(seconds: 30), (Timer timer) {
-      getProvidedFiles();
-      getDownloadedFiles();
-    });
+    // Timer.periodic(Duration(seconds: 30), (Timer timer) {
+    //   getProvidedFiles();
+    //   getDownloadedFiles();
+    // });
   }
 
   // Api calls starts--->
@@ -401,9 +442,14 @@ class _HomePageState extends State<FilePage>
     try {
       final response = await Api.getProviders(fileId);
       if (response['success']) {
-        print(response['data']);
+        // if(!mounted) return;
         setState(() {
           providers = List<Map<String, dynamic>>.from(response['data']);
+        });
+        print("providers $providers");
+        showTableDialog(context, providers);
+        setState(() {
+          _downloadFileId = fileId;
         });
       } else {
         print('Failed to retrieve providers.');
@@ -420,31 +466,34 @@ class _HomePageState extends State<FilePage>
         peerId: peerId,
         destPath: destPath,
       );
-      if (response['success']) {
+      if(response['success']) {
         print("download successful");
         Utils.showSuccessSnackBar(context, "File downloaded successfully");
       } else {
-        Utils.showSuccessSnackBar(context, "Download failed");
+        Utils.showErrorSnackBar(context, "Download failed $response['error']");
         print('Failed to start download.');
+        print(response['error']);
       }
     } catch (e) {
-      Utils.showSuccessSnackBar(context, "Download failed");
+      Utils.showErrorSnackBar(context, "Download failed");
       print('Error downloading: $e');
     }
+    Navigator.of(context).pop();
   }
 
   Future<void> provideFile(filePath) async {
     try {
       final response = await Api.provideFile(filePath.toString());
 
-      print(response);
-
       if (response['success']) {
-        print("provided successfully");
+        Utils.showSuccessSnackBar(context, "provided successfully");
+        _refreshData();
       } else {
-        print('Failed to provide.');
+        Utils.showErrorSnackBar(context, "Failed to provide $response['error']");
+        print(response['error']);
       }
     } catch (e) {
+      Utils.showErrorSnackBar(context, "Failed to provide");
       print('Error providing: $e');
     }
   }
@@ -452,8 +501,8 @@ class _HomePageState extends State<FilePage>
   Future<void> getProvidedFiles() async {
     try {
       final response = await Api.getProvidedFiles();
-      if (response['success']) {
-        print(response['data']);
+      if (mounted && response['success']) {
+        // print(response['data']);
         setState(() {
           providedList = List<Map<String, dynamic>>.from(response['data']);
           providedFilteredList = List<Map<String, dynamic>>.from(providedList);
@@ -469,8 +518,8 @@ class _HomePageState extends State<FilePage>
   Future<void> getDownloadedFiles() async {
     try {
       final response = await Api.getDownloadedFiles();
-      if (response['success']) {
-        print(response['data']);
+      // print(response);
+      if (mounted && response['success']) {
         setState(() {
           downloadedList = List<Map<String, dynamic>>.from(response['data']);
           downloadedFilteredList = List<Map<String, dynamic>>.from(response['data']);
@@ -528,6 +577,39 @@ class _HomePageState extends State<FilePage>
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
+                  Text(
+                    'Download Files',
+                    style: Theme.of(context)
+                        .textTheme
+                        .titleLarge!
+                        .copyWith(color: Colors.blue[800]),
+                  ),
+                  const SizedBox(height: 20),
+                  Row(
+                    children: [
+                      Expanded(
+                        child: TextField(
+                          controller: _controller,
+                          decoration: const InputDecoration(
+                            border: OutlineInputBorder(),
+                            labelText: 'Enter Hash of the File',
+                          ),
+                        ),
+                      ),
+                      const SizedBox(width: 16),
+                      ElevatedButton.icon(
+                        onPressed: _searchProviders,
+                        icon: const Icon(Icons.person_search),
+                        label: const Text('Search'),
+                      ),
+                      // IconButton(
+                      //   icon: const Icon(Icons.download),
+                      //   onPressed: _onDownloadPressed,
+                      //   tooltip: 'Download',
+                      // ),
+                    ],
+                  ),
+                  const SizedBox(height: 30),
                   // Text(
                   //   'Provide File',
                   //   style: Theme.of(context)
@@ -585,7 +667,7 @@ class _HomePageState extends State<FilePage>
                         .copyWith(color: Colors.blue[800]),
                   ),
                   const SizedBox(height: 8),
-                  Row(
+                   Row(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Expanded(
@@ -601,7 +683,7 @@ class _HomePageState extends State<FilePage>
                         ),
                       ),
                       const SizedBox(width: 80),
-
+                      
                       // Browse Button
                       ElevatedButton(
                         onPressed: _pickFile,
@@ -611,6 +693,13 @@ class _HomePageState extends State<FilePage>
                         child: const Text('Provide File'),
                       ),
                       const SizedBox(width: 30),
+                      RotationTransition(
+                        turns: _iconcontroller,
+                        child: IconButton(
+                          icon: Icon(Icons.refresh, size: 30, color: Colors.grey),
+                          onPressed: _refreshData,
+                        ),
+                      ),
                     ],
                   ),
                   // TextField(
@@ -638,35 +727,14 @@ class _HomePageState extends State<FilePage>
                             // Sticky Header Row
                             Container(
                               padding: const EdgeInsets.all(8.0),
-                              color: const Color.fromARGB(255, 56, 118,
-                                  168), // Background color for header
+                              color: const Color.fromARGB(255, 56, 118, 168), // Background color for header
                               child: Row(
                                 children: const [
-                                  Expanded(
-                                      child: Text('File Name',
-                                          style: TextStyle(
-                                              fontWeight: FontWeight.bold,
-                                              color: Colors.white))),
-                                  Expanded(
-                                      child: Text('File ID',
-                                          style: TextStyle(
-                                              fontWeight: FontWeight.bold,
-                                              color: Colors.white))),
-                                  Expanded(
-                                      child: Text('Download Count',
-                                          style: TextStyle(
-                                              fontWeight: FontWeight.bold,
-                                              color: Colors.white))),
-                                  Expanded(
-                                      child: Text('Action',
-                                          style: TextStyle(
-                                              fontWeight: FontWeight.bold,
-                                              color: Colors.white))),
-                                  Expanded(
-                                      child: Text('Status',
-                                          style: TextStyle(
-                                              fontWeight: FontWeight.bold,
-                                              color: Colors.white))),
+                                  Expanded(child: Text('File Name', style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white))),
+                                  Expanded(child: Text('File ID', style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white))),
+                                  Expanded(child: Text('Download Count', style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white))),
+                                  Expanded(child: Text('Action', style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white))),
+                                  Expanded(child: Text('Status', style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white))),
                                 ],
                               ),
                             ),
@@ -675,173 +743,105 @@ class _HomePageState extends State<FilePage>
                               child: SingleChildScrollView(
                                 child: Column(
                                   children: providedFilteredList.isNotEmpty
-                                      ? providedFilteredList
-                                          .map(
-                                            (entry) => Container(
-                                              padding:
-                                                  const EdgeInsets.symmetric(
-                                                      vertical: 8.0,
-                                                      horizontal: 8.0),
-                                              decoration: BoxDecoration(
-                                                border: Border(
-                                                  bottom: BorderSide(
-                                                      color: Colors.grey
-                                                          .shade300), // Divider between rows
-                                                ),
+                                      ? providedFilteredList.map(
+                                          (entry) => Container(
+                                            padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 8.0),
+                                            decoration: BoxDecoration(
+                                              border: Border(
+                                                bottom: BorderSide(color: Colors.grey.shade300), // Divider between rows
                                               ),
-                                              child: Row(
-                                                children: [
-                                                  Expanded(
+                                            ),
+                                            child: Row(
+                                              children: [
+                                                Expanded(child: Text(entry['file_name'] ?? '')),
+                                                Expanded(
+                                                  child: MouseRegion(
+                                                    cursor: SystemMouseCursors.click,
+                                                    child: GestureDetector(
+                                                      onTap: () {
+                                                        Clipboard.setData(ClipboardData(text: entry['file_id'] ?? ''));
+                                                        ScaffoldMessenger.of(context).showSnackBar(
+                                                          SnackBar(content: Text("File ID copied to clipboard")),
+                                                        );
+                                                      },
                                                       child: Text(
-                                                          entry['file_name'] ??
-                                                              '')),
-                                                  Expanded(
-                                                    child: MouseRegion(
-                                                      cursor: SystemMouseCursors
-                                                          .click,
-                                                      child: GestureDetector(
-                                                        onTap: () {
-                                                          Clipboard.setData(
-                                                              ClipboardData(
-                                                                  text: entry[
-                                                                          'file_id'] ??
-                                                                      ''));
-                                                          ScaffoldMessenger.of(
-                                                                  context)
-                                                              .showSnackBar(
-                                                            SnackBar(
-                                                                content: Text(
-                                                                    "File ID copied to clipboard")),
-                                                          );
-                                                        },
-                                                        child: Text(
-                                                          (entry['file_id'] ??
-                                                                      '')
-                                                                  .substring(
-                                                                      0, 10) +
-                                                              '...',
-                                                          style: TextStyle(
-                                                            color: Colors.blue,
-                                                          ),
+                                                        (entry['file_id'] ?? '').substring(0, 10) + '...',
+                                                        style: TextStyle(
+                                                          color: Colors.blue,
                                                         ),
                                                       ),
                                                     ),
                                                   ),
-                                                  Expanded(
-                                                      child: Text(
-                                                          entry['downloads_count']
-                                                                  ?.toString() ??
-                                                              '')),
-                                                  Expanded(
-                                                    child: Row(
-                                                      mainAxisAlignment:
-                                                          MainAxisAlignment
-                                                              .start,
-                                                      children: [
-                                                        SizedBox(
-                                                          width: 120,
-                                                          height: 30,
-                                                          child: ElevatedButton(
-                                                            onPressed: () {
-                                                              _showStopProvidingDialog(
-                                                                providedFilteredList
-                                                                    .indexOf(
-                                                                        entry),
-                                                                entry[
-                                                                    'file_id']!,
-                                                              );
-                                                            },
-                                                            style:
-                                                                ElevatedButton
-                                                                    .styleFrom(
-                                                              padding:
-                                                                  const EdgeInsets
-                                                                      .symmetric(
-                                                                      horizontal:
-                                                                          8.0,
-                                                                      vertical:
-                                                                          4.0),
-                                                              textStyle:
-                                                                  const TextStyle(
-                                                                      fontSize:
-                                                                          12),
-                                                            ),
-                                                            child: const Text(
-                                                                'Stop Providing'),
-                                                          ),
-                                                        ),
-                                                      ],
-                                                    ),
-                                                  ),
-                                                  // Toggle Button for Status
-                                                  Expanded(
-                                                      child: Row(
-                                                    mainAxisAlignment:
-                                                        MainAxisAlignment.start,
+                                                ),
+                                                Expanded(child: Text(entry['downloads_count']?.toString() ?? '')),
+                                                Expanded(
+                                                  child: Row(
+                                                    mainAxisAlignment: MainAxisAlignment.start,
                                                     children: [
                                                       SizedBox(
                                                         width: 120,
                                                         height: 30,
-                                                        child: StatefulBuilder(
-                                                          builder: (context,
-                                                              setState) {
-                                                            bool isProviding = entry[
-                                                                    'is_providing'] ??
-                                                                true; // Assuming initial state
-                                                            return Row(
-                                                              children: [
-                                                                Switch(
-                                                                  value:
-                                                                      isProviding,
-                                                                  onChanged:
-                                                                      (value) {
-                                                                    setState(
-                                                                        () {
-                                                                      isProviding =
-                                                                          value;
-                                                                      entry['is_providing'] =
-                                                                          isProviding;
-                                                                    });
-                                                                  },
-                                                                  activeColor:
-                                                                      Colors
-                                                                          .green,
-                                                                  inactiveThumbColor:
-                                                                      Colors
-                                                                          .red,
-                                                                  inactiveTrackColor: Colors
-                                                                      .red
-                                                                      .withOpacity(
-                                                                          0.3),
-                                                                ),
-                                                                Text(
-                                                                    isProviding
-                                                                        ? 'Resume'
-                                                                        : 'Stop',
-                                                                    style: TextStyle(
-                                                                        fontSize:
-                                                                            12,
-                                                                        color: isProviding
-                                                                            ? Colors.green
-                                                                            : Colors.red)),
-                                                              ],
+                                                        child: ElevatedButton(
+                                                          onPressed: () {
+                                                            _showStopProvidingDialog(
+                                                              providedFilteredList.indexOf(entry),
+                                                              entry['file_id']!,
                                                             );
                                                           },
+                                                          style: ElevatedButton.styleFrom(
+                                                            padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),
+                                                            textStyle: const TextStyle(fontSize: 12),
+                                                          ),
+                                                          child: const Text('Stop Providing'),
                                                         ),
                                                       ),
                                                     ],
-                                                  )),
-                                                ],
-                                              ),
+                                                  ),
+                                                ),
+                                                // Toggle Button for Status
+                                                Expanded(
+                                                  child: Row(
+                                                    mainAxisAlignment: MainAxisAlignment.start,
+                                                    children: [
+                                                      SizedBox(
+                                                        width: 120,
+                                                        height: 30,
+                                                       child: StatefulBuilder(
+                                                        builder: (context, setState) {
+                                                          bool isProviding = entry['is_providing'] ?? true; // Assuming initial state
+                                                          return Row(
+                                                            children: [
+                                                              Switch(
+                                                                value: isProviding,
+                                                                onChanged: (value) {
+                                                                  setState(() {
+                                                                    isProviding = value;
+                                                                    entry['is_providing'] = isProviding;
+                                                                  });
+                                                                },
+                                                                activeColor: Colors.green,
+                                                                inactiveThumbColor: Colors.red,
+                                                                inactiveTrackColor: Colors.red.withOpacity(0.3),
+                                                              ),
+                                                              Text(isProviding ? 'Resume' : 'Stop', style: TextStyle(fontSize: 12, color: isProviding ? Colors.green : Colors.red)),
+                                                            ],
+                                                          );
+                                                        },
+                                                      ),
+
+                                                      ),
+                                                    ],
+                                                  )
+                                                ),
+                                              ],
                                             ),
-                                          )
-                                          .toList()
+                                          ),
+                                        ).toList()
                                       : [
                                           Container(
                                             padding: const EdgeInsets.all(16.0),
                                             alignment: Alignment.center,
-                                            child:
-                                                const Text('No files provided'),
+                                            child: const Text('No files provided'),
                                           ),
                                         ],
                                 ),
@@ -852,6 +852,8 @@ class _HomePageState extends State<FilePage>
                       ),
                     ),
                   )
+
+
                 ],
               ),
             ),
@@ -976,6 +978,7 @@ class _HomePageState extends State<FilePage>
                   //   ),
                   // ),
 
+
                   const SizedBox(height: 80),
                   Text(
                     'Downloaded Files',
@@ -985,7 +988,7 @@ class _HomePageState extends State<FilePage>
                         .copyWith(color: Colors.blue[800]),
                   ),
                   const SizedBox(height: 8),
-                  Row(
+                   Row(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Expanded(
@@ -1017,30 +1020,13 @@ class _HomePageState extends State<FilePage>
                             // Sticky Header Row
                             Container(
                               padding: const EdgeInsets.all(8.0),
-                              color: const Color.fromARGB(255, 56, 118,
-                                  168), // Background color for header
+                              color: const Color.fromARGB(255, 56, 118, 168), // Background color for header
                               child: Row(
                                 children: const [
-                                  Expanded(
-                                      child: Text('File Name',
-                                          style: TextStyle(
-                                              fontWeight: FontWeight.bold,
-                                              color: Colors.white))),
-                                  Expanded(
-                                      child: Text('File Id',
-                                          style: TextStyle(
-                                              fontWeight: FontWeight.bold,
-                                              color: Colors.white))),
-                                  Expanded(
-                                      child: Text('Size(KB)',
-                                          style: TextStyle(
-                                              fontWeight: FontWeight.bold,
-                                              color: Colors.white))),
-                                  Expanded(
-                                      child: Text('Price',
-                                          style: TextStyle(
-                                              fontWeight: FontWeight.bold,
-                                              color: Colors.white))),
+                                  Expanded(child: Text('File Name', style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white))),
+                                  Expanded(child: Text('File Id', style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white))),
+                                  Expanded(child: Text('Size(KB)', style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white))),
+                                  Expanded(child: Text('Price', style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white))),
                                 ],
                               ),
                             ),
@@ -1049,78 +1035,47 @@ class _HomePageState extends State<FilePage>
                               child: SingleChildScrollView(
                                 child: Column(
                                   children: downloadedFilteredList.isNotEmpty
-                                      ? downloadedFilteredList
-                                          .map(
-                                            (entry) => Container(
-                                              padding:
-                                                  const EdgeInsets.symmetric(
-                                                      vertical: 8.0,
-                                                      horizontal: 8.0),
-                                              decoration: BoxDecoration(
-                                                border: Border(
-                                                  bottom: BorderSide(
-                                                      color: Colors.grey
-                                                          .shade300), // Divider between rows
-                                                ),
+                                      ? downloadedFilteredList.map(
+                                          (entry) => Container(
+                                            padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 8.0),
+                                            decoration: BoxDecoration(
+                                              border: Border(
+                                                bottom: BorderSide(color: Colors.grey.shade300), // Divider between rows
                                               ),
-                                              child: Row(
-                                                children: [
-                                                  Expanded(
+                                            ),
+                                            child: Row(
+                                              children: [
+                                                Expanded(child: Text(entry['file_name'] ?? '')),
+                                                Expanded(
+                                                  child: MouseRegion(
+                                                    cursor: SystemMouseCursors.click,
+                                                    child: GestureDetector(
+                                                      onTap: () {
+                                                        Clipboard.setData(ClipboardData(text: entry['file_id'] ?? ''));
+                                                        ScaffoldMessenger.of(context).showSnackBar(
+                                                          SnackBar(content: Text("File ID copied to clipboard")),
+                                                        );
+                                                      },
                                                       child: Text(
-                                                          entry['file_name'] ??
-                                                              '')),
-                                                  Expanded(
-                                                    child: MouseRegion(
-                                                      cursor: SystemMouseCursors
-                                                          .click,
-                                                      child: GestureDetector(
-                                                        onTap: () {
-                                                          Clipboard.setData(
-                                                              ClipboardData(
-                                                                  text: entry[
-                                                                          'file_id'] ??
-                                                                      ''));
-                                                          ScaffoldMessenger.of(
-                                                                  context)
-                                                              .showSnackBar(
-                                                            SnackBar(
-                                                                content: Text(
-                                                                    "File ID copied to clipboard")),
-                                                          );
-                                                        },
-                                                        child: Text(
-                                                          (entry['file_id'] ??
-                                                                      '')
-                                                                  .substring(
-                                                                      0, 10) +
-                                                              '...',
-                                                          style: TextStyle(
-                                                            color: Colors.blue,
-                                                          ),
+                                                        (entry['file_id'] ?? '').substring(0, 10) + '...',
+                                                        style: TextStyle(
+                                                          color: Colors.blue,
                                                         ),
                                                       ),
                                                     ),
                                                   ),
-                                                  Expanded(
-                                                      child: Text(
-                                                          entry['file_size_kb']
-                                                                  ?.toString() ??
-                                                              '')),
-                                                  Expanded(
-                                                      child: Text(entry['price']
-                                                              ?.toString() ??
-                                                          '')),
-                                                ],
-                                              ),
+                                                ),
+                                                Expanded(child: Text(entry['file_size_kb']?.toString() ?? '')),
+                                                Expanded(child: Text(entry['price']?.toString() ?? '')),
+                                              ],
                                             ),
-                                          )
-                                          .toList()
+                                          ),
+                                        ).toList()
                                       : [
                                           Container(
                                             padding: const EdgeInsets.all(16.0),
                                             alignment: Alignment.center,
-                                            child: const Text(
-                                                'No Downloads Found'),
+                                            child: const Text('No Downloads Found'),
                                           ),
                                         ],
                                 ),
@@ -1131,6 +1086,9 @@ class _HomePageState extends State<FilePage>
                       ),
                     ),
                   ),
+
+
+
                 ],
               ),
             ),
@@ -1139,4 +1097,11 @@ class _HomePageState extends State<FilePage>
       ),
     );
   }
+}
+
+void main() {
+  runApp(MaterialApp(
+    debugShowCheckedModeBanner: false,
+    home: FilePage(),
+  ));
 }
