@@ -14,8 +14,7 @@ class FilePage extends StatefulWidget {
   State<FilePage> createState() => _HomePageState();
 }
 
-class _HomePageState extends State<FilePage>
-    with TickerProviderStateMixin {
+class _HomePageState extends State<FilePage> with TickerProviderStateMixin {
   File? _selectedFile;
   String? _downloadFileId;
   String? _fileName;
@@ -23,18 +22,91 @@ class _HomePageState extends State<FilePage>
   TabController? _tabController;
   late AnimationController _iconcontroller;
 
-  List<Map<String, dynamic>> providers = [];
-  List<Map<String, dynamic>> providedList = [];
-  List<Map<String, dynamic>> downloadedList = [];
+  List<Map<String, dynamic>> providers = [{
+    "file_metadata":{
+      "file_name": "abc.txt",
+      "fee_rate_per_kb": 12.0
+    },
+    "peer_id": "4e7fd1d02f901336dc0400d835d1414226f67f0d22bce32dd1260a3f8d3ffb9c"
+  },
+  {
+    "file_metadata":{
+      "file_name": "dfge.txt",
+      "fee_rate_per_kb": 10.0
+    },
+    "peer_id": "asgfs4e7fsdfa835d1414226f67f0d22bce32dd1260a3f8d3ffb9c"
+  }];
+  // List<Map<String, dynamic>> providedList = [];
+  //List<Map<String, dynamic>> downloadedList = [];
 
-  final List<Map<String, String>> _providedFiles = [];
 
   final TextEditingController _searchController = TextEditingController();
   final TextEditingController _downloadSearchController =
       TextEditingController();
   List<Map<String, dynamic>> providedFilteredList = [];
   List<Map<String, dynamic>> downloadedFilteredList = [];
-
+  List<Map<String, dynamic>> downloadedList =  [
+        {
+            "download_timestamp": 1729740406,
+            "fee_rate_per_kb": 0.0024999999441206455,
+            "file_id": "ff9abdc5956831e49bfdf9e7927927fa283d9b4f74e365ff22d3fc35062cf156",
+            "file_name": "LinKer.pdf",
+            "file_path": "/Users/sethu/Desktop/General/abcd.pdf",
+            "file_size_kb": 5609.3740234375,
+            "id": "af051645-7ce9-45f8-b05a-d550ee94fc2d",
+            "payment_tx_id": "a3467be8af7fa73fda90a21cf0a1a7470d643dbc7e5a02236fa47aa933f76d1f",
+            "peer_id": "12D3KooWLJtG8fd2hkQzTn96MrLvThmnNQjTUFZwGEsLRz5EmSzc",
+            "price": 14.02343463897705
+        },
+        {
+            "download_timestamp": 1729742811,
+            "fee_rate_per_kb": 0.0024999999441206455,
+            "file_id": "4e7fd1d02f901336dc0400d835d1414226f67f0d22bce32dd1260a3f8d3ffb9c",
+            "file_name": "wp1.jpg",
+            "file_path": "/Users/sethu/Desktop/General/nice.jpg",
+            "file_size_kb": 1113.83203125,
+            "id": "e9538a32-fbf6-466c-9c4e-b7d52e26b758",
+            "payment_tx_id": null,
+            "peer_id": "12D3KooWLJtG8fd2hkQzTn96MrLvThmnNQjTUFZwGEsLRz5EmSzc",
+            "price": 2.7845799922943115
+        }, {
+            "download_timestamp": 1729740406,
+            "fee_rate_per_kb": 0.0024999999441206455,
+            "file_id": "ff9abdc5956831e49bfdf9e7927927fa283d9b4f74e365ff22d3fc35062cf156",
+            "file_name": "LinKer.pdf",
+            "file_path": "/Users/sethu/Desktop/General/abcd.pdf",
+            "file_size_kb": 5609.3740234375,
+            "id": "af051645-7ce9-45f8-b05a-d550ee94fc2d",
+            "payment_tx_id": "a3467be8af7fa73fda90a21cf0a1a7470d643dbc7e5a02236fa47aa933f76d1f",
+            "peer_id": "12D3KooWLJtG8fd2hkQzTn96MrLvThmnNQjTUFZwGEsLRz5EmSzc",
+            "price": 14.02343463897705
+        }];
+  List<Map<String, dynamic>> providedList =  [
+        {
+            "downloads_count": 1,
+            "file_id": "ed5cd394cc73b094aeb53e3e4e2d241686da51b6cf21af6d633297a5780e6475",
+            "file_name": "randomized_algorithms.pdf",
+            "file_path": "/Users/sethu/Documents/orcanet/provide/randomized_algorithms.pdf",
+            "provide_start_timestamp": null,
+            "status": 1 // Means active/inactive
+        },
+        {
+            "downloads_count": 5,
+            "file_id": "4e7fd1d02f901336dc0400d835d1414226f67f0d22bce32dd1260a3f8d3ffb9c",
+            "file_name": "wp1.jpg",
+            "file_path": "/Users/sethu/Documents/orcanet/provide/wp1.jpg",
+            "provide_start_timestamp": null,
+            "status": 1
+        },
+        {
+            "downloads_count": 4,
+            "file_id": "e0ec87573965dfa42674cbd7575d827bd536ac926912c7d62dc13c6a5b393f77",
+            "file_name": "VizProjectPoster.pdf",
+            "file_path": "/Users/sethu/Documents/orcanet/provide/VizProjectPoster.pdf",
+            "provide_start_timestamp": null,
+            "status": 1
+        }];
+  
   @override
   void initState() {
     super.initState();
@@ -50,6 +122,13 @@ class _HomePageState extends State<FilePage>
       duration: Duration(seconds: 1), // Animation duration
       vsync: this, // Using TickerProviderStateMixin
     );
+    // _focusNode.addListener(() {
+    //   if (!_focusNode.hasFocus) {
+    //     setState(() {
+    //       _showSearch = false; // Hide search bar when it loses focus
+    //     });
+    //   }
+    // });
   }
 
     void _refreshData() {
@@ -64,6 +143,7 @@ class _HomePageState extends State<FilePage>
   @override
   void dispose() {
     _searchController.dispose();
+    // _focusNode.dispose();
     super.dispose();
   }
 
@@ -94,16 +174,17 @@ class _HomePageState extends State<FilePage>
   }
 
   // Function to show confirmation dialog
-  void _showStopProvidingDialog(int index, String filename) {
+  void _showStopProvidingDialog(int index, String fileId, String fileName) {
     print(index);
-    print(filename);
+    print(fileId);
+    
     showDialog(
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: const Text('Stop Providing File'),
+          title: const Text('Delete File'),
           content:
-              const Text('Are you sure you want to stop providing this file?'),
+              Text('Are you sure you want to delete $fileName?'),
           actions: [
             TextButton(
               onPressed: () {
@@ -113,14 +194,14 @@ class _HomePageState extends State<FilePage>
             ),
             TextButton(
               onPressed: () {
-                stopProviding(filename, true);
+                stopProviding(fileId, true);
                 setState(() {
                   providedList.removeAt(index); // Remove file from the list
                   providedFilteredList.removeAt(index);
                 });
                 Navigator.of(context).pop(); // Close the dialog
                 ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(content: Text('Providing stopped $filename')),
+                  SnackBar(content: Text('File deleted $fileName')),
                 );
               },
               child: const Text('Yes'),
@@ -164,26 +245,26 @@ class _HomePageState extends State<FilePage>
     );
   }
 
+  bool isAscending = false;
+
   void showTableDialog(
-      BuildContext context, List<Map<String, dynamic>> providers) {
+    BuildContext context, List<Map<String, dynamic>> providers) {
     String fileId = _controller.text;
     showDialog(
       context: context,
       builder: (BuildContext context) {
         return StatefulBuilder(
           builder: (context, setState) {
-            bool isAscending = true;
-
             void sortProvidersByFeeRate() {
               setState(() {
+                isAscending = !isAscending;
                 providers.sort((a, b) {
-                  final feeA = a['fee_rate_per_kb'] as num? ?? 0;
-                  final feeB = b['fee_rate_per_kb'] as num? ?? 0;
+                  final feeA = a['file_metadata']['fee_rate_per_kb'] as num? ?? 0;
+                  final feeB = b['file_metadata']['fee_rate_per_kb'] as num? ?? 0;
                   return isAscending
                       ? feeA.compareTo(feeB)
                       : feeB.compareTo(feeA);
                 });
-                isAscending = !isAscending;
               });
             }
 
@@ -196,36 +277,31 @@ class _HomePageState extends State<FilePage>
                 height: 500, // Set a smaller height
                 padding: const EdgeInsets.all(16.0),
                 decoration: BoxDecoration(
-                  color: const Color.fromARGB(255, 209, 241, 255),
+                  // color: const Color.fromARGB(255, 209, 241, 255),
                   borderRadius: BorderRadius.circular(8.0),
                 ),
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     Padding(
-                      padding: EdgeInsets.only(bottom: 16.0),
-                      child: Text(
-                        'Providers for id $fileId',
-                        style: TextStyle(
-                            fontSize: 18, fontWeight: FontWeight.bold),
+                      padding: const EdgeInsets.only(bottom: 16.0),
+                      child: Text('Providers for id $fileId',
+                        style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                       ),
                     ),
                     Container(
                       padding: const EdgeInsets.all(8.0),
-                      color: Colors.blue,
+                      color:  const Color.fromARGB(255, 56, 118, 168),
                       child: Row(
                         children: [
                           const Expanded(
-                            child: Text('File Name',
-                                style: TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                    color: Colors.white)),
+                            child: Text('File Name',style: TextStyle(fontWeight: FontWeight.bold,color: Colors.white)),
                           ),
                           Expanded(
                             child: GestureDetector(
                               onTap: sortProvidersByFeeRate,
                               child: Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
+                                mainAxisAlignment: MainAxisAlignment.start,
                                 children: [
                                   const Text(
                                     'Fee Rate per KB',
@@ -245,10 +321,7 @@ class _HomePageState extends State<FilePage>
                             ),
                           ),
                           const Expanded(
-                            child: Text('Peer Id',
-                                style: TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                    color: Colors.white)),
+                            child: Text('Peer Id',style: TextStyle(fontWeight: FontWeight.bold,color: Colors.white)),
                           ),
                           const Expanded(
                             child: Text('Action',
@@ -287,26 +360,9 @@ class _HomePageState extends State<FilePage>
                                               child: 
                                                 Text(
                                                   (entry['peer_id'] ?? '').substring(0, 10) + '...',
-                                                  style: TextStyle(color: Colors.blue,),
+                                                  style: const TextStyle(color: Colors.blue,),
                                                   )
                                             ),
-                                          // Expanded(
-                                          //   child: ElevatedButton.icon(
-                                          //     onPressed: () {
-                                          //       downloadFile(
-                                          //         entry['file_metadata']['file_name']!,
-                                          //         entry['peer_id']!,
-                                          //       );
-                                          //     },
-                                          //     icon: const Icon(Icons.download),
-                                          //     label: const Text('Download'),
-                                          //     style: ElevatedButton.styleFrom(
-                                          //       padding: EdgeInsets.symmetric(vertical: 8.0, horizontal: 8.0), // Adjust padding
-                                          //       minimumSize: Size(60, 40), // Set minimum size (width, height)
-                                          //       textStyle: TextStyle(fontSize: 14), // Optionally adjust text size
-                                          //     ),
-                                          //   ),
-                                          // ),
                                           Expanded(
                                             child: Row(
                                               mainAxisAlignment: MainAxisAlignment.start,
@@ -384,6 +440,7 @@ class _HomePageState extends State<FilePage>
   void _uploadFile() {
     if (_selectedFile != null && _fileName != null && _fileSize != null) {
       provideFile(_selectedFile!.path.toString());
+      print(_selectedFile!.path.toString());
       // final newFile = {
       //   'name': _fileName!, // File name
       //   'size': _fileSize!, // File size
@@ -428,6 +485,7 @@ class _HomePageState extends State<FilePage>
   void _searchProviders() async {
     String fileId = _controller.text;
     _getProviders(fileId);
+    showTableDialog(context, providers);
   }
 
   void refreshApiCalls() {
@@ -467,12 +525,10 @@ class _HomePageState extends State<FilePage>
         destPath: destPath,
       );
       if(response['success']) {
-        print("download successful");
+        provideFile(destPath!.path.toString());
         Utils.showSuccessSnackBar(context, "File downloaded successfully");
       } else {
         Utils.showErrorSnackBar(context, "Download failed $response['error']");
-        print('Failed to start download.');
-        print(response['error']);
       }
     } catch (e) {
       Utils.showErrorSnackBar(context, "Download failed");
@@ -544,29 +600,45 @@ class _HomePageState extends State<FilePage>
     }
   }
 
+  // bool _showSearch = false; // State variable to control search bar visibility
+  // TextEditingController _downloadSearchController1 = TextEditingController();
+  // FocusNode _focusNode = FocusNode();
+
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(
       length: 2, // Two tabs: Provide and Download
       child: Scaffold(
+        //backgroundColor: const Color.fromARGB(255, 255, 255, 255),
+        // appBar: AppBar(
+        //   toolbarHeight: 0,
+        //   title: null,
+        //   bottom: TabBar(
+        //     controller: _tabController,
+        //     tabs: const [
+        //       Tab(
+        //         icon: Icon(Icons.upload_file),
+        //         // Add an icon for the 'Provide File' tab
+        //         text: 'Provide File',
+        //       ),
+        //       Tab(
+        //         icon: Icon(Icons.download),
+        //         // Add an icon for the 'Download File' tab
+        //         text: 'Download File',
+        //       ),
+        //     ],
+        //   ),
+        // ),
+       
         appBar: AppBar(
-          toolbarHeight: 0,
-          title: null,
-          bottom: TabBar(
-            controller: _tabController,
-            tabs: const [
-              Tab(
-                icon: Icon(Icons.upload_file),
-                // Add an icon for the 'Provide File' tab
-                text: 'Provide File',
-              ),
-              Tab(
-                icon: Icon(Icons.download),
-                // Add an icon for the 'Download File' tab
-                text: 'Download File',
-              ),
-            ],
-          ),
+          toolbarHeight: 60,
+          title:  Text('Files Status Page',
+                    style: Theme.of(context)
+                        .textTheme
+                        .titleLarge!
+                        .copyWith(color: Colors.blue[800]),
+                  ),
+          // backgroundColor: const Color.fromARGB(255, 209, 241, 255),
         ),
         body: TabBarView(
           controller: _tabController,
@@ -602,63 +674,9 @@ class _HomePageState extends State<FilePage>
                         icon: const Icon(Icons.person_search),
                         label: const Text('Search'),
                       ),
-                      // IconButton(
-                      //   icon: const Icon(Icons.download),
-                      //   onPressed: _onDownloadPressed,
-                      //   tooltip: 'Download',
-                      // ),
                     ],
                   ),
                   const SizedBox(height: 30),
-                  // Text(
-                  //   'Provide File',
-                  //   style: Theme.of(context)
-                  //       .textTheme
-                  //       .titleLarge!
-                  //       .copyWith(color: Colors.blue[800]),
-                  // ),
-                  // const SizedBox(height: 8),
-                  // Card(
-                  //   elevation: 4,
-                  //   child: Container(
-                  //     padding: const EdgeInsets.all(12.0),
-                  //     decoration: BoxDecoration(
-                  //       color: const Color.fromARGB(255, 209, 241, 255),
-                  //       borderRadius: BorderRadius.circular(8.0),
-                  //     ),
-                  //     child: Column(
-                  //       crossAxisAlignment: CrossAxisAlignment.start,
-                  //       children: [
-                  //         ElevatedButton(
-                  //           onPressed: _pickFile,
-                  //           style: ElevatedButton.styleFrom(
-                  //             padding: const EdgeInsets.all(16.0),
-                  //           ),
-                  //           child: const Text('Browse File'),
-                  //         ),
-                  //         const SizedBox(height: 8),
-                  //         if (_fileName != null)
-                  //           Row(
-                  //             mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  //             children: [
-                  //               Text(
-                  //                 'File: $_fileName ($_fileSize)',
-                  //                 style: TextStyle(color: Colors.blue[900]),
-                  //               ),
-                  //               ElevatedButton(
-                  //                 onPressed: _uploadFile,
-                  //                 style: ElevatedButton.styleFrom(
-                  //                   padding: const EdgeInsets.all(16.0),
-                  //                 ),
-                  //                 child: const Text('Upload'),
-                  //               ),
-                  //             ],
-                  //           ),
-                  //       ],
-                  //     ),
-                  //   ),
-                  // ),
-                  // const SizedBox(height: 36),
                   Text(
                     'Provided Files',
                     style: Theme.of(context)
@@ -702,37 +720,48 @@ class _HomePageState extends State<FilePage>
                       ),
                     ],
                   ),
-                  // TextField(
-                  //   controller: _searchController,
-                  //   decoration: InputDecoration(
-                  //     labelText: 'Search Files',
-                  //     prefixIcon: Icon(Icons.search),
-                  //     border: OutlineInputBorder(
-                  //       borderRadius: BorderRadius.circular(8.0),
-                  //     ),
-                  //   ),
-                  // ),
                   const SizedBox(height: 8),
                   Expanded(
                     child: Card(
-                      elevation: 4,
+                      elevation: 10,
                       child: Container(
                         width: double.infinity,
                         decoration: BoxDecoration(
-                          color: const Color.fromARGB(255, 209, 241, 255),
+                          //color: const Color.fromARGB(255, 209, 241, 255),
                           borderRadius: BorderRadius.circular(8.0),
+                          // border: Border.all(
+                          //   color: Colors.black,
+                            // width: 1.0,
+                          // ),
                         ),
                         child: Column(
                           children: [
                             // Sticky Header Row
                             Container(
-                              padding: const EdgeInsets.all(8.0),
-                              color: const Color.fromARGB(255, 56, 118, 168), // Background color for header
-                              child: Row(
-                                children: const [
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(8.0),
+                                color: const Color.fromARGB(255, 56, 118, 168),
+                              ),
+                              padding: const EdgeInsets.all(10.0),
+                              // color: const Color.fromARGB(255, 56, 118, 168), // Background color for header
+                              child: const Row(
+                                children: [
                                   Expanded(child: Text('File Name', style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white))),
                                   Expanded(child: Text('File ID', style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white))),
                                   Expanded(child: Text('Download Count', style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white))),
+                                  // Expanded(
+                                  //   child: Align(
+                                  //     alignment: Alignment.center, // Centers the text horizontally and vertically
+                                  //     child: Text(
+                                  //       'Download Count',
+                                  //       style: TextStyle(
+                                  //         fontWeight: FontWeight.bold,
+                                  //         color: Colors.white,
+                                  //       ),
+                                  //     ),
+                                  //   ),
+                                  // ),
+                                  // Expanded(child: Text('Status', style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white))),
                                   Expanded(child: Text('Action', style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white))),
                                   Expanded(child: Text('Status', style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white))),
                                 ],
@@ -761,12 +790,12 @@ class _HomePageState extends State<FilePage>
                                                       onTap: () {
                                                         Clipboard.setData(ClipboardData(text: entry['file_id'] ?? ''));
                                                         ScaffoldMessenger.of(context).showSnackBar(
-                                                          SnackBar(content: Text("File ID copied to clipboard")),
+                                                          const SnackBar(content: Text("File ID copied to clipboard")),
                                                         );
                                                       },
                                                       child: Text(
                                                         (entry['file_id'] ?? '').substring(0, 10) + '...',
-                                                        style: TextStyle(
+                                                        style: const TextStyle(
                                                           color: Colors.blue,
                                                         ),
                                                       ),
@@ -774,64 +803,163 @@ class _HomePageState extends State<FilePage>
                                                   ),
                                                 ),
                                                 Expanded(child: Text(entry['downloads_count']?.toString() ?? '')),
+                                            //  Expanded(
+                                            //   child: Column(
+                                            //     mainAxisAlignment: MainAxisAlignment.center, // Aligns the text to the top (start)
+                                            //     crossAxisAlignment: CrossAxisAlignment.center, // Aligns the text to the left
+                                            //     children: [
+                                            //       Text(
+                                            //         entry['downloads_count']?.toString() ?? '',
+                                            //       ),
+                                            //     ],
+                                            //   ),
+                                            // ),
+                                                // Expanded(
+                                                //   child: Row(
+                                                //     mainAxisAlignment: MainAxisAlignment.start,
+                                                //     children: [
+                                                //       SizedBox(
+                                                //         width: 120,
+                                                //         height: 30,
+                                                //         child: ElevatedButton(
+                                                //           onPressed: () {
+                                                //             _showStopProvidingDialog(
+                                                //               providedFilteredList.indexOf(entry),
+                                                //               entry['file_id']!,
+                                                //               entry['file_name']
+                                                //             );
+                                                //           },
+                                                //           style: ElevatedButton.styleFrom(
+                                                //             padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),
+                                                //             textStyle: const TextStyle(fontSize: 12),
+                                                //           ),
+                                                //           child: const Text('Stop Providing'),
+                                                //         ),
+                                                //       ),
+                                                //     ],
+                                                //   ),
+                                                // ),
+                                               
+                                               
+                                                // Toggle Button for Status
+                                                // Expanded(
+                                                //   child: Row(
+                                                //     mainAxisAlignment: MainAxisAlignment.start,
+                                                //     children: [
+                                                //       SizedBox(
+                                                //         width: 120,
+                                                //         height: 30,
+                                                //        child: StatefulBuilder(
+                                                //         builder: (context, setState) {
+                                                //           bool isProviding = entry['is_providing'] ?? true; // Assuming initial state
+                                                //           return Row(
+                                                //             children: [
+                                                //               Switch(
+                                                //                 value: isProviding,
+                                                //                 onChanged: (value) {
+                                                //                   setState(() {
+                                                //                     isProviding = value;
+                                                //                     entry['is_providing'] = isProviding;
+                                                //                   });
+                                                //                 },
+                                                //                 activeColor: Colors.green,
+                                                //                 inactiveThumbColor: Colors.red,
+                                                //                 inactiveTrackColor: Colors.red.withOpacity(0.3),
+                                                //               ),
+                                                //               Text(isProviding ? 'Resume' : 'Stop', style: TextStyle(fontSize: 12, color: isProviding ? Colors.green : Colors.red)),
+                                                //             ],
+                                                //           );
+                                                //         },
+                                                //       ),
+                                                //       ),
+                                                //     ],
+                                                //   )
+                                                // ),
                                                 Expanded(
                                                   child: Row(
                                                     mainAxisAlignment: MainAxisAlignment.start,
+                                                    crossAxisAlignment: CrossAxisAlignment.center,
                                                     children: [
                                                       SizedBox(
-                                                        width: 120,
+                                                        width: 150, // Adjusted width to accommodate icons
                                                         height: 30,
-                                                        child: ElevatedButton(
-                                                          onPressed: () {
-                                                            _showStopProvidingDialog(
-                                                              providedFilteredList.indexOf(entry),
-                                                              entry['file_id']!,
+                                                        child: StatefulBuilder(
+                                                          builder: (context, setState) {
+                                                            bool isProviding = entry['is_providing'] ?? true; // Assuming initial state
+                                                            return Row(
+                                                              mainAxisAlignment: MainAxisAlignment.start,
+                                                              children: [
+                                                                IconButton(
+                                                                  icon: Icon(
+                                                                    Icons.play_arrow,
+                                                                    size: 18,
+                                                                    color: isProviding ? Colors.green : Colors.grey,
+                                                                  ),
+                                                                  onPressed: isProviding
+                                                                      ? null
+                                                                      : () {
+                                                                          setState(() {
+                                                                            isProviding = true;
+                                                                            entry['is_providing'] = true;
+                                                                          });
+                                                                        },
+                                                                  tooltip: 'Resume Providing',
+                                                                ),
+                                                                IconButton(
+                                                                  icon: Icon(
+                                                                    Icons.pause,
+                                                                    size: 18,
+                                                                    color: !isProviding ? Colors.red : Colors.grey,
+                                                                  ),
+                                                                  onPressed: !isProviding
+                                                                      ? null
+                                                                      : () {
+                                                                          stopProviding(entry['file_id'],false);
+                                                                          setState(() {
+                                                                            isProviding = false;
+                                                                            entry['is_providing'] = false;
+                                                                          });
+                                                                        },
+                                                                  tooltip: 'Stop Providing',
+                                                                ),
+                                                                IconButton(
+                                                                  icon: const Icon(
+                                                                    Icons.delete,
+                                                                    size: 18,
+                                                                    color: Colors.black,
+                                                                  ),
+                                                                  onPressed: () {
+                                                                     _showStopProvidingDialog(
+                                                                        providedFilteredList.indexOf(entry),
+                                                                        entry['file_id']!,
+                                                                        entry['file_name']
+                                                                      );
+                                                                    print('Delete clicked for ${entry}');
+                                                                  },
+                                                                  tooltip: 'Delete',
+                                                                ),
+                                                              ],
                                                             );
                                                           },
-                                                          style: ElevatedButton.styleFrom(
-                                                            padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),
-                                                            textStyle: const TextStyle(fontSize: 12),
-                                                          ),
-                                                          child: const Text('Stop Providing'),
+                                                        ),
+                                                      ),
+                                                    ],
+                                                  
+                                                  ),
+                                                ),
+                                                Expanded(
+                                                  child: Column(
+                                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                                    children: [
+                                                      Text(
+                                                        entry['status'] == 1 ? 'Active' : 'Inactive',
+                                                        style: TextStyle(
+                                                          color: entry['status'] == 1 ? Colors.green : Colors.red,
+                                                          fontWeight: FontWeight.bold,
                                                         ),
                                                       ),
                                                     ],
                                                   ),
-                                                ),
-                                                // Toggle Button for Status
-                                                Expanded(
-                                                  child: Row(
-                                                    mainAxisAlignment: MainAxisAlignment.start,
-                                                    children: [
-                                                      SizedBox(
-                                                        width: 120,
-                                                        height: 30,
-                                                       child: StatefulBuilder(
-                                                        builder: (context, setState) {
-                                                          bool isProviding = entry['is_providing'] ?? true; // Assuming initial state
-                                                          return Row(
-                                                            children: [
-                                                              Switch(
-                                                                value: isProviding,
-                                                                onChanged: (value) {
-                                                                  setState(() {
-                                                                    isProviding = value;
-                                                                    entry['is_providing'] = isProviding;
-                                                                  });
-                                                                },
-                                                                activeColor: Colors.green,
-                                                                inactiveThumbColor: Colors.red,
-                                                                inactiveTrackColor: Colors.red.withOpacity(0.3),
-                                                              ),
-                                                              Text(isProviding ? 'Resume' : 'Stop', style: TextStyle(fontSize: 12, color: isProviding ? Colors.green : Colors.red)),
-                                                            ],
-                                                          );
-                                                        },
-                                                      ),
-
-                                                      ),
-                                                    ],
-                                                  )
                                                 ),
                                               ],
                                             ),
@@ -858,245 +986,340 @@ class _HomePageState extends State<FilePage>
               ),
             ),
             // Download Section
+            // Padding(
+            //   padding: const EdgeInsets.all(16.0),
+            //   child: Column(
+            //     crossAxisAlignment: CrossAxisAlignment.start,
+            //     children: [
+            //       Text(
+            //         'Download Files',
+            //         style: Theme.of(context)
+            //             .textTheme
+            //             .titleLarge!
+            //             .copyWith(color: Colors.blue[800]),
+            //       ),
+            //       const SizedBox(height: 20),
+            //       Row(
+            //         children: [
+            //           Expanded(
+            //             child: TextField(
+            //               controller: _controller,
+            //               decoration: const InputDecoration(
+            //                 border: OutlineInputBorder(),
+            //                 labelText: 'Enter Hash of the File',
+            //               ),
+            //             ),
+            //           ),
+            //           const SizedBox(width: 16),
+            //           ElevatedButton.icon(
+            //             onPressed: _searchProviders,
+            //             icon: const Icon(Icons.person_search),
+            //             label: const Text('Search'),
+            //           ),
+            //         ],
+            //       ),
+
+
+            //       const SizedBox(height: 80),
+            //       Text(
+            //         'Downloaded Files',
+            //         style: Theme.of(context)
+            //             .textTheme
+            //             .titleLarge!
+            //             .copyWith(color: Colors.blue[800]),
+            //       ),
+            //       const SizedBox(height: 8),
+            //        Row(
+            //         crossAxisAlignment: CrossAxisAlignment.start,
+            //         children: [
+            //           Expanded(
+            //             child: TextField(
+            //               controller: _downloadSearchController,
+            //               decoration: InputDecoration(
+            //                 labelText: 'Search Files',
+            //                 prefixIcon: Icon(Icons.search),
+            //                 border: OutlineInputBorder(
+            //                   borderRadius: BorderRadius.circular(8.0),
+            //                 ),
+            //               ),
+            //             ),
+            //           ),
+            //           const SizedBox(width: 30),
+            //         ],
+            //       ),
+            //       const SizedBox(height: 10),
+            //       Expanded(
+            //         child: Card(
+            //           elevation: 4,
+            //           child: Container(
+            //             decoration: BoxDecoration(
+            //               //color: const Color.fromARGB(255, 255, 255, 255),
+            //               borderRadius: BorderRadius.circular(8.0),
+            //             ),
+            //             child: Column(
+            //               children: [
+            //                 // Sticky Header Row
+            //                 Container(
+            //                   padding: const EdgeInsets.all(8.0),
+            //                   color: const Color.fromARGB(255, 46, 46, 46), // Background color for header
+            //                   child: Row(
+            //                     children: const [
+            //                       Expanded(child: Text('File Name', style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white))),
+            //                       Expanded(child: Text('File Id', style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white))),
+            //                       Expanded(child: Text('Size(KB)', style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white))),
+            //                       Expanded(child: Text('Price', style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white))),
+            //                     ],
+            //                   ),
+            //                 ),
+            //                 // Scrollable Data Rows
+            //                 Expanded(
+            //                   child: SingleChildScrollView(
+            //                     child: Column(
+            //                       children: downloadedFilteredList.isNotEmpty
+            //                           ? downloadedFilteredList.map(
+            //                               (entry) => Container(
+            //                                 padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 8.0),
+            //                                 decoration: BoxDecoration(
+            //                                   border: Border(
+            //                                     bottom: BorderSide(color: Colors.grey.shade300), // Divider between rows
+            //                                   ),
+            //                                 ),
+            //                                 child: Row(
+            //                                   children: [
+            //                                     Expanded(child: Text(entry['file_name'] ?? '')),
+            //                                     Expanded(
+            //                                       child: MouseRegion(
+            //                                         cursor: SystemMouseCursors.click,
+            //                                         child: GestureDetector(
+            //                                           onTap: () {
+            //                                             Clipboard.setData(ClipboardData(text: entry['file_id'] ?? ''));
+            //                                             ScaffoldMessenger.of(context).showSnackBar(
+            //                                               SnackBar(content: Text("File ID copied to clipboard")),
+            //                                             );
+            //                                           },
+            //                                           child: Text(
+            //                                             (entry['file_id'] ?? '').substring(0, 10) + '...',
+            //                                             style: TextStyle(
+            //                                               color: Colors.blue,
+            //                                             ),
+            //                                           ),
+            //                                         ),
+            //                                       ),
+            //                                     ),
+            //                                     Expanded(child: Text(entry['file_size_kb']?.toString() ?? '')),
+            //                                     Expanded(child: Text(entry['price']?.toString() ?? '')),
+            //                                   ],
+            //                                 ),
+            //                               ),
+            //                             ).toList()
+            //                           : [
+            //                               Container(
+            //                                 padding: const EdgeInsets.all(16.0),
+            //                                 alignment: Alignment.center,
+            //                                 child: const Text('No Downloads Found'),
+            //                               ),
+            //                             ],
+            //                     ),
+            //                   ),
+            //                 ),
+            //               ],
+            //             ),
+            //           ),
+            //         ),
+            //       ),
+            //     ],
+            //   ),
+            // ),
             Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    'Download Files',
-                    style: Theme.of(context)
-                        .textTheme
-                        .titleLarge!
-                        .copyWith(color: Colors.blue[800]),
-                  ),
-                  const SizedBox(height: 20),
-                  Row(
-                    children: [
-                      Expanded(
-                        child: TextField(
-                          controller: _controller,
-                          decoration: const InputDecoration(
-                            border: OutlineInputBorder(),
-                            labelText: 'Enter Hash of the File',
-                          ),
-                        ),
-                      ),
-                      const SizedBox(width: 16),
-                      ElevatedButton.icon(
-                        onPressed: _searchProviders,
-                        icon: const Icon(Icons.person_search),
-                        label: const Text('Search'),
-                      ),
-                      // IconButton(
-                      //   icon: const Icon(Icons.download),
-                      //   onPressed: _onDownloadPressed,
-                      //   tooltip: 'Download',
-                      // ),
-                    ],
-                  ),
-                  // const SizedBox(height: 20),
-                  // Text(
-                  //   'Providers',
-                  //   style: Theme.of(context)
-                  //       .textTheme
-                  //       .titleLarge!
-                  //       .copyWith(color: Colors.blue[800]),
-                  // ),
-                  // const SizedBox(height: 10),
-                  // Expanded(
-                  //   child: Card(
-                  //     elevation: 4,
-                  //     child: Container(
-                  //       width: double.infinity,
-                  //       decoration: BoxDecoration(
-                  //         color: const Color.fromARGB(255, 209, 241, 255),
-                  //         borderRadius: BorderRadius.circular(8.0),
-                  //       ),
-                  //       child: Column(
-                  //         children: [
-                  //           // Sticky Header Row
-                  //           Container(
-                  //             padding: const EdgeInsets.all(8.0),
-                  //             color: const Color.fromARGB(255, 56, 118, 168), // Background color for header
-                  //             child: Row(
-                  //               children: const [
-                  //                 Expanded(child: Text('File Name', style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white))),
-                  //                 Expanded(child: Text('Fee Rate per KB', style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white))),
-                  //                 Expanded(child: Text('Peer Id', style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white))),
-                  //                 Expanded(child: Text('Action', style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white))),
-                  //               ],
-                  //             ),
-                  //           ),
-                  //           // Scrollable Data Rows
-                  //           Expanded(
-                  //             child: SingleChildScrollView(
-                  //               child: Column(
-                  //                 children: providers.isNotEmpty
-                  //                     ? providers.asMap().entries.map(
-                  //                         (entry) => Container(
-                  //                           padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 8.0),
-                  //                           decoration: BoxDecoration(
-                  //                             border: Border(
-                  //                               bottom: BorderSide(color: Colors.grey.shade300), // Divider between rows
-                  //                             ),
-                  //                           ),
-                  //                           child: Row(
-                  //                             children: [
-                  //                               Expanded(child: Text(entry.value['file_name'] ?? '')),
-                  //                               Expanded(child: Text(entry.value['fee_rate_per_kb']?.toString() ?? '')),
-                  //                               Expanded(child: Text(entry.value['peer_id'] ?? '')),
-                  //                               Expanded(
-                  //                                 child: ElevatedButton.icon(
-                  //                                   onPressed: () {
-                  //                                     downloadFile(
-                  //                                       entry.value['file_name']!,
-                  //                                       entry.value['peer_id']!,
-                  //                                     );
-                  //                                   },
-                  //                                   icon: const Icon(Icons.download),
-                  //                                   label: const Text('Download'),
-                  //                                 ),
-                  //                               ),
-                  //                             ],
-                  //                           ),
-                  //                         ),
-                  //                       ).toList()
-                  //                     : [
-                  //                         Container(
-                  //                           padding: const EdgeInsets.all(16.0),
-                  //                           alignment: Alignment.center,
-                  //                           child: const Text('No Providers Found'),
-                  //                         ),
-                  //                       ],
-                  //               ),
-                  //             ),
-                  //           ),
-                  //         ],
-                  //       ),
-                  //     ),
-                  //   ),
-                  // ),
-
-
-                  const SizedBox(height: 80),
-                  Text(
-                    'Downloaded Files',
-                    style: Theme.of(context)
-                        .textTheme
-                        .titleLarge!
-                        .copyWith(color: Colors.blue[800]),
-                  ),
-                  const SizedBox(height: 8),
-                   Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Expanded(
-                        child: TextField(
-                          controller: _downloadSearchController,
-                          decoration: InputDecoration(
-                            labelText: 'Search Files',
-                            prefixIcon: Icon(Icons.search),
-                            border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(8.0),
-                            ),
-                          ),
-                        ),
-                      ),
-                      const SizedBox(width: 30),
-                    ],
-                  ),
-                  const SizedBox(height: 10),
-                  Expanded(
-                    child: Card(
-                      elevation: 4,
-                      child: Container(
-                        decoration: BoxDecoration(
-                          color: const Color.fromARGB(255, 209, 241, 255),
-                          borderRadius: BorderRadius.circular(8.0),
-                        ),
-                        child: Column(
-                          children: [
-                            // Sticky Header Row
-                            Container(
-                              padding: const EdgeInsets.all(8.0),
-                              color: const Color.fromARGB(255, 56, 118, 168), // Background color for header
+  padding: const EdgeInsets.all(16.0),
+  child: Column(
+    crossAxisAlignment: CrossAxisAlignment.start,
+    children: [
+      Text(
+        'Download Files',
+        style: Theme.of(context)
+            .textTheme
+            .titleLarge!
+            .copyWith(color: Colors.blue[800]),
+      ),
+      const SizedBox(height: 20),
+      Row(
+        children: [
+          Expanded(
+            child: TextField(
+              controller: _controller,
+              decoration: const InputDecoration(
+                border: OutlineInputBorder(),
+                labelText: 'Enter Hash of the File',
+              ),
+            ),
+          ),
+          const SizedBox(width: 16),
+          ElevatedButton.icon(
+            onPressed: _searchProviders,
+            icon: const Icon(Icons.person_search),
+            label: const Text('Search'),
+          ),
+        ],
+      ),
+      const SizedBox(height: 80),
+      Text(
+        'Downloaded Files',
+        style: Theme.of(context)
+            .textTheme
+            .titleLarge!
+            .copyWith(color: Colors.blue[800]),
+      ),
+      const SizedBox(height: 8),
+      Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Expanded(
+            child: TextField(
+              controller: _downloadSearchController,
+              decoration: InputDecoration(
+                labelText: 'Search Files',
+                prefixIcon: const Icon(Icons.search),
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(8.0),
+                ),
+              ),
+            ),
+          ),
+          const SizedBox(width: 30),
+        ],
+      ),
+    //   Row(
+    //   crossAxisAlignment: CrossAxisAlignment.start,
+    //   children: [
+    //     InkWell(
+    //       onTap: () {
+    //         setState(() {
+    //           _showSearch = !_showSearch; // Toggle search bar visibility
+    //         });
+    //       },
+    //       child: const Icon(Icons.search),
+    //     ),
+    //     const SizedBox(width: 30),
+    //     AnimatedContainer(
+    //       duration: const Duration(milliseconds: 300),
+    //       width: _showSearch ? 200 : 0, // Animate width from 0 to 200
+    //       height: 40, // Fixed height for the search bar
+    //       curve: Curves.easeInOut,
+    //       child: _showSearch
+    //           ? TextField(
+    //               controller: _downloadSearchController,
+    //               focusNode: _focusNode,
+    //               decoration: InputDecoration(
+    //                 labelText: 'Search Files',
+    //                 border: OutlineInputBorder(
+    //                   borderRadius: BorderRadius.circular(8.0),
+    //                 ),
+    //               ),
+    //             )
+    //           : null,
+    //     ),
+    //   ],
+    // ),
+      
+      const SizedBox(height: 10),
+      Expanded(
+        child: Container(
+          decoration: BoxDecoration(
+            //color: const Color.fromARGB(255, 255, 254, 254), // Light background for table
+            border: Border.all(color: Colors.blue[800]!),
+            borderRadius: BorderRadius.circular(8.0),
+          ),
+          child: Column(
+            children: [
+              // Sticky Header Row
+              Container(
+                padding: const EdgeInsets.all(8.0),
+                decoration: BoxDecoration(
+                  //color: const Color.fromARGB(255, 255, 254, 254), // Light background for header
+                  borderRadius: const BorderRadius.vertical(top: Radius.circular(8.0)),
+                   border: Border(
+                                  bottom: BorderSide(color: Colors.grey.shade300), // Divider between rows
+                                ),
+                ),
+                child: Row(
+                  children: [
+                    Expanded(child: Text('File Name', style: TextStyle(fontWeight: FontWeight.bold, color:Colors.blue[800]))),
+                    Expanded(child: Text('File Id', style: TextStyle(fontWeight: FontWeight.bold, color:Colors.blue[800]))),
+                    Expanded(child: Text('Size(KB)', style: TextStyle(fontWeight: FontWeight.bold, color:Colors.blue[800]))),
+                    Expanded(child: Text('Price', style: TextStyle(fontWeight: FontWeight.bold, color:Colors.blue[800]))),
+                  ],
+                ),
+                
+              ),
+              // Scrollable Data Rows
+              
+              Expanded(
+                child: SingleChildScrollView(
+                  child: Column(
+                    children: downloadedFilteredList.isNotEmpty
+                        ? downloadedFilteredList.map(
+                            (entry) => Container(
+                              padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 8.0),
+                              decoration: BoxDecoration(
+                                color: const Color.fromARGB(255, 205, 205, 205), // Light background for rows
+                                border: Border(
+                                  bottom: BorderSide(color: Colors.grey.shade300), // Divider between rows
+                                ),
+                              ),
                               child: Row(
-                                children: const [
-                                  Expanded(child: Text('File Name', style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white))),
-                                  Expanded(child: Text('File Id', style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white))),
-                                  Expanded(child: Text('Size(KB)', style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white))),
-                                  Expanded(child: Text('Price', style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white))),
+                                children: [
+                                  Expanded(child: Text(entry['file_name'] ?? '')),
+                                  Expanded(
+                                    child: MouseRegion(
+                                      cursor: SystemMouseCursors.click,
+                                      child: GestureDetector(
+                                        onTap: () {
+                                          Clipboard.setData(ClipboardData(text: entry['file_id'] ?? ''));
+                                          ScaffoldMessenger.of(context).showSnackBar(
+                                            SnackBar(content: Text("File ID copied to clipboard")),
+                                          );
+                                        },
+                                        child: Text(
+                                          (entry['file_id'] ?? '').substring(0, 10) + '...',
+                                          style: const TextStyle(
+                                            // decoration: TextDecoration.underline,
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                  Expanded(child: Text(entry['file_size_kb']?.toString() ?? '')),
+                                  Expanded(child: Text(entry['price']?.toString() ?? '')),
                                 ],
                               ),
                             ),
-                            // Scrollable Data Rows
-                            Expanded(
-                              child: SingleChildScrollView(
-                                child: Column(
-                                  children: downloadedFilteredList.isNotEmpty
-                                      ? downloadedFilteredList.map(
-                                          (entry) => Container(
-                                            padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 8.0),
-                                            decoration: BoxDecoration(
-                                              border: Border(
-                                                bottom: BorderSide(color: Colors.grey.shade300), // Divider between rows
-                                              ),
-                                            ),
-                                            child: Row(
-                                              children: [
-                                                Expanded(child: Text(entry['file_name'] ?? '')),
-                                                Expanded(
-                                                  child: MouseRegion(
-                                                    cursor: SystemMouseCursors.click,
-                                                    child: GestureDetector(
-                                                      onTap: () {
-                                                        Clipboard.setData(ClipboardData(text: entry['file_id'] ?? ''));
-                                                        ScaffoldMessenger.of(context).showSnackBar(
-                                                          SnackBar(content: Text("File ID copied to clipboard")),
-                                                        );
-                                                      },
-                                                      child: Text(
-                                                        (entry['file_id'] ?? '').substring(0, 10) + '...',
-                                                        style: TextStyle(
-                                                          color: Colors.blue,
-                                                        ),
-                                                      ),
-                                                    ),
-                                                  ),
-                                                ),
-                                                Expanded(child: Text(entry['file_size_kb']?.toString() ?? '')),
-                                                Expanded(child: Text(entry['price']?.toString() ?? '')),
-                                              ],
-                                            ),
-                                          ),
-                                        ).toList()
-                                      : [
-                                          Container(
-                                            padding: const EdgeInsets.all(16.0),
-                                            alignment: Alignment.center,
-                                            child: const Text('No Downloads Found'),
-                                          ),
-                                        ],
-                                ),
-                              ),
+                          ).toList()
+                        : [
+                            Container(
+                              padding: const EdgeInsets.all(16.0),
+                              alignment: Alignment.center,
+                              child: const Text('No Downloads Found'),
                             ),
                           ],
-                        ),
-                      ),
-                    ),
                   ),
-
-
-
-                ],
+                ),
               ),
-            ),
+            ],
+          ),
+        ),
+      ),
+    ],
+  ),
+),
+
+          
           ],
         ),
       ),
     );
   }
+
 }
 
 void main() {
@@ -1105,3 +1328,8 @@ void main() {
     home: FilePage(),
   ));
 }
+
+// class SearchBarWidget extends StatefulWidget {
+//   @override
+//   _SearchBarWidgetState createState() => _SearchBarWidgetState();
+// }
