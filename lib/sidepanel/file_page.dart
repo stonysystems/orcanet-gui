@@ -422,14 +422,21 @@ class _HomePageState extends State<FilePage> with TickerProviderStateMixin {
     );
   }
 
+  bool _isFilePickerOpen = false;
   Future<void> _pickFile() async {
+    if (_isFilePickerOpen) return;  // Prevent multiple clicks
+    setState(() {
+      _isFilePickerOpen = true;  // Disable the button while the file picker is open
+    });
     final result = await FilePicker.platform.pickFiles();
+    setState(() {
+      _isFilePickerOpen = false;  // Re-enable the button once the file picker is closed
+    });
     if (result != null) {
       setState(() {
         _selectedFile = File(result.files.single.path!);
         _fileName = result.files.single.name;
-        _fileSize =
-            '${(result.files.single.size / 1024).toStringAsFixed(2)} KB';
+        _fileSize = '${(result.files.single.size / 1024).toStringAsFixed(2)} KB';
       });
       print(_selectedFile);
       _showConfirmUploadDialog(0, result.files.single.name);
@@ -609,27 +616,6 @@ class _HomePageState extends State<FilePage> with TickerProviderStateMixin {
     return DefaultTabController(
       length: 2, // Two tabs: Provide and Download
       child: Scaffold(
-        //backgroundColor: const Color.fromARGB(255, 255, 255, 255),
-        // appBar: AppBar(
-        //   toolbarHeight: 0,
-        //   title: null,
-        //   bottom: TabBar(
-        //     controller: _tabController,
-        //     tabs: const [
-        //       Tab(
-        //         icon: Icon(Icons.upload_file),
-        //         // Add an icon for the 'Provide File' tab
-        //         text: 'Provide File',
-        //       ),
-        //       Tab(
-        //         icon: Icon(Icons.download),
-        //         // Add an icon for the 'Download File' tab
-        //         text: 'Download File',
-        //       ),
-        //     ],
-        //   ),
-        // ),
-       
         appBar: AppBar(
           toolbarHeight: 60,
           title:  Text('Files Status Page',
@@ -649,334 +635,434 @@ class _HomePageState extends State<FilePage> with TickerProviderStateMixin {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
-                    'Download Files',
-                    style: Theme.of(context)
-                        .textTheme
-                        .titleLarge!
-                        .copyWith(color: Colors.blue[800]),
-                  ),
-                  const SizedBox(height: 20),
-                  Row(
-                    children: [
-                      Expanded(
-                        child: TextField(
-                          controller: _controller,
-                          decoration: const InputDecoration(
-                            border: OutlineInputBorder(),
-                            labelText: 'Enter Hash of the File',
-                          ),
-                        ),
-                      ),
-                      const SizedBox(width: 16),
-                      ElevatedButton.icon(
-                        onPressed: _searchProviders,
-                        icon: const Icon(Icons.person_search),
-                        label: const Text('Search'),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 30),
-                  Text(
-                    'Provided Files',
-                    style: Theme.of(context)
-                        .textTheme
-                        .titleLarge!
-                        .copyWith(color: Colors.blue[800]),
-                  ),
-                  const SizedBox(height: 8),
-                   Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Expanded(
-                        child: TextField(
-                          controller: _searchController,
-                          decoration: InputDecoration(
-                            labelText: 'Search Files',
-                            prefixIcon: Icon(Icons.search),
-                            border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(8.0),
-                            ),
-                          ),
-                        ),
-                      ),
-                      const SizedBox(width: 80),
-                      
-                      // Browse Button
-                      ElevatedButton(
-                        onPressed: _pickFile,
-                        style: ElevatedButton.styleFrom(
-                          padding: const EdgeInsets.all(16.0),
-                        ),
-                        child: const Text('Provide File'),
-                      ),
-                      const SizedBox(width: 30),
-                      RotationTransition(
-                        turns: _iconcontroller,
-                        child: IconButton(
-                          icon: Icon(Icons.refresh, size: 30, color: Colors.grey),
-                          onPressed: _refreshData,
-                        ),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 8),
-                  Expanded(
+                  
+                  Container(
+                    padding: const EdgeInsets.all(8), // Space inside the border
                     child: Card(
-                      elevation: 10,
-                      child: Container(
-                        width: double.infinity,
-                        decoration: BoxDecoration(
-                          //color: const Color.fromARGB(255, 209, 241, 255),
-                          borderRadius: BorderRadius.circular(8.0),
-                          // border: Border.all(
-                          //   color: Colors.black,
-                            // width: 1.0,
-                          // ),
-                        ),
+                      elevation: 5,
+                      //shadowColor: const Color.fromARGB(255, 102, 70, 70), // Elevation for the shadow effect
+                      child: Padding(
+                        padding: const EdgeInsets.all(30), // Padding inside the Card
                         child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            // Sticky Header Row
-                            Container(
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(8.0),
-                                color: const Color.fromARGB(255, 56, 118, 168),
-                              ),
-                              padding: const EdgeInsets.all(10.0),
-                              // color: const Color.fromARGB(255, 56, 118, 168), // Background color for header
-                              child: const Row(
-                                children: [
-                                  Expanded(child: Text('File Name', style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white))),
-                                  Expanded(child: Text('File ID', style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white))),
-                                  Expanded(child: Text('Download Count', style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white))),
-                                  // Expanded(
-                                  //   child: Align(
-                                  //     alignment: Alignment.center, // Centers the text horizontally and vertically
-                                  //     child: Text(
-                                  //       'Download Count',
-                                  //       style: TextStyle(
-                                  //         fontWeight: FontWeight.bold,
-                                  //         color: Colors.white,
-                                  //       ),
-                                  //     ),
-                                  //   ),
-                                  // ),
-                                  // Expanded(child: Text('Status', style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white))),
-                                  Expanded(child: Text('Action', style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white))),
-                                  Expanded(child: Text('Status', style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white))),
-                                ],
-                              ),
+                            Text(
+                              'Download Files',
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .titleLarge!
+                                  .copyWith(color: Colors.blue[800]),
                             ),
-                            // Scrollable Data Rows
-                            Expanded(
-                              child: SingleChildScrollView(
-                                child: Column(
-                                  children: providedFilteredList.isNotEmpty
-                                      ? providedFilteredList.map(
-                                          (entry) => Container(
-                                            padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 8.0),
-                                            decoration: BoxDecoration(
-                                              border: Border(
-                                                bottom: BorderSide(color: Colors.grey.shade300), // Divider between rows
-                                              ),
-                                            ),
-                                            child: Row(
-                                              children: [
-                                                Expanded(child: Text(entry['file_name'] ?? '')),
-                                                Expanded(
-                                                  child: MouseRegion(
-                                                    cursor: SystemMouseCursors.click,
-                                                    child: GestureDetector(
-                                                      onTap: () {
-                                                        Clipboard.setData(ClipboardData(text: entry['file_id'] ?? ''));
-                                                        ScaffoldMessenger.of(context).showSnackBar(
-                                                          const SnackBar(content: Text("File ID copied to clipboard")),
-                                                        );
-                                                      },
-                                                      child: Text(
-                                                        (entry['file_id'] ?? '').substring(0, 10) + '...',
-                                                        style: const TextStyle(
-                                                          color: Colors.blue,
-                                                        ),
-                                                      ),
-                                                    ),
-                                                  ),
-                                                ),
-                                                Expanded(child: Text(entry['downloads_count']?.toString() ?? '')),
-                                            //  Expanded(
-                                            //   child: Column(
-                                            //     mainAxisAlignment: MainAxisAlignment.center, // Aligns the text to the top (start)
-                                            //     crossAxisAlignment: CrossAxisAlignment.center, // Aligns the text to the left
-                                            //     children: [
-                                            //       Text(
-                                            //         entry['downloads_count']?.toString() ?? '',
-                                            //       ),
-                                            //     ],
-                                            //   ),
-                                            // ),
-                                                // Expanded(
-                                                //   child: Row(
-                                                //     mainAxisAlignment: MainAxisAlignment.start,
-                                                //     children: [
-                                                //       SizedBox(
-                                                //         width: 120,
-                                                //         height: 30,
-                                                //         child: ElevatedButton(
-                                                //           onPressed: () {
-                                                //             _showStopProvidingDialog(
-                                                //               providedFilteredList.indexOf(entry),
-                                                //               entry['file_id']!,
-                                                //               entry['file_name']
-                                                //             );
-                                                //           },
-                                                //           style: ElevatedButton.styleFrom(
-                                                //             padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),
-                                                //             textStyle: const TextStyle(fontSize: 12),
-                                                //           ),
-                                                //           child: const Text('Stop Providing'),
-                                                //         ),
-                                                //       ),
-                                                //     ],
-                                                //   ),
-                                                // ),
-                                               
-                                               
-                                                // Toggle Button for Status
-                                                // Expanded(
-                                                //   child: Row(
-                                                //     mainAxisAlignment: MainAxisAlignment.start,
-                                                //     children: [
-                                                //       SizedBox(
-                                                //         width: 120,
-                                                //         height: 30,
-                                                //        child: StatefulBuilder(
-                                                //         builder: (context, setState) {
-                                                //           bool isProviding = entry['is_providing'] ?? true; // Assuming initial state
-                                                //           return Row(
-                                                //             children: [
-                                                //               Switch(
-                                                //                 value: isProviding,
-                                                //                 onChanged: (value) {
-                                                //                   setState(() {
-                                                //                     isProviding = value;
-                                                //                     entry['is_providing'] = isProviding;
-                                                //                   });
-                                                //                 },
-                                                //                 activeColor: Colors.green,
-                                                //                 inactiveThumbColor: Colors.red,
-                                                //                 inactiveTrackColor: Colors.red.withOpacity(0.3),
-                                                //               ),
-                                                //               Text(isProviding ? 'Resume' : 'Stop', style: TextStyle(fontSize: 12, color: isProviding ? Colors.green : Colors.red)),
-                                                //             ],
-                                                //           );
-                                                //         },
-                                                //       ),
-                                                //       ),
-                                                //     ],
-                                                //   )
-                                                // ),
-                                                Expanded(
-                                                  child: Row(
-                                                    mainAxisAlignment: MainAxisAlignment.start,
-                                                    crossAxisAlignment: CrossAxisAlignment.center,
-                                                    children: [
-                                                      SizedBox(
-                                                        width: 150, // Adjusted width to accommodate icons
-                                                        height: 30,
-                                                        child: StatefulBuilder(
-                                                          builder: (context, setState) {
-                                                            bool isProviding = entry['is_providing'] ?? true; // Assuming initial state
-                                                            return Row(
-                                                              mainAxisAlignment: MainAxisAlignment.start,
-                                                              children: [
-                                                                IconButton(
-                                                                  icon: Icon(
-                                                                    Icons.play_arrow,
-                                                                    size: 18,
-                                                                    color: isProviding ? Colors.green : Colors.grey,
-                                                                  ),
-                                                                  onPressed: isProviding
-                                                                      ? null
-                                                                      : () {
-                                                                          setState(() {
-                                                                            isProviding = true;
-                                                                            entry['is_providing'] = true;
-                                                                          });
-                                                                        },
-                                                                  tooltip: 'Resume Providing',
-                                                                ),
-                                                                IconButton(
-                                                                  icon: Icon(
-                                                                    Icons.pause,
-                                                                    size: 18,
-                                                                    color: !isProviding ? Colors.red : Colors.grey,
-                                                                  ),
-                                                                  onPressed: !isProviding
-                                                                      ? null
-                                                                      : () {
-                                                                          stopProviding(entry['file_id'],false);
-                                                                          setState(() {
-                                                                            isProviding = false;
-                                                                            entry['is_providing'] = false;
-                                                                          });
-                                                                        },
-                                                                  tooltip: 'Stop Providing',
-                                                                ),
-                                                                IconButton(
-                                                                  icon: const Icon(
-                                                                    Icons.delete,
-                                                                    size: 18,
-                                                                    color: Colors.black,
-                                                                  ),
-                                                                  onPressed: () {
-                                                                     _showStopProvidingDialog(
-                                                                        providedFilteredList.indexOf(entry),
-                                                                        entry['file_id']!,
-                                                                        entry['file_name']
-                                                                      );
-                                                                    print('Delete clicked for ${entry}');
-                                                                  },
-                                                                  tooltip: 'Delete',
-                                                                ),
-                                                              ],
-                                                            );
-                                                          },
-                                                        ),
-                                                      ),
-                                                    ],
-                                                  
-                                                  ),
-                                                ),
-                                                Expanded(
-                                                  child: Column(
-                                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                                    children: [
-                                                      Text(
-                                                        entry['status'] == 1 ? 'Active' : 'Inactive',
-                                                        style: TextStyle(
-                                                          color: entry['status'] == 1 ? Colors.green : Colors.red,
-                                                          fontWeight: FontWeight.bold,
-                                                        ),
-                                                      ),
-                                                    ],
-                                                  ),
-                                                ),
-                                              ],
-                                            ),
-                                          ),
-                                        ).toList()
-                                      : [
-                                          Container(
-                                            padding: const EdgeInsets.all(16.0),
-                                            alignment: Alignment.center,
-                                            child: const Text('No files provided'),
-                                          ),
-                                        ],
+                            const SizedBox(height: 20),
+                            Row(
+                              children: [
+                                Expanded(
+                                  child: TextField(
+                                    controller: _controller,
+                                    decoration: const InputDecoration(
+                                      border: OutlineInputBorder(),
+                                      labelText: 'Enter Hash of the File',
+                                    ),
+                                  ),
                                 ),
-                              ),
+                                const SizedBox(width: 16),
+                                ElevatedButton.icon(
+                                  onPressed: _searchProviders,
+                                   style: ElevatedButton.styleFrom(
+                                      backgroundColor: const Color.fromARGB(255, 228, 228, 228),
+                                      padding: const EdgeInsets.all(20.0),
+                                    ),
+                                  icon: const Icon(Icons.person_search),
+                                  label: const Text('Search'),
+                                ),
+                              ],
                             ),
                           ],
                         ),
+                      ),
+                    ),
+                  ),
+
+
+
+                  const SizedBox(height: 30),
+                  // const Column(
+                  //   children: [
+                  //     // Text('Above the line'),
+                  //     Divider(
+                  //       color: Colors.black,
+                  //       thickness: 1,
+                  //     ),
+                  //     // Text('Below the line'),
+                  //   ],
+                  // ),
+                  const SizedBox(height: 30),
+
+                  // Text(
+                  //   'Provided Files',
+                  //   style: Theme.of(context)
+                  //       .textTheme
+                  //       .titleLarge!
+                  //       .copyWith(color: Colors.blue[800]),
+                  // ),
+                  // const SizedBox(height: 8),
+                  //  Row(
+                  //   crossAxisAlignment: CrossAxisAlignment.start,
+                  //   children: [
+                  //     Expanded(
+                  //       child: TextField(
+                  //         controller: _searchController,
+                  //         decoration: InputDecoration(
+                  //           labelText: 'Search Files',
+                  //           prefixIcon: Icon(Icons.search),
+                  //           border: OutlineInputBorder(
+                  //             borderRadius: BorderRadius.circular(8.0),
+                  //           ),
+                  //         ),
+                  //       ),
+                  //     ),
+                  //     const SizedBox(width: 80),
+                      
+                  //     // Browse Button
+                  //     ElevatedButton(
+                  //       onPressed: _pickFile,
+                  //       style: ElevatedButton.styleFrom(
+                  //         padding: const EdgeInsets.all(16.0),
+                  //       ),
+                  //       child: const Text('Provide File'),
+                  //     ),
+                  //     const SizedBox(width: 30),
+                  //     RotationTransition(
+                  //       turns: _iconcontroller,
+                  //       child: IconButton(
+                  //         icon: Icon(Icons.refresh, size: 30, color: Colors.grey),
+                  //         onPressed: _refreshData,
+                  //       ),
+                  //     ),
+                  //   ],
+                  // ),
+                  
+                  const SizedBox(height: 8),
+                  Expanded(  
+                    child: Card(
+                      elevation: 5,
+                      child: Padding(
+                         padding: const EdgeInsets.all(30),
+                        // width: double.infinity,
+                        // decoration: BoxDecoration(
+                        //   //color: const Color.fromARGB(255, 209, 241, 255),
+                        //   borderRadius: BorderRadius.circular(8.0),
+                        //   // border: Border.all(
+                        //   //   color: Colors.black,
+                        //     // width: 1.0,
+                        //   // ),
+                        // ),
+                        
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              'Provided Files',
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .titleLarge!
+                                  .copyWith(color: Colors.blue[800]),
+                            ),
+                              const SizedBox(height: 8),
+                              Row(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  const SizedBox(width: 2),
+                                  Expanded(
+                                    child: TextField(
+                                      controller: _searchController,
+                                      decoration: InputDecoration(
+                                        labelText: 'Search Files',
+                                        prefixIcon: Icon(Icons.search),
+                                        border: OutlineInputBorder(
+                                          borderRadius: BorderRadius.circular(10.0),
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                  const SizedBox(width: 80),
+                                  
+                                  // Browse Button
+                                  ElevatedButton(
+                                    onPressed: _pickFile,
+                                    style: ElevatedButton.styleFrom(
+                                      backgroundColor: const Color.fromARGB(255, 228, 228, 228),
+                                      padding: const EdgeInsets.all(20.0),
+                                    ),
+                                    child: const Text('Provide File'),
+                                  ),
+                                  const SizedBox(width: 30),
+                                  RotationTransition(
+                                    turns: _iconcontroller,
+                                    child: IconButton(
+                                      icon: Icon(Icons.refresh, size: 30, color: Colors.grey),
+                                      onPressed: _refreshData,
+                                    ),
+                                  ),
+                                  const SizedBox(width: 10),
+                                ],
+                              ),
+                              const SizedBox(height: 8),
+                            // Sticky Header Row
+                            Expanded(
+                              child: Container(
+                                decoration: BoxDecoration(
+                                  border: Border.all(color: const Color.fromARGB(255, 178, 178, 178), width: 2),
+                                  borderRadius: BorderRadius.circular(8), // Optional rounded corners
+                                ),
+                                child:  Column(
+                                  children: [
+                                    Container(
+                                      decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.circular(5.0),
+                                        color: const Color.fromARGB(255, 56, 118, 168),
+                                      ),
+                                      padding: const EdgeInsets.all(10.0),
+                                      // color: const Color.fromARGB(255, 56, 118, 168), // Background color for header
+                                      child: const Row(
+                                        children: [
+                                          Expanded(child: Text('File Name', style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white))),
+                                          Expanded(child: Text('File ID', style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white))),
+                                          Expanded(child: Text('Download Count', style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white))),
+                                          // Expanded(
+                                          //   child: Align(
+                                          //     alignment: Alignment.center, // Centers the text horizontally and vertically
+                                          //     child: Text(
+                                          //       'Download Count',
+                                          //       style: TextStyle(
+                                          //         fontWeight: FontWeight.bold,
+                                          //         color: Colors.white,
+                                          //       ),
+                                          //     ),
+                                          //   ),
+                                          // ),
+                                          // Expanded(child: Text('Status', style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white))),
+                                          Expanded(child: Text('Action', style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white))),
+                                          Expanded(child: Text('Status', style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white))),
+                                        ],
+                                      ),
+                                    ),
+                                    // Scrollable Data Rows
+                                    Expanded(
+                                      child: SingleChildScrollView(
+                                        child: Column(
+                                          children: providedFilteredList.isNotEmpty
+                                              ? providedFilteredList.map(
+                                                  (entry) => Container(
+                                                    padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 8.0),
+                                                    decoration: BoxDecoration(
+                                                      border: Border(
+                                                        bottom: BorderSide(color: Colors.grey.shade300), // Divider between rows
+                                                      ),
+                                                    ),
+                                                    child: Row(
+                                                      children: [
+                                                        Expanded(child: Text(entry['file_name'] ?? '')),
+                                                        Expanded(
+                                                          child: MouseRegion(
+                                                            cursor: SystemMouseCursors.click,
+                                                            child: GestureDetector(
+                                                              onTap: () {
+                                                                Clipboard.setData(ClipboardData(text: entry['file_id'] ?? ''));
+                                                                ScaffoldMessenger.of(context).showSnackBar(
+                                                                  const SnackBar(content: Text("File ID copied to clipboard")),
+                                                                );
+                                                              },
+                                                              child: Text(
+                                                                (entry['file_id'] ?? '').substring(0, 10) + '...',
+                                                                style: const TextStyle(
+                                                                  color: Colors.blue,
+                                                                ),
+                                                              ),
+                                                            ),
+                                                          ),
+                                                        ),
+                                                        Expanded(child: Text(entry['downloads_count']?.toString() ?? '')),
+                                                    //  Expanded(
+                                                    //   child: Column(
+                                                    //     mainAxisAlignment: MainAxisAlignment.center, // Aligns the text to the top (start)
+                                                    //     crossAxisAlignment: CrossAxisAlignment.center, // Aligns the text to the left
+                                                    //     children: [
+                                                    //       Text(
+                                                    //         entry['downloads_count']?.toString() ?? '',
+                                                    //       ),
+                                                    //     ],
+                                                    //   ),
+                                                    // ),
+                                                        // Expanded(
+                                                        //   child: Row(
+                                                        //     mainAxisAlignment: MainAxisAlignment.start,
+                                                        //     children: [
+                                                        //       SizedBox(
+                                                        //         width: 120,
+                                                        //         height: 30,
+                                                        //         child: ElevatedButton(
+                                                        //           onPressed: () {
+                                                        //             _showStopProvidingDialog(
+                                                        //               providedFilteredList.indexOf(entry),
+                                                        //               entry['file_id']!,
+                                                        //               entry['file_name']
+                                                        //             );
+                                                        //           },
+                                                        //           style: ElevatedButton.styleFrom(
+                                                        //             padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),
+                                                        //             textStyle: const TextStyle(fontSize: 12),
+                                                        //           ),
+                                                        //           child: const Text('Stop Providing'),
+                                                        //         ),
+                                                        //       ),
+                                                        //     ],
+                                                        //   ),
+                                                        // ),
+                                                      
+                                                      
+                                                        // Toggle Button for Status
+                                                        // Expanded(
+                                                        //   child: Row(
+                                                        //     mainAxisAlignment: MainAxisAlignment.start,
+                                                        //     children: [
+                                                        //       SizedBox(
+                                                        //         width: 120,
+                                                        //         height: 30,
+                                                        //        child: StatefulBuilder(
+                                                        //         builder: (context, setState) {
+                                                        //           bool isProviding = entry['is_providing'] ?? true; // Assuming initial state
+                                                        //           return Row(
+                                                        //             children: [
+                                                        //               Switch(
+                                                        //                 value: isProviding,
+                                                        //                 onChanged: (value) {
+                                                        //                   setState(() {
+                                                        //                     isProviding = value;
+                                                        //                     entry['is_providing'] = isProviding;
+                                                        //                   });
+                                                        //                 },
+                                                        //                 activeColor: Colors.green,
+                                                        //                 inactiveThumbColor: Colors.red,
+                                                        //                 inactiveTrackColor: Colors.red.withOpacity(0.3),
+                                                        //               ),
+                                                        //               Text(isProviding ? 'Resume' : 'Stop', style: TextStyle(fontSize: 12, color: isProviding ? Colors.green : Colors.red)),
+                                                        //             ],
+                                                        //           );
+                                                        //         },
+                                                        //       ),
+                                                        //       ),
+                                                        //     ],
+                                                        //   )
+                                                        // ),
+                                                        Expanded(
+                                                          child: Row(
+                                                            mainAxisAlignment: MainAxisAlignment.start,
+                                                            crossAxisAlignment: CrossAxisAlignment.center,
+                                                            children: [
+                                                              SizedBox(
+                                                                width: 150, // Adjusted width to accommodate icons
+                                                                height: 30,
+                                                                child: StatefulBuilder(
+                                                                  builder: (context, setState) {
+                                                                    bool isProviding = entry['is_providing'] ?? true; // Assuming initial state
+                                                                    return Row(
+                                                                      mainAxisAlignment: MainAxisAlignment.start,
+                                                                      children: [
+                                                                        IconButton(
+                                                                          icon: Icon(
+                                                                            Icons.play_arrow,
+                                                                            size: 18,
+                                                                            color: isProviding ? Colors.green : Colors.grey,
+                                                                          ),
+                                                                          onPressed: isProviding
+                                                                              ? null
+                                                                              : () {
+                                                                                  setState(() {
+                                                                                    isProviding = true;
+                                                                                    entry['is_providing'] = true;
+                                                                                  });
+                                                                                },
+                                                                          tooltip: 'Resume Providing',
+                                                                        ),
+                                                                        IconButton(
+                                                                          icon: Icon(
+                                                                            Icons.pause,
+                                                                            size: 18,
+                                                                            color: !isProviding ? Colors.red : Colors.grey,
+                                                                          ),
+                                                                          onPressed: !isProviding
+                                                                              ? null
+                                                                              : () {
+                                                                                  stopProviding(entry['file_id'],false);
+                                                                                  setState(() {
+                                                                                    isProviding = false;
+                                                                                    entry['is_providing'] = false;
+                                                                                  });
+                                                                                },
+                                                                          tooltip: 'Stop Providing',
+                                                                        ),
+                                                                        IconButton(
+                                                                          icon: const Icon(
+                                                                            Icons.delete,
+                                                                            size: 18,
+                                                                            color: Colors.black,
+                                                                          ),
+                                                                          onPressed: () {
+                                                                            _showStopProvidingDialog(
+                                                                                providedFilteredList.indexOf(entry),
+                                                                                entry['file_id']!,
+                                                                                entry['file_name']
+                                                                              );
+                                                                            print('Delete clicked for ${entry}');
+                                                                          },
+                                                                          tooltip: 'Delete',
+                                                                        ),
+                                                                      ],
+                                                                    );
+                                                                  },
+                                                                ),
+                                                              ),
+                                                            ],
+                                                          
+                                                          ),
+                                                        ),
+                                                        Expanded(
+                                                          child: Column(
+                                                            crossAxisAlignment: CrossAxisAlignment.start,
+                                                            children: [
+                                                              Text(
+                                                                entry['status'] == 1 ? 'Active' : 'Inactive',
+                                                                style: TextStyle(
+                                                                  color: entry['status'] == 1 ? Colors.green : Colors.red,
+                                                                  fontWeight: FontWeight.bold,
+                                                                ),
+                                                              ),
+                                                            ],
+                                                          ),
+                                                        ),
+                                                      ],
+                                                    ),
+                                                  ),
+                                                ).toList()
+                                              : [
+                                                  Container(
+                                                    padding: const EdgeInsets.all(16.0),
+                                                    alignment: Alignment.center,
+                                                    child: const Text('No files provided'),
+                                                  ),
+                                                ],
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),    
+                              ),
+                            ),
+                                       
+                          ],
+                        ),
+                        
                       ),
                     ),
                   )
@@ -985,335 +1071,7 @@ class _HomePageState extends State<FilePage> with TickerProviderStateMixin {
                 ],
               ),
             ),
-            // Download Section
-            // Padding(
-            //   padding: const EdgeInsets.all(16.0),
-            //   child: Column(
-            //     crossAxisAlignment: CrossAxisAlignment.start,
-            //     children: [
-            //       Text(
-            //         'Download Files',
-            //         style: Theme.of(context)
-            //             .textTheme
-            //             .titleLarge!
-            //             .copyWith(color: Colors.blue[800]),
-            //       ),
-            //       const SizedBox(height: 20),
-            //       Row(
-            //         children: [
-            //           Expanded(
-            //             child: TextField(
-            //               controller: _controller,
-            //               decoration: const InputDecoration(
-            //                 border: OutlineInputBorder(),
-            //                 labelText: 'Enter Hash of the File',
-            //               ),
-            //             ),
-            //           ),
-            //           const SizedBox(width: 16),
-            //           ElevatedButton.icon(
-            //             onPressed: _searchProviders,
-            //             icon: const Icon(Icons.person_search),
-            //             label: const Text('Search'),
-            //           ),
-            //         ],
-            //       ),
-
-
-            //       const SizedBox(height: 80),
-            //       Text(
-            //         'Downloaded Files',
-            //         style: Theme.of(context)
-            //             .textTheme
-            //             .titleLarge!
-            //             .copyWith(color: Colors.blue[800]),
-            //       ),
-            //       const SizedBox(height: 8),
-            //        Row(
-            //         crossAxisAlignment: CrossAxisAlignment.start,
-            //         children: [
-            //           Expanded(
-            //             child: TextField(
-            //               controller: _downloadSearchController,
-            //               decoration: InputDecoration(
-            //                 labelText: 'Search Files',
-            //                 prefixIcon: Icon(Icons.search),
-            //                 border: OutlineInputBorder(
-            //                   borderRadius: BorderRadius.circular(8.0),
-            //                 ),
-            //               ),
-            //             ),
-            //           ),
-            //           const SizedBox(width: 30),
-            //         ],
-            //       ),
-            //       const SizedBox(height: 10),
-            //       Expanded(
-            //         child: Card(
-            //           elevation: 4,
-            //           child: Container(
-            //             decoration: BoxDecoration(
-            //               //color: const Color.fromARGB(255, 255, 255, 255),
-            //               borderRadius: BorderRadius.circular(8.0),
-            //             ),
-            //             child: Column(
-            //               children: [
-            //                 // Sticky Header Row
-            //                 Container(
-            //                   padding: const EdgeInsets.all(8.0),
-            //                   color: const Color.fromARGB(255, 46, 46, 46), // Background color for header
-            //                   child: Row(
-            //                     children: const [
-            //                       Expanded(child: Text('File Name', style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white))),
-            //                       Expanded(child: Text('File Id', style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white))),
-            //                       Expanded(child: Text('Size(KB)', style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white))),
-            //                       Expanded(child: Text('Price', style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white))),
-            //                     ],
-            //                   ),
-            //                 ),
-            //                 // Scrollable Data Rows
-            //                 Expanded(
-            //                   child: SingleChildScrollView(
-            //                     child: Column(
-            //                       children: downloadedFilteredList.isNotEmpty
-            //                           ? downloadedFilteredList.map(
-            //                               (entry) => Container(
-            //                                 padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 8.0),
-            //                                 decoration: BoxDecoration(
-            //                                   border: Border(
-            //                                     bottom: BorderSide(color: Colors.grey.shade300), // Divider between rows
-            //                                   ),
-            //                                 ),
-            //                                 child: Row(
-            //                                   children: [
-            //                                     Expanded(child: Text(entry['file_name'] ?? '')),
-            //                                     Expanded(
-            //                                       child: MouseRegion(
-            //                                         cursor: SystemMouseCursors.click,
-            //                                         child: GestureDetector(
-            //                                           onTap: () {
-            //                                             Clipboard.setData(ClipboardData(text: entry['file_id'] ?? ''));
-            //                                             ScaffoldMessenger.of(context).showSnackBar(
-            //                                               SnackBar(content: Text("File ID copied to clipboard")),
-            //                                             );
-            //                                           },
-            //                                           child: Text(
-            //                                             (entry['file_id'] ?? '').substring(0, 10) + '...',
-            //                                             style: TextStyle(
-            //                                               color: Colors.blue,
-            //                                             ),
-            //                                           ),
-            //                                         ),
-            //                                       ),
-            //                                     ),
-            //                                     Expanded(child: Text(entry['file_size_kb']?.toString() ?? '')),
-            //                                     Expanded(child: Text(entry['price']?.toString() ?? '')),
-            //                                   ],
-            //                                 ),
-            //                               ),
-            //                             ).toList()
-            //                           : [
-            //                               Container(
-            //                                 padding: const EdgeInsets.all(16.0),
-            //                                 alignment: Alignment.center,
-            //                                 child: const Text('No Downloads Found'),
-            //                               ),
-            //                             ],
-            //                     ),
-            //                   ),
-            //                 ),
-            //               ],
-            //             ),
-            //           ),
-            //         ),
-            //       ),
-            //     ],
-            //   ),
-            // ),
-            Padding(
-  padding: const EdgeInsets.all(16.0),
-  child: Column(
-    crossAxisAlignment: CrossAxisAlignment.start,
-    children: [
-      Text(
-        'Download Files',
-        style: Theme.of(context)
-            .textTheme
-            .titleLarge!
-            .copyWith(color: Colors.blue[800]),
-      ),
-      const SizedBox(height: 20),
-      Row(
-        children: [
-          Expanded(
-            child: TextField(
-              controller: _controller,
-              decoration: const InputDecoration(
-                border: OutlineInputBorder(),
-                labelText: 'Enter Hash of the File',
-              ),
-            ),
-          ),
-          const SizedBox(width: 16),
-          ElevatedButton.icon(
-            onPressed: _searchProviders,
-            icon: const Icon(Icons.person_search),
-            label: const Text('Search'),
-          ),
-        ],
-      ),
-      const SizedBox(height: 80),
-      Text(
-        'Downloaded Files',
-        style: Theme.of(context)
-            .textTheme
-            .titleLarge!
-            .copyWith(color: Colors.blue[800]),
-      ),
-      const SizedBox(height: 8),
-      Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Expanded(
-            child: TextField(
-              controller: _downloadSearchController,
-              decoration: InputDecoration(
-                labelText: 'Search Files',
-                prefixIcon: const Icon(Icons.search),
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(8.0),
-                ),
-              ),
-            ),
-          ),
-          const SizedBox(width: 30),
-        ],
-      ),
-    //   Row(
-    //   crossAxisAlignment: CrossAxisAlignment.start,
-    //   children: [
-    //     InkWell(
-    //       onTap: () {
-    //         setState(() {
-    //           _showSearch = !_showSearch; // Toggle search bar visibility
-    //         });
-    //       },
-    //       child: const Icon(Icons.search),
-    //     ),
-    //     const SizedBox(width: 30),
-    //     AnimatedContainer(
-    //       duration: const Duration(milliseconds: 300),
-    //       width: _showSearch ? 200 : 0, // Animate width from 0 to 200
-    //       height: 40, // Fixed height for the search bar
-    //       curve: Curves.easeInOut,
-    //       child: _showSearch
-    //           ? TextField(
-    //               controller: _downloadSearchController,
-    //               focusNode: _focusNode,
-    //               decoration: InputDecoration(
-    //                 labelText: 'Search Files',
-    //                 border: OutlineInputBorder(
-    //                   borderRadius: BorderRadius.circular(8.0),
-    //                 ),
-    //               ),
-    //             )
-    //           : null,
-    //     ),
-    //   ],
-    // ),
-      
-      const SizedBox(height: 10),
-      Expanded(
-        child: Container(
-          decoration: BoxDecoration(
-            //color: const Color.fromARGB(255, 255, 254, 254), // Light background for table
-            border: Border.all(color: Colors.blue[800]!),
-            borderRadius: BorderRadius.circular(8.0),
-          ),
-          child: Column(
-            children: [
-              // Sticky Header Row
-              Container(
-                padding: const EdgeInsets.all(8.0),
-                decoration: BoxDecoration(
-                  //color: const Color.fromARGB(255, 255, 254, 254), // Light background for header
-                  borderRadius: const BorderRadius.vertical(top: Radius.circular(8.0)),
-                   border: Border(
-                                  bottom: BorderSide(color: Colors.grey.shade300), // Divider between rows
-                                ),
-                ),
-                child: Row(
-                  children: [
-                    Expanded(child: Text('File Name', style: TextStyle(fontWeight: FontWeight.bold, color:Colors.blue[800]))),
-                    Expanded(child: Text('File Id', style: TextStyle(fontWeight: FontWeight.bold, color:Colors.blue[800]))),
-                    Expanded(child: Text('Size(KB)', style: TextStyle(fontWeight: FontWeight.bold, color:Colors.blue[800]))),
-                    Expanded(child: Text('Price', style: TextStyle(fontWeight: FontWeight.bold, color:Colors.blue[800]))),
-                  ],
-                ),
-                
-              ),
-              // Scrollable Data Rows
-              
-              Expanded(
-                child: SingleChildScrollView(
-                  child: Column(
-                    children: downloadedFilteredList.isNotEmpty
-                        ? downloadedFilteredList.map(
-                            (entry) => Container(
-                              padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 8.0),
-                              decoration: BoxDecoration(
-                                color: const Color.fromARGB(255, 205, 205, 205), // Light background for rows
-                                border: Border(
-                                  bottom: BorderSide(color: Colors.grey.shade300), // Divider between rows
-                                ),
-                              ),
-                              child: Row(
-                                children: [
-                                  Expanded(child: Text(entry['file_name'] ?? '')),
-                                  Expanded(
-                                    child: MouseRegion(
-                                      cursor: SystemMouseCursors.click,
-                                      child: GestureDetector(
-                                        onTap: () {
-                                          Clipboard.setData(ClipboardData(text: entry['file_id'] ?? ''));
-                                          ScaffoldMessenger.of(context).showSnackBar(
-                                            SnackBar(content: Text("File ID copied to clipboard")),
-                                          );
-                                        },
-                                        child: Text(
-                                          (entry['file_id'] ?? '').substring(0, 10) + '...',
-                                          style: const TextStyle(
-                                            // decoration: TextDecoration.underline,
-                                          ),
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                  Expanded(child: Text(entry['file_size_kb']?.toString() ?? '')),
-                                  Expanded(child: Text(entry['price']?.toString() ?? '')),
-                                ],
-                              ),
-                            ),
-                          ).toList()
-                        : [
-                            Container(
-                              padding: const EdgeInsets.all(16.0),
-                              alignment: Alignment.center,
-                              child: const Text('No Downloads Found'),
-                            ),
-                          ],
-                  ),
-                ),
-              ),
-            ],
-          ),
-        ),
-      ),
-    ],
-  ),
-),
-
-          
+           
           ],
         ),
       ),
