@@ -22,22 +22,23 @@ class _HomePageState extends State<FilePage> with TickerProviderStateMixin {
   TabController? _tabController;
   late AnimationController _iconcontroller;
 
-  List<Map<String, dynamic>> providers = [{
-    "file_metadata":{
-      "file_name": "abc.txt",
-      "fee_rate_per_kb": 12.0
-    },
-    "peer_id": "4e7fd1d02f901336dc0400d835d1414226f67f0d22bce32dd1260a3f8d3ffb9c"
-  },
-  {
-    "file_metadata":{
-      "file_name": "dfge.txt",
-      "fee_rate_per_kb": 10.0
-    },
-    "peer_id": "asgfs4e7fsdfa835d1414226f67f0d22bce32dd1260a3f8d3ffb9c"
-  }];
-  // List<Map<String, dynamic>> providedList = [];
-  //List<Map<String, dynamic>> downloadedList = [];
+  List<Map<String, dynamic>> providers = [];
+  // [{
+  //   "file_metadata":{
+  //     "file_name": "abc.txt",
+  //     "fee_rate_per_kb": 12.0
+  //   },
+  //   "peer_id": "4e7fd1d02f901336dc0400d835d1414226f67f0d22bce32dd1260a3f8d3ffb9c"
+  // },
+  // {
+  //   "file_metadata":{
+  //     "file_name": "dfge.txt",
+  //     "fee_rate_per_kb": 10.0
+  //   },
+  //   "peer_id": "asgfs4e7fsdfa835d1414226f67f0d22bce32dd1260a3f8d3ffb9c"
+  // }];
+  List<Map<String, dynamic>> providedList = [];
+  List<Map<String, dynamic>> downloadedList = [];
 
 
   final TextEditingController _searchController = TextEditingController();
@@ -45,67 +46,67 @@ class _HomePageState extends State<FilePage> with TickerProviderStateMixin {
       TextEditingController();
   List<Map<String, dynamic>> providedFilteredList = [];
   List<Map<String, dynamic>> downloadedFilteredList = [];
-  List<Map<String, dynamic>> downloadedList =  [
-        {
-            "download_timestamp": 1729740406,
-            "fee_rate_per_kb": 0.0024999999441206455,
-            "file_id": "ff9abdc5956831e49bfdf9e7927927fa283d9b4f74e365ff22d3fc35062cf156",
-            "file_name": "LinKer.pdf",
-            "file_path": "/Users/sethu/Desktop/General/abcd.pdf",
-            "file_size_kb": 5609.3740234375,
-            "id": "af051645-7ce9-45f8-b05a-d550ee94fc2d",
-            "payment_tx_id": "a3467be8af7fa73fda90a21cf0a1a7470d643dbc7e5a02236fa47aa933f76d1f",
-            "peer_id": "12D3KooWLJtG8fd2hkQzTn96MrLvThmnNQjTUFZwGEsLRz5EmSzc",
-            "price": 14.02343463897705
-        },
-        {
-            "download_timestamp": 1729742811,
-            "fee_rate_per_kb": 0.0024999999441206455,
-            "file_id": "4e7fd1d02f901336dc0400d835d1414226f67f0d22bce32dd1260a3f8d3ffb9c",
-            "file_name": "wp1.jpg",
-            "file_path": "/Users/sethu/Desktop/General/nice.jpg",
-            "file_size_kb": 1113.83203125,
-            "id": "e9538a32-fbf6-466c-9c4e-b7d52e26b758",
-            "payment_tx_id": null,
-            "peer_id": "12D3KooWLJtG8fd2hkQzTn96MrLvThmnNQjTUFZwGEsLRz5EmSzc",
-            "price": 2.7845799922943115
-        }, {
-            "download_timestamp": 1729740406,
-            "fee_rate_per_kb": 0.0024999999441206455,
-            "file_id": "ff9abdc5956831e49bfdf9e7927927fa283d9b4f74e365ff22d3fc35062cf156",
-            "file_name": "LinKer.pdf",
-            "file_path": "/Users/sethu/Desktop/General/abcd.pdf",
-            "file_size_kb": 5609.3740234375,
-            "id": "af051645-7ce9-45f8-b05a-d550ee94fc2d",
-            "payment_tx_id": "a3467be8af7fa73fda90a21cf0a1a7470d643dbc7e5a02236fa47aa933f76d1f",
-            "peer_id": "12D3KooWLJtG8fd2hkQzTn96MrLvThmnNQjTUFZwGEsLRz5EmSzc",
-            "price": 14.02343463897705
-        }];
-  List<Map<String, dynamic>> providedList =  [
-        {
-            "downloads_count": 1,
-            "file_id": "ed5cd394cc73b094aeb53e3e4e2d241686da51b6cf21af6d633297a5780e6475",
-            "file_name": "randomized_algorithms.pdf",
-            "file_path": "/Users/sethu/Documents/orcanet/provide/randomized_algorithms.pdf",
-            "provide_start_timestamp": null,
-            "status": 1 // Means active/inactive
-        },
-        {
-            "downloads_count": 5,
-            "file_id": "4e7fd1d02f901336dc0400d835d1414226f67f0d22bce32dd1260a3f8d3ffb9c",
-            "file_name": "wp1.jpg",
-            "file_path": "/Users/sethu/Documents/orcanet/provide/wp1.jpg",
-            "provide_start_timestamp": null,
-            "status": 1
-        },
-        {
-            "downloads_count": 4,
-            "file_id": "e0ec87573965dfa42674cbd7575d827bd536ac926912c7d62dc13c6a5b393f77",
-            "file_name": "VizProjectPoster.pdf",
-            "file_path": "/Users/sethu/Documents/orcanet/provide/VizProjectPoster.pdf",
-            "provide_start_timestamp": null,
-            "status": 1
-        }];
+  // List<Map<String, dynamic>> downloadedList =  [
+  //       {
+  //           "download_timestamp": 1729740406,
+  //           "fee_rate_per_kb": 0.0024999999441206455,
+  //           "file_id": "ff9abdc5956831e49bfdf9e7927927fa283d9b4f74e365ff22d3fc35062cf156",
+  //           "file_name": "LinKer.pdf",
+  //           "file_path": "/Users/sethu/Desktop/General/abcd.pdf",
+  //           "file_size_kb": 5609.3740234375,
+  //           "id": "af051645-7ce9-45f8-b05a-d550ee94fc2d",
+  //           "payment_tx_id": "a3467be8af7fa73fda90a21cf0a1a7470d643dbc7e5a02236fa47aa933f76d1f",
+  //           "peer_id": "12D3KooWLJtG8fd2hkQzTn96MrLvThmnNQjTUFZwGEsLRz5EmSzc",
+  //           "price": 14.02343463897705
+  //       },
+  //       {
+  //           "download_timestamp": 1729742811,
+  //           "fee_rate_per_kb": 0.0024999999441206455,
+  //           "file_id": "4e7fd1d02f901336dc0400d835d1414226f67f0d22bce32dd1260a3f8d3ffb9c",
+  //           "file_name": "wp1.jpg",
+  //           "file_path": "/Users/sethu/Desktop/General/nice.jpg",
+  //           "file_size_kb": 1113.83203125,
+  //           "id": "e9538a32-fbf6-466c-9c4e-b7d52e26b758",
+  //           "payment_tx_id": null,
+  //           "peer_id": "12D3KooWLJtG8fd2hkQzTn96MrLvThmnNQjTUFZwGEsLRz5EmSzc",
+  //           "price": 2.7845799922943115
+  //       }, {
+  //           "download_timestamp": 1729740406,
+  //           "fee_rate_per_kb": 0.0024999999441206455,
+  //           "file_id": "ff9abdc5956831e49bfdf9e7927927fa283d9b4f74e365ff22d3fc35062cf156",
+  //           "file_name": "LinKer.pdf",
+  //           "file_path": "/Users/sethu/Desktop/General/abcd.pdf",
+  //           "file_size_kb": 5609.3740234375,
+  //           "id": "af051645-7ce9-45f8-b05a-d550ee94fc2d",
+  //           "payment_tx_id": "a3467be8af7fa73fda90a21cf0a1a7470d643dbc7e5a02236fa47aa933f76d1f",
+  //           "peer_id": "12D3KooWLJtG8fd2hkQzTn96MrLvThmnNQjTUFZwGEsLRz5EmSzc",
+  //           "price": 14.02343463897705
+  //       }];
+  // List<Map<String, dynamic>> providedList =  [
+  //       {
+  //           "downloads_count": 1,
+  //           "file_id": "ed5cd394cc73b094aeb53e3e4e2d241686da51b6cf21af6d633297a5780e6475",
+  //           "file_name": "randomized_algorithms.pdf",
+  //           "file_path": "/Users/sethu/Documents/orcanet/provide/randomized_algorithms.pdf",
+  //           "provide_start_timestamp": null,
+  //           "status": 1 // Means active/inactive
+  //       },
+  //       {
+  //           "downloads_count": 5,
+  //           "file_id": "4e7fd1d02f901336dc0400d835d1414226f67f0d22bce32dd1260a3f8d3ffb9c",
+  //           "file_name": "wp1.jpg",
+  //           "file_path": "/Users/sethu/Documents/orcanet/provide/wp1.jpg",
+  //           "provide_start_timestamp": null,
+  //           "status": 1
+  //       },
+  //       {
+  //           "downloads_count": 4,
+  //           "file_id": "e0ec87573965dfa42674cbd7575d827bd536ac926912c7d62dc13c6a5b393f77",
+  //           "file_name": "VizProjectPoster.pdf",
+  //           "file_path": "/Users/sethu/Documents/orcanet/provide/VizProjectPoster.pdf",
+  //           "provide_start_timestamp": null,
+  //           "status": 1
+  //       }];
   
   @override
   void initState() {
@@ -113,7 +114,7 @@ class _HomePageState extends State<FilePage> with TickerProviderStateMixin {
     getProvidedFiles();
     getDownloadedFiles();
     // refreshApiCalls();
-    _tabController = TabController(length: 2, vsync: this);
+    _tabController = TabController(length: 1, vsync: this);
     providedFilteredList = List.from(providedList); // Initialize filtered list
     downloadedFilteredList = List.from(downloadedList);
     _searchController.addListener(_onSearchChanged);
@@ -492,7 +493,7 @@ class _HomePageState extends State<FilePage> with TickerProviderStateMixin {
   void _searchProviders() async {
     String fileId = _controller.text;
     _getProviders(fileId);
-    showTableDialog(context, providers);
+    // showTableDialog(context, providers);
   }
 
   void refreshApiCalls() {
@@ -532,7 +533,7 @@ class _HomePageState extends State<FilePage> with TickerProviderStateMixin {
         destPath: destPath,
       );
       if(response['success']) {
-        provideFile(destPath!.path.toString());
+        provideFile(destPath!.toString());
         Utils.showSuccessSnackBar(context, "File downloaded successfully");
       } else {
         Utils.showErrorSnackBar(context, "Download failed $response['error']");
@@ -597,13 +598,31 @@ class _HomePageState extends State<FilePage> with TickerProviderStateMixin {
 
   Future<void> stopProviding(String fileId, bool permanent) async {
     try {
+      print(fileId);
+      print(permanent);
       final response = await Api.stopProviding(fileId, permanent: permanent);
       if (response['success']) {
+        _refreshData();
+        print(response);
       } else {
         print('Failed to stop providing.');
       }
     } catch (e) {
       print('Error while stopping provider: $e');
+    }
+  }
+
+    Future<void> resumeProviding(String fileId) async {
+    try {
+      final response = await Api.resumeProviding(fileId);
+      if (response['success']) {
+        print(response);
+        _refreshData();
+      } else {
+        print('Failed to resume providing.');
+      }
+    } catch (e) {
+      print('Error while resuming provider: $e');
     }
   }
 
@@ -614,7 +633,7 @@ class _HomePageState extends State<FilePage> with TickerProviderStateMixin {
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(
-      length: 2, // Two tabs: Provide and Download
+      length: 1, // Two tabs: Provide and Download
       child: Scaffold(
         appBar: AppBar(
           toolbarHeight: 60,
@@ -973,27 +992,32 @@ class _HomePageState extends State<FilePage> with TickerProviderStateMixin {
                                                                           icon: Icon(
                                                                             Icons.play_arrow,
                                                                             size: 18,
-                                                                            color: isProviding ? Colors.green : Colors.grey,
+                                                                            color: entry['status'] == 1 ? Colors.green : Colors.grey,
                                                                           ),
-                                                                          onPressed: isProviding
-                                                                              ? null
-                                                                              : () {
+                                                                          onPressed: (){
+                                                                              // ? null
+                                                                              // : () {
+                                                                                resumeProviding(entry['file_id']);
                                                                                   setState(() {
                                                                                     isProviding = true;
                                                                                     entry['is_providing'] = true;
                                                                                   });
-                                                                                },
+                                                                                // },
+                                                                          },
                                                                           tooltip: 'Resume Providing',
+                                                                          
                                                                         ),
                                                                         IconButton(
                                                                           icon: Icon(
                                                                             Icons.pause,
                                                                             size: 18,
-                                                                            color: !isProviding ? Colors.red : Colors.grey,
+                                                                            color: entry['status'] == 0 ? Colors.red : Colors.grey,
                                                                           ),
-                                                                          onPressed: !isProviding
-                                                                              ? null
-                                                                              : () {
+                                                                          onPressed: 
+                                                                          // !isProviding
+                                                                          //     ? null
+                                                                             // :
+                                                                               () {
                                                                                   stopProviding(entry['file_id'],false);
                                                                                   setState(() {
                                                                                     isProviding = false;
