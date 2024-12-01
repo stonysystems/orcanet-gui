@@ -46,21 +46,45 @@ class _ProxyPageState extends State<ProxyPage> {
       barrierDismissible: false,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text(title),
-          content: const Text('Are you sure you want to proceed?'),
+          title: Text(
+            title,
+            style: TextStyle(
+              color: Theme.of(context).colorScheme.onSecondary, // Title color
+            ),
+          ),
+          content: Text(
+            'Are you sure you want to proceed?',
+            style: TextStyle(
+              color: Theme.of(context).colorScheme.onSecondary, // Content color
+            ),
+          ),
           actions: <Widget>[
             TextButton(
               onPressed: () {
                 Navigator.of(context).pop();
               },
-              child: const Text('Cancel'),
+              child: Text(
+                'Cancel',
+                style: TextStyle(
+                  color: Theme.of(context)
+                      .colorScheme
+                      .onSecondary, // Button text color
+                ),
+              ),
             ),
             TextButton(
               onPressed: () {
                 Navigator.of(context).pop();
                 onConfirm();
               },
-              child: const Text('Confirm'),
+              child: Text(
+                'Confirm',
+                style: TextStyle(
+                  color: Theme.of(context)
+                      .colorScheme
+                      .onSecondary, // Button text color
+                ),
+              ),
             ),
           ],
         );
@@ -101,8 +125,12 @@ class _ProxyPageState extends State<ProxyPage> {
 
   @override
   Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+
     return Scaffold(
       appBar: AppBar(
+        backgroundColor: colorScheme.surface,
+        foregroundColor: colorScheme.onPrimary,
         title: const Text('Proxy Page'),
       ),
       body: Padding(
@@ -114,20 +142,21 @@ class _ProxyPageState extends State<ProxyPage> {
             Container(
               padding: const EdgeInsets.all(12.0),
               decoration: BoxDecoration(
-                color: Colors.lightBlue[50],
-                borderRadius: BorderRadius.circular(8.0),
+                color: colorScheme.primary
+                    .withOpacity(0.5), // Semi-transparent primary
+                borderRadius: BorderRadius.circular(8),
               ),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Row(
                     children: [
-                      Icon(Icons.network_check, color: Colors.blue[800]),
+                      Icon(Icons.network_check, color: colorScheme.onPrimary),
                       const SizedBox(width: 8),
                       Text(
                         proxyStatus,
                         style: Theme.of(context).textTheme.bodyLarge!.copyWith(
-                              color: Colors.blue[800],
+                              color: colorScheme.onPrimary,
                               fontWeight: FontWeight.bold,
                             ),
                       ),
@@ -172,8 +201,9 @@ class _ProxyPageState extends State<ProxyPage> {
             Container(
               padding: const EdgeInsets.all(12.0),
               decoration: BoxDecoration(
-                color: Colors.lightBlue[50],
-                borderRadius: BorderRadius.circular(8.0),
+                color: colorScheme.primary
+                    .withOpacity(0.5), // Semi-transparent primary
+                borderRadius: BorderRadius.circular(8),
               ),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -181,7 +211,7 @@ class _ProxyPageState extends State<ProxyPage> {
                   Text(
                     'Be a Proxy',
                     style: Theme.of(context).textTheme.bodyLarge!.copyWith(
-                          color: Colors.blue[800],
+                          color: colorScheme.onPrimary,
                           fontWeight: FontWeight.bold,
                         ),
                   ),
@@ -202,18 +232,15 @@ class _ProxyPageState extends State<ProxyPage> {
               style: Theme.of(context)
                   .textTheme
                   .titleLarge!
-                  .copyWith(color: Colors.blue[800]),
+                  .copyWith(color: colorScheme.onPrimary),
             ),
             const SizedBox(height: 8),
             Expanded(
               child: Container(
-                width: MediaQuery.of(context).size.width *
-                    0.45, // Set container to 50% width
-                padding: const EdgeInsets.all(12.0),
+                width: MediaQuery.of(context).size.width,
                 decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(8.0),
-                  border: Border.all(color: Colors.blue[800]!),
+                  color: colorScheme.primary,
+                  borderRadius: BorderRadius.circular(8),
                 ),
                 child: isLoadingProxyList
                     ? const Center(child: CircularProgressIndicator())
@@ -225,20 +252,84 @@ class _ProxyPageState extends State<ProxyPage> {
                           "Availability",
                           "Bandwidth",
                           "Connect"
-                        ]
-                            .map((label) => TableViewHeader(label: label))
-                            .toList(),
+                        ].asMap().entries.map((entry) {
+                          final index = entry.key;
+                          final label = entry.value;
+
+                          // Define custom widths for each column (adjust as needed)
+                          const columnWidths = [
+                            0.1, // S.No (10% of the container width)
+                            0.2, // Server IP (20%)
+                            0.2, // Location (20%)
+                            0.1, // Availability (10%)
+                            0.2, // Bandwidth (20%)
+                            0.1, // Connect (10%)
+                          ];
+
+                          return TableViewHeader(
+                            label: label, // Set the header label
+                            width: MediaQuery.of(context).size.width *
+                                columnWidths[index],
+                            alignment:
+                                Alignment.center, // Center-align the label
+                            textStyle: TextStyle(
+                              color: Theme.of(context)
+                                  .colorScheme
+                                  .onSecondary, // Text color
+                              fontWeight: FontWeight.bold,
+                            ),
+                            padding: const EdgeInsets.all(
+                                8.0), // Optional: Adjust padding
+                          );
+                        }).toList(),
                         rows: proxyList.map((proxy) {
                           int index = proxyList.indexOf(proxy);
                           return TableViewRow(
                             height: 60,
                             cells: [
                               TableViewCell(
-                                  child: Text(proxy['sno'].toString())),
-                              TableViewCell(child: Text(proxy['ip'])),
-                              TableViewCell(child: Text(proxy['location'])),
-                              TableViewCell(child: Text(proxy['status'])),
-                              TableViewCell(child: Text(proxy['bandwidth'])),
+                                child: Text(
+                                  proxy['sno'].toString(),
+                                  style: TextStyle(
+                                    color: colorScheme.onSecondary,
+                                  ),
+                                ),
+                              ),
+                              TableViewCell(
+                                child: Text(
+                                  proxy['ip'],
+                                  style: TextStyle(
+                                    color: colorScheme.onSecondary,
+                                  ),
+                                ),
+                              ),
+                              TableViewCell(
+                                child: Text(
+                                  proxy['location'],
+                                  style: TextStyle(
+                                    color: colorScheme.onSecondary,
+                                  ),
+                                ),
+                              ),
+                              TableViewCell(
+                                child: Text(
+                                  proxy['status'],
+                                  style: TextStyle(
+                                    color: proxy['status'] == 'Available'
+                                        ? Colors.green
+                                        : colorScheme.error,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                              ),
+                              TableViewCell(
+                                child: Text(
+                                  proxy['bandwidth'],
+                                  style: TextStyle(
+                                    color: colorScheme.onSecondary,
+                                  ),
+                                ),
+                              ),
                               TableViewCell(
                                 child: Switch(
                                   value: selectedProxyIndex == index,

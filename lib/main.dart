@@ -19,8 +19,18 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'OrcaNet',
       theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.blue),
+        brightness: Brightness.light,
         useMaterial3: true,
+        colorScheme: ColorScheme.light(
+          primary: const Color.fromARGB(255, 241, 240, 243),
+          onPrimary: const Color.fromARGB(250, 21, 101, 192),
+          secondary: const Color.fromARGB(255, 209, 241, 255),
+          onSecondary: Colors.black,
+          surface: Colors.white,
+          onSurface: Colors.black,
+          error: Colors.red,
+          onError: Colors.white,
+        ),
       ),
       home: const MyHomePage(),
     );
@@ -55,6 +65,8 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+
     return Scaffold(
       body: Row(
         children: [
@@ -62,7 +74,24 @@ class _MyHomePageState extends State<MyHomePage> {
           NavigationRail(
             selectedIndex: _selectedIndex,
             onDestinationSelected: _onItemTapped,
-            labelType: NavigationRailLabelType.all, // Show all labels
+            labelType: NavigationRailLabelType.all,
+            selectedIconTheme: IconThemeData(
+              color: colorScheme.primary, // Consistent icon color for selected
+            ),
+            unselectedIconTheme: IconThemeData(
+              color:
+                  colorScheme.onPrimary, // Consistent icon color for unselected
+            ),
+            indicatorColor:
+                Colors.transparent, // Disable background indicator color
+            backgroundColor: Colors.transparent, // Ensure consistent background
+            selectedLabelTextStyle: const TextStyle(
+              color: Colors.black, // Custom text color for selected labels
+            ),
+            unselectedLabelTextStyle: const TextStyle(
+              color: Colors.black, // Custom text color for unselected labels
+            ),
+            // Show all labels
             destinations: const <NavigationRailDestination>[
               NavigationRailDestination(
                 icon: Icon(Icons.home),
@@ -108,7 +137,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 color: Colors.white,
                 border: Border(
                   left: BorderSide(
-                    color: Colors.grey.shade300,
+                    color: Colors.white,
                     width: 1,
                   ),
                 ),

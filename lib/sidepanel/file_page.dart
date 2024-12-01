@@ -22,91 +22,100 @@ class _HomePageState extends State<FilePage> with TickerProviderStateMixin {
   TabController? _tabController;
   late AnimationController _iconcontroller;
 
-  List<Map<String, dynamic>> providers = [{
-    "file_metadata":{
-      "file_name": "abc.txt",
-      "fee_rate_per_kb": 12.0
+  List<Map<String, dynamic>> providers = [
+    {
+      "file_metadata": {"file_name": "abc.txt", "fee_rate_per_kb": 12.0},
+      "peer_id":
+          "4e7fd1d02f901336dc0400d835d1414226f67f0d22bce32dd1260a3f8d3ffb9c"
     },
-    "peer_id": "4e7fd1d02f901336dc0400d835d1414226f67f0d22bce32dd1260a3f8d3ffb9c"
-  },
-  {
-    "file_metadata":{
-      "file_name": "dfge.txt",
-      "fee_rate_per_kb": 10.0
-    },
-    "peer_id": "asgfs4e7fsdfa835d1414226f67f0d22bce32dd1260a3f8d3ffb9c"
-  }];
+    {
+      "file_metadata": {"file_name": "dfge.txt", "fee_rate_per_kb": 10.0},
+      "peer_id": "asgfs4e7fsdfa835d1414226f67f0d22bce32dd1260a3f8d3ffb9c"
+    }
+  ];
   // List<Map<String, dynamic>> providedList = [];
   //List<Map<String, dynamic>> downloadedList = [];
-
 
   final TextEditingController _searchController = TextEditingController();
   final TextEditingController _downloadSearchController =
       TextEditingController();
   List<Map<String, dynamic>> providedFilteredList = [];
   List<Map<String, dynamic>> downloadedFilteredList = [];
-  List<Map<String, dynamic>> downloadedList =  [
-        {
-            "download_timestamp": 1729740406,
-            "fee_rate_per_kb": 0.0024999999441206455,
-            "file_id": "ff9abdc5956831e49bfdf9e7927927fa283d9b4f74e365ff22d3fc35062cf156",
-            "file_name": "LinKer.pdf",
-            "file_path": "/Users/sethu/Desktop/General/abcd.pdf",
-            "file_size_kb": 5609.3740234375,
-            "id": "af051645-7ce9-45f8-b05a-d550ee94fc2d",
-            "payment_tx_id": "a3467be8af7fa73fda90a21cf0a1a7470d643dbc7e5a02236fa47aa933f76d1f",
-            "peer_id": "12D3KooWLJtG8fd2hkQzTn96MrLvThmnNQjTUFZwGEsLRz5EmSzc",
-            "price": 14.02343463897705
-        },
-        {
-            "download_timestamp": 1729742811,
-            "fee_rate_per_kb": 0.0024999999441206455,
-            "file_id": "4e7fd1d02f901336dc0400d835d1414226f67f0d22bce32dd1260a3f8d3ffb9c",
-            "file_name": "wp1.jpg",
-            "file_path": "/Users/sethu/Desktop/General/nice.jpg",
-            "file_size_kb": 1113.83203125,
-            "id": "e9538a32-fbf6-466c-9c4e-b7d52e26b758",
-            "payment_tx_id": null,
-            "peer_id": "12D3KooWLJtG8fd2hkQzTn96MrLvThmnNQjTUFZwGEsLRz5EmSzc",
-            "price": 2.7845799922943115
-        }, {
-            "download_timestamp": 1729740406,
-            "fee_rate_per_kb": 0.0024999999441206455,
-            "file_id": "ff9abdc5956831e49bfdf9e7927927fa283d9b4f74e365ff22d3fc35062cf156",
-            "file_name": "LinKer.pdf",
-            "file_path": "/Users/sethu/Desktop/General/abcd.pdf",
-            "file_size_kb": 5609.3740234375,
-            "id": "af051645-7ce9-45f8-b05a-d550ee94fc2d",
-            "payment_tx_id": "a3467be8af7fa73fda90a21cf0a1a7470d643dbc7e5a02236fa47aa933f76d1f",
-            "peer_id": "12D3KooWLJtG8fd2hkQzTn96MrLvThmnNQjTUFZwGEsLRz5EmSzc",
-            "price": 14.02343463897705
-        }];
-  List<Map<String, dynamic>> providedList =  [
-        {
-            "downloads_count": 1,
-            "file_id": "ed5cd394cc73b094aeb53e3e4e2d241686da51b6cf21af6d633297a5780e6475",
-            "file_name": "randomized_algorithms.pdf",
-            "file_path": "/Users/sethu/Documents/orcanet/provide/randomized_algorithms.pdf",
-            "provide_start_timestamp": null,
-            "status": 1 // Means active/inactive
-        },
-        {
-            "downloads_count": 5,
-            "file_id": "4e7fd1d02f901336dc0400d835d1414226f67f0d22bce32dd1260a3f8d3ffb9c",
-            "file_name": "wp1.jpg",
-            "file_path": "/Users/sethu/Documents/orcanet/provide/wp1.jpg",
-            "provide_start_timestamp": null,
-            "status": 1
-        },
-        {
-            "downloads_count": 4,
-            "file_id": "e0ec87573965dfa42674cbd7575d827bd536ac926912c7d62dc13c6a5b393f77",
-            "file_name": "VizProjectPoster.pdf",
-            "file_path": "/Users/sethu/Documents/orcanet/provide/VizProjectPoster.pdf",
-            "provide_start_timestamp": null,
-            "status": 1
-        }];
-  
+  List<Map<String, dynamic>> downloadedList = [
+    {
+      "download_timestamp": 1729740406,
+      "fee_rate_per_kb": 0.0024999999441206455,
+      "file_id":
+          "ff9abdc5956831e49bfdf9e7927927fa283d9b4f74e365ff22d3fc35062cf156",
+      "file_name": "LinKer.pdf",
+      "file_path": "/Users/sethu/Desktop/General/abcd.pdf",
+      "file_size_kb": 5609.3740234375,
+      "id": "af051645-7ce9-45f8-b05a-d550ee94fc2d",
+      "payment_tx_id":
+          "a3467be8af7fa73fda90a21cf0a1a7470d643dbc7e5a02236fa47aa933f76d1f",
+      "peer_id": "12D3KooWLJtG8fd2hkQzTn96MrLvThmnNQjTUFZwGEsLRz5EmSzc",
+      "price": 14.02343463897705
+    },
+    {
+      "download_timestamp": 1729742811,
+      "fee_rate_per_kb": 0.0024999999441206455,
+      "file_id":
+          "4e7fd1d02f901336dc0400d835d1414226f67f0d22bce32dd1260a3f8d3ffb9c",
+      "file_name": "wp1.jpg",
+      "file_path": "/Users/sethu/Desktop/General/nice.jpg",
+      "file_size_kb": 1113.83203125,
+      "id": "e9538a32-fbf6-466c-9c4e-b7d52e26b758",
+      "payment_tx_id": null,
+      "peer_id": "12D3KooWLJtG8fd2hkQzTn96MrLvThmnNQjTUFZwGEsLRz5EmSzc",
+      "price": 2.7845799922943115
+    },
+    {
+      "download_timestamp": 1729740406,
+      "fee_rate_per_kb": 0.0024999999441206455,
+      "file_id":
+          "ff9abdc5956831e49bfdf9e7927927fa283d9b4f74e365ff22d3fc35062cf156",
+      "file_name": "LinKer.pdf",
+      "file_path": "/Users/sethu/Desktop/General/abcd.pdf",
+      "file_size_kb": 5609.3740234375,
+      "id": "af051645-7ce9-45f8-b05a-d550ee94fc2d",
+      "payment_tx_id":
+          "a3467be8af7fa73fda90a21cf0a1a7470d643dbc7e5a02236fa47aa933f76d1f",
+      "peer_id": "12D3KooWLJtG8fd2hkQzTn96MrLvThmnNQjTUFZwGEsLRz5EmSzc",
+      "price": 14.02343463897705
+    }
+  ];
+  List<Map<String, dynamic>> providedList = [
+    {
+      "downloads_count": 1,
+      "file_id":
+          "ed5cd394cc73b094aeb53e3e4e2d241686da51b6cf21af6d633297a5780e6475",
+      "file_name": "randomized_algorithms.pdf",
+      "file_path":
+          "/Users/sethu/Documents/orcanet/provide/randomized_algorithms.pdf",
+      "provide_start_timestamp": null,
+      "status": 1 // Means active/inactive
+    },
+    {
+      "downloads_count": 5,
+      "file_id":
+          "4e7fd1d02f901336dc0400d835d1414226f67f0d22bce32dd1260a3f8d3ffb9c",
+      "file_name": "wp1.jpg",
+      "file_path": "/Users/sethu/Documents/orcanet/provide/wp1.jpg",
+      "provide_start_timestamp": null,
+      "status": 1
+    },
+    {
+      "downloads_count": 4,
+      "file_id":
+          "e0ec87573965dfa42674cbd7575d827bd536ac926912c7d62dc13c6a5b393f77",
+      "file_name": "VizProjectPoster.pdf",
+      "file_path":
+          "/Users/sethu/Documents/orcanet/provide/VizProjectPoster.pdf",
+      "provide_start_timestamp": null,
+      "status": 1
+    }
+  ];
+
   @override
   void initState() {
     super.initState();
@@ -131,9 +140,9 @@ class _HomePageState extends State<FilePage> with TickerProviderStateMixin {
     // });
   }
 
-    void _refreshData() {
-      getProvidedFiles();
-      getDownloadedFiles();
+  void _refreshData() {
+    getProvidedFiles();
+    getDownloadedFiles();
     _iconcontroller.reset(); // Reset the animation
     _iconcontroller.forward(); // Start the animation
   }
@@ -177,14 +186,13 @@ class _HomePageState extends State<FilePage> with TickerProviderStateMixin {
   void _showStopProvidingDialog(int index, String fileId, String fileName) {
     print(index);
     print(fileId);
-    
+
     showDialog(
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
           title: const Text('Delete File'),
-          content:
-              Text('Are you sure you want to delete $fileName?'),
+          content: Text('Are you sure you want to delete $fileName?'),
           actions: [
             TextButton(
               onPressed: () {
@@ -248,7 +256,8 @@ class _HomePageState extends State<FilePage> with TickerProviderStateMixin {
   bool isAscending = false;
 
   void showTableDialog(
-    BuildContext context, List<Map<String, dynamic>> providers) {
+      BuildContext context, List<Map<String, dynamic>> providers) {
+    final colorScheme = Theme.of(context).colorScheme;
     String fileId = _controller.text;
     showDialog(
       context: context,
@@ -259,8 +268,10 @@ class _HomePageState extends State<FilePage> with TickerProviderStateMixin {
               setState(() {
                 isAscending = !isAscending;
                 providers.sort((a, b) {
-                  final feeA = a['file_metadata']['fee_rate_per_kb'] as num? ?? 0;
-                  final feeB = b['file_metadata']['fee_rate_per_kb'] as num? ?? 0;
+                  final feeA =
+                      a['file_metadata']['fee_rate_per_kb'] as num? ?? 0;
+                  final feeB =
+                      b['file_metadata']['fee_rate_per_kb'] as num? ?? 0;
                   return isAscending
                       ? feeA.compareTo(feeB)
                       : feeB.compareTo(feeA);
@@ -277,7 +288,6 @@ class _HomePageState extends State<FilePage> with TickerProviderStateMixin {
                 height: 500, // Set a smaller height
                 padding: const EdgeInsets.all(16.0),
                 decoration: BoxDecoration(
-                  // color: const Color.fromARGB(255, 209, 241, 255),
                   borderRadius: BorderRadius.circular(8.0),
                 ),
                 child: Column(
@@ -285,17 +295,21 @@ class _HomePageState extends State<FilePage> with TickerProviderStateMixin {
                   children: [
                     Padding(
                       padding: const EdgeInsets.only(bottom: 16.0),
-                      child: Text('Providers for id $fileId',
-                        style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                      child: Text(
+                        'Providers for id $fileId',
+                        style: const TextStyle(
+                            fontSize: 18, fontWeight: FontWeight.bold),
                       ),
                     ),
                     Container(
                       padding: const EdgeInsets.all(8.0),
-                      color:  const Color.fromARGB(255, 56, 118, 168),
                       child: Row(
                         children: [
-                          const Expanded(
-                            child: Text('File Name',style: TextStyle(fontWeight: FontWeight.bold,color: Colors.white)),
+                          Expanded(
+                            child: Text('File Name',
+                                style: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    color: colorScheme.onPrimary)),
                           ),
                           Expanded(
                             child: GestureDetector(
@@ -303,31 +317,34 @@ class _HomePageState extends State<FilePage> with TickerProviderStateMixin {
                               child: Row(
                                 mainAxisAlignment: MainAxisAlignment.start,
                                 children: [
-                                  const Text(
+                                  Text(
                                     'Fee Rate per KB',
                                     style: TextStyle(
                                         fontWeight: FontWeight.bold,
-                                        color: Colors.white),
+                                        color: colorScheme.onPrimary),
                                   ),
                                   Icon(
                                     isAscending
                                         ? Icons.arrow_upward
                                         : Icons.arrow_downward,
-                                    color: Colors.white,
+                                    color: colorScheme.surface,
                                     size: 16,
                                   ),
                                 ],
                               ),
                             ),
                           ),
-                          const Expanded(
-                            child: Text('Peer Id',style: TextStyle(fontWeight: FontWeight.bold,color: Colors.white)),
+                          Expanded(
+                            child: Text('Peer Id',
+                                style: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    color: colorScheme.onPrimary)),
                           ),
-                          const Expanded(
+                          Expanded(
                             child: Text('Action',
                                 style: TextStyle(
                                     fontWeight: FontWeight.bold,
-                                    color: Colors.white)),
+                                    color: colorScheme.onPrimary)),
                           ),
                         ],
                       ),
@@ -350,38 +367,58 @@ class _HomePageState extends State<FilePage> with TickerProviderStateMixin {
                                       child: Row(
                                         children: [
                                           Expanded(
-                                              child: Text(entry['file_metadata']?['file_name'] ??'')),
+                                              child: Text(entry['file_metadata']
+                                                      ?['file_name'] ??
+                                                  '')),
                                           Expanded(
-                                              child: Text(
-                                                  entry['file_metadata']?['fee_rate_per_kb']?.toString() ??'')),
+                                              child: Text(entry['file_metadata']
+                                                          ?['fee_rate_per_kb']
+                                                      ?.toString() ??
+                                                  '')),
                                           Expanded(
                                               // child:
                                               //     Text(entry['peer_id'] ?? '').substring(0, 10) + '...'),
-                                              child: 
-                                                Text(
-                                                  (entry['peer_id'] ?? '').substring(0, 10) + '...',
-                                                  style: const TextStyle(color: Colors.blue,),
-                                                  )
+                                              child: Text(
+                                            (entry['peer_id'] ?? '')
+                                                    .substring(0, 10) +
+                                                '...',
+                                            style: TextStyle(
+                                              color: colorScheme.onPrimary,
                                             ),
+                                          )),
                                           Expanded(
                                             child: Row(
-                                              mainAxisAlignment: MainAxisAlignment.start,
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.start,
                                               children: [
                                                 SizedBox(
                                                   width: 120,
                                                   height: 30,
                                                   child: ElevatedButton(
-                                                        onPressed: () {
-                                                          downloadFile(
-                                                            entry['file_metadata']['file_name']!,
-                                                            entry['peer_id']!,
-                                                          );
-                                                        },
-                                                    style: ElevatedButton.styleFrom(
-                                                      padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),
-                                                      textStyle: const TextStyle(fontSize: 12),
+                                                    onPressed: () {
+                                                      downloadFile(
+                                                        entry['file_metadata']
+                                                            ['file_name']!,
+                                                        entry['peer_id']!,
+                                                      );
+                                                    },
+                                                    style: ElevatedButton
+                                                        .styleFrom(
+                                                      padding: const EdgeInsets
+                                                          .symmetric(
+                                                        horizontal: 8.0,
+                                                        vertical: 4.0,
+                                                      ),
+                                                      textStyle:
+                                                          const TextStyle(
+                                                              fontSize: 12),
+                                                      foregroundColor: Theme.of(
+                                                              context)
+                                                          .colorScheme
+                                                          .onPrimary, // Text color
                                                     ),
-                                                    child: const Text('Download'),
+                                                    child:
+                                                        const Text('Download'),
                                                   ),
                                                 ),
                                               ],
@@ -408,8 +445,8 @@ class _HomePageState extends State<FilePage> with TickerProviderStateMixin {
                         onPressed: () {
                           Navigator.of(context).pop();
                         },
-                        child: const Text('Close',
-                            style: TextStyle(color: Colors.red)),
+                        child: Text('Close',
+                            style: TextStyle(color: colorScheme.error)),
                       ),
                     ),
                   ],
@@ -424,19 +461,22 @@ class _HomePageState extends State<FilePage> with TickerProviderStateMixin {
 
   bool _isFilePickerOpen = false;
   Future<void> _pickFile() async {
-    if (_isFilePickerOpen) return;  // Prevent multiple clicks
+    if (_isFilePickerOpen) return; // Prevent multiple clicks
     setState(() {
-      _isFilePickerOpen = true;  // Disable the button while the file picker is open
+      _isFilePickerOpen =
+          true; // Disable the button while the file picker is open
     });
     final result = await FilePicker.platform.pickFiles();
     setState(() {
-      _isFilePickerOpen = false;  // Re-enable the button once the file picker is closed
+      _isFilePickerOpen =
+          false; // Re-enable the button once the file picker is closed
     });
     if (result != null) {
       setState(() {
         _selectedFile = File(result.files.single.path!);
         _fileName = result.files.single.name;
-        _fileSize = '${(result.files.single.size / 1024).toStringAsFixed(2)} KB';
+        _fileSize =
+            '${(result.files.single.size / 1024).toStringAsFixed(2)} KB';
       });
       print(_selectedFile);
       _showConfirmUploadDialog(0, result.files.single.name);
@@ -531,7 +571,7 @@ class _HomePageState extends State<FilePage> with TickerProviderStateMixin {
         peerId: peerId,
         destPath: destPath,
       );
-      if(response['success']) {
+      if (response['success']) {
         provideFile(destPath!.path.toString());
         Utils.showSuccessSnackBar(context, "File downloaded successfully");
       } else {
@@ -552,7 +592,8 @@ class _HomePageState extends State<FilePage> with TickerProviderStateMixin {
         Utils.showSuccessSnackBar(context, "provided successfully");
         _refreshData();
       } else {
-        Utils.showErrorSnackBar(context, "Failed to provide $response['error']");
+        Utils.showErrorSnackBar(
+            context, "Failed to provide $response['error']");
         print(response['error']);
       }
     } catch (e) {
@@ -585,7 +626,8 @@ class _HomePageState extends State<FilePage> with TickerProviderStateMixin {
       if (mounted && response['success']) {
         setState(() {
           downloadedList = List<Map<String, dynamic>>.from(response['data']);
-          downloadedFilteredList = List<Map<String, dynamic>>.from(response['data']);
+          downloadedFilteredList =
+              List<Map<String, dynamic>>.from(response['data']);
         });
       } else {
         print('Failed to retrieve downloaded list.');
@@ -613,18 +655,20 @@ class _HomePageState extends State<FilePage> with TickerProviderStateMixin {
 
   @override
   Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+
     return DefaultTabController(
       length: 2, // Two tabs: Provide and Download
       child: Scaffold(
         appBar: AppBar(
           toolbarHeight: 60,
-          title:  Text('Files Status Page',
-                    style: Theme.of(context)
-                        .textTheme
-                        .titleLarge!
-                        .copyWith(color: Colors.blue[800]),
-                  ),
-          // backgroundColor: const Color.fromARGB(255, 209, 241, 255),
+          title: Text(
+            'Files Status Page',
+            style: Theme.of(context).textTheme.titleLarge!.copyWith(
+                  color: colorScheme.onSecondary,
+                ),
+          ),
+          backgroundColor: colorScheme.secondary,
         ),
         body: TabBarView(
           controller: _tabController,
@@ -635,14 +679,15 @@ class _HomePageState extends State<FilePage> with TickerProviderStateMixin {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  
                   Container(
                     padding: const EdgeInsets.all(8), // Space inside the border
                     child: Card(
+                      color: colorScheme.primary,
                       elevation: 5,
                       //shadowColor: const Color.fromARGB(255, 102, 70, 70), // Elevation for the shadow effect
                       child: Padding(
-                        padding: const EdgeInsets.all(30), // Padding inside the Card
+                        padding:
+                            const EdgeInsets.all(30), // Padding inside the Card
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
@@ -651,7 +696,7 @@ class _HomePageState extends State<FilePage> with TickerProviderStateMixin {
                               style: Theme.of(context)
                                   .textTheme
                                   .titleLarge!
-                                  .copyWith(color: Colors.blue[800]),
+                                  .copyWith(color: colorScheme.onPrimary),
                             ),
                             const SizedBox(height: 20),
                             Row(
@@ -659,21 +704,50 @@ class _HomePageState extends State<FilePage> with TickerProviderStateMixin {
                                 Expanded(
                                   child: TextField(
                                     controller: _controller,
-                                    decoration: const InputDecoration(
-                                      border: OutlineInputBorder(),
+                                    style: TextStyle(
+                                      color: Theme.of(context)
+                                          .colorScheme
+                                          .onSecondary, // Input text color
+                                    ),
+                                    decoration: InputDecoration(
+                                      border: const OutlineInputBorder(),
                                       labelText: 'Enter Hash of the File',
+                                      labelStyle: TextStyle(
+                                        color: Theme.of(context)
+                                            .colorScheme
+                                            .onSecondary, // Label text color
+                                      ),
+                                      fillColor: Theme.of(context)
+                                          .colorScheme
+                                          .surface, // Background color
+                                      filled:
+                                          true, // Ensures the background color is applied
                                     ),
                                   ),
                                 ),
                                 const SizedBox(width: 16),
                                 ElevatedButton.icon(
                                   onPressed: _searchProviders,
-                                   style: ElevatedButton.styleFrom(
-                                      backgroundColor: const Color.fromARGB(255, 228, 228, 228),
-                                      padding: const EdgeInsets.all(20.0),
+                                  style: ElevatedButton.styleFrom(
+                                    backgroundColor: Theme.of(context)
+                                        .colorScheme
+                                        .primary, // Set background color to primary
+                                    padding: const EdgeInsets.all(20.0),
+                                  ),
+                                  icon: Icon(
+                                    Icons.person_search,
+                                    color: Theme.of(context)
+                                        .colorScheme
+                                        .onPrimary, // Set icon color to onPrimary
+                                  ),
+                                  label: Text(
+                                    'Search',
+                                    style: TextStyle(
+                                      color: Theme.of(context)
+                                          .colorScheme
+                                          .onPrimary, // Set label text color to onPrimary
                                     ),
-                                  icon: const Icon(Icons.person_search),
-                                  label: const Text('Search'),
+                                  ),
                                 ),
                               ],
                             ),
@@ -682,82 +756,15 @@ class _HomePageState extends State<FilePage> with TickerProviderStateMixin {
                       ),
                     ),
                   ),
-
-
-
                   const SizedBox(height: 30),
-                  // const Column(
-                  //   children: [
-                  //     // Text('Above the line'),
-                  //     Divider(
-                  //       color: Colors.black,
-                  //       thickness: 1,
-                  //     ),
-                  //     // Text('Below the line'),
-                  //   ],
-                  // ),
                   const SizedBox(height: 30),
-
-                  // Text(
-                  //   'Provided Files',
-                  //   style: Theme.of(context)
-                  //       .textTheme
-                  //       .titleLarge!
-                  //       .copyWith(color: Colors.blue[800]),
-                  // ),
-                  // const SizedBox(height: 8),
-                  //  Row(
-                  //   crossAxisAlignment: CrossAxisAlignment.start,
-                  //   children: [
-                  //     Expanded(
-                  //       child: TextField(
-                  //         controller: _searchController,
-                  //         decoration: InputDecoration(
-                  //           labelText: 'Search Files',
-                  //           prefixIcon: Icon(Icons.search),
-                  //           border: OutlineInputBorder(
-                  //             borderRadius: BorderRadius.circular(8.0),
-                  //           ),
-                  //         ),
-                  //       ),
-                  //     ),
-                  //     const SizedBox(width: 80),
-                      
-                  //     // Browse Button
-                  //     ElevatedButton(
-                  //       onPressed: _pickFile,
-                  //       style: ElevatedButton.styleFrom(
-                  //         padding: const EdgeInsets.all(16.0),
-                  //       ),
-                  //       child: const Text('Provide File'),
-                  //     ),
-                  //     const SizedBox(width: 30),
-                  //     RotationTransition(
-                  //       turns: _iconcontroller,
-                  //       child: IconButton(
-                  //         icon: Icon(Icons.refresh, size: 30, color: Colors.grey),
-                  //         onPressed: _refreshData,
-                  //       ),
-                  //     ),
-                  //   ],
-                  // ),
-                  
                   const SizedBox(height: 8),
-                  Expanded(  
+                  Expanded(
                     child: Card(
+                      color: colorScheme.primary,
                       elevation: 5,
                       child: Padding(
-                         padding: const EdgeInsets.all(30),
-                        // width: double.infinity,
-                        // decoration: BoxDecoration(
-                        //   //color: const Color.fromARGB(255, 209, 241, 255),
-                        //   borderRadius: BorderRadius.circular(8.0),
-                        //   // border: Border.all(
-                        //   //   color: Colors.black,
-                        //     // width: 1.0,
-                        //   // ),
-                        // ),
-                        
+                        padding: const EdgeInsets.all(30),
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
@@ -766,69 +773,118 @@ class _HomePageState extends State<FilePage> with TickerProviderStateMixin {
                               style: Theme.of(context)
                                   .textTheme
                                   .titleLarge!
-                                  .copyWith(color: Colors.blue[800]),
+                                  .copyWith(color: colorScheme.onPrimary),
                             ),
-                              const SizedBox(height: 8),
-                              Row(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  const SizedBox(width: 2),
-                                  Expanded(
-                                    child: TextField(
-                                      controller: _searchController,
-                                      decoration: InputDecoration(
-                                        labelText: 'Search Files',
-                                        prefixIcon: Icon(Icons.search),
-                                        border: OutlineInputBorder(
-                                          borderRadius: BorderRadius.circular(10.0),
-                                        ),
+                            const SizedBox(height: 8),
+                            Row(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                const SizedBox(width: 2),
+                                Expanded(
+                                  child: TextField(
+                                    controller: _searchController,
+                                    style: TextStyle(
+                                      color: Theme.of(context)
+                                          .colorScheme
+                                          .onSecondary, // Set the input text color to onSecondary
+                                    ),
+                                    decoration: InputDecoration(
+                                      labelText: 'Search Files',
+                                      fillColor: Theme.of(context)
+                                          .colorScheme
+                                          .surface, // Background color
+                                      filled: true,
+                                      labelStyle: TextStyle(
+                                        color: Theme.of(context)
+                                            .colorScheme
+                                            .onSecondary, // Set label text color
+                                      ),
+                                      prefixIcon: Icon(
+                                        Icons.search,
+                                        color: Theme.of(context)
+                                            .colorScheme
+                                            .onSecondary, // Set icon color to onSecondary
+                                      ),
+                                      border: OutlineInputBorder(
+                                        borderRadius:
+                                            BorderRadius.circular(10.0),
                                       ),
                                     ),
                                   ),
-                                  const SizedBox(width: 80),
-                                  
-                                  // Browse Button
-                                  ElevatedButton(
-                                    onPressed: _pickFile,
-                                    style: ElevatedButton.styleFrom(
-                                      backgroundColor: const Color.fromARGB(255, 228, 228, 228),
-                                      padding: const EdgeInsets.all(20.0),
-                                    ),
-                                    child: const Text('Provide File'),
+                                ),
+                                const SizedBox(width: 80),
+
+                                // Browse Button
+                                ElevatedButton(
+                                  onPressed: _pickFile,
+                                  style: ElevatedButton.styleFrom(
+                                    backgroundColor: Theme.of(context)
+                                        .colorScheme
+                                        .primary, // Set background color to primary
+                                    padding: const EdgeInsets.all(20.0),
                                   ),
-                                  const SizedBox(width: 30),
-                                  RotationTransition(
-                                    turns: _iconcontroller,
-                                    child: IconButton(
-                                      icon: Icon(Icons.refresh, size: 30, color: Colors.grey),
-                                      onPressed: _refreshData,
+                                  child: Text(
+                                    'Provide File',
+                                    style: TextStyle(
+                                      color: Theme.of(context)
+                                          .colorScheme
+                                          .onPrimary, // Set label text color to onPrimary
                                     ),
                                   ),
-                                  const SizedBox(width: 10),
-                                ],
-                              ),
-                              const SizedBox(height: 8),
+                                ),
+                                const SizedBox(width: 30),
+                                RotationTransition(
+                                  turns: _iconcontroller,
+                                  child: IconButton(
+                                    icon: Icon(Icons.refresh,
+                                        size: 30, color: colorScheme.onPrimary),
+                                    onPressed: _refreshData,
+                                  ),
+                                ),
+                                const SizedBox(width: 10),
+                              ],
+                            ),
+                            const SizedBox(height: 8),
                             // Sticky Header Row
                             Expanded(
                               child: Container(
                                 decoration: BoxDecoration(
-                                  border: Border.all(color: const Color.fromARGB(255, 178, 178, 178), width: 2),
-                                  borderRadius: BorderRadius.circular(8), // Optional rounded corners
+                                  border: Border.all(
+                                      color: colorScheme.onSecondary, width: 1),
+                                  borderRadius: BorderRadius.circular(
+                                      8), // Optional rounded corners
                                 ),
-                                child:  Column(
+                                child: Column(
                                   children: [
                                     Container(
                                       decoration: BoxDecoration(
-                                        borderRadius: BorderRadius.circular(5.0),
-                                        color: const Color.fromARGB(255, 56, 118, 168),
+                                        borderRadius:
+                                            BorderRadius.circular(5.0),
+                                        color: const Color.fromARGB(
+                                            255, 56, 118, 168),
                                       ),
                                       padding: const EdgeInsets.all(10.0),
                                       // color: const Color.fromARGB(255, 56, 118, 168), // Background color for header
                                       child: const Row(
                                         children: [
-                                          Expanded(child: Text('File Name', style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white))),
-                                          Expanded(child: Text('File ID', style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white))),
-                                          Expanded(child: Text('Download Count', style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white))),
+                                          Expanded(
+                                              child: Text('File Name',
+                                                  style: TextStyle(
+                                                      fontWeight:
+                                                          FontWeight.bold,
+                                                      color: Colors.white))),
+                                          Expanded(
+                                              child: Text('File ID',
+                                                  style: TextStyle(
+                                                      fontWeight:
+                                                          FontWeight.bold,
+                                                      color: Colors.white))),
+                                          Expanded(
+                                              child: Text('Download Count',
+                                                  style: TextStyle(
+                                                      fontWeight:
+                                                          FontWeight.bold,
+                                                      color: Colors.white))),
                                           // Expanded(
                                           //   child: Align(
                                           //     alignment: Alignment.center, // Centers the text horizontally and vertically
@@ -842,8 +898,18 @@ class _HomePageState extends State<FilePage> with TickerProviderStateMixin {
                                           //   ),
                                           // ),
                                           // Expanded(child: Text('Status', style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white))),
-                                          Expanded(child: Text('Action', style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white))),
-                                          Expanded(child: Text('Status', style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white))),
+                                          Expanded(
+                                              child: Text('Action',
+                                                  style: TextStyle(
+                                                      fontWeight:
+                                                          FontWeight.bold,
+                                                      color: Colors.white))),
+                                          Expanded(
+                                              child: Text('Status',
+                                                  style: TextStyle(
+                                                      fontWeight:
+                                                          FontWeight.bold,
+                                                      color: Colors.white))),
                                         ],
                                       ),
                                     ),
@@ -851,233 +917,294 @@ class _HomePageState extends State<FilePage> with TickerProviderStateMixin {
                                     Expanded(
                                       child: SingleChildScrollView(
                                         child: Column(
-                                          children: providedFilteredList.isNotEmpty
-                                              ? providedFilteredList.map(
-                                                  (entry) => Container(
-                                                    padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 8.0),
-                                                    decoration: BoxDecoration(
-                                                      border: Border(
-                                                        bottom: BorderSide(color: Colors.grey.shade300), // Divider between rows
-                                                      ),
-                                                    ),
-                                                    child: Row(
-                                                      children: [
-                                                        Expanded(child: Text(entry['file_name'] ?? '')),
-                                                        Expanded(
-                                                          child: MouseRegion(
-                                                            cursor: SystemMouseCursors.click,
-                                                            child: GestureDetector(
-                                                              onTap: () {
-                                                                Clipboard.setData(ClipboardData(text: entry['file_id'] ?? ''));
-                                                                ScaffoldMessenger.of(context).showSnackBar(
-                                                                  const SnackBar(content: Text("File ID copied to clipboard")),
-                                                                );
-                                                              },
-                                                              child: Text(
-                                                                (entry['file_id'] ?? '').substring(0, 10) + '...',
-                                                                style: const TextStyle(
-                                                                  color: Colors.blue,
-                                                                ),
-                                                              ),
+                                          children:
+                                              providedFilteredList.isNotEmpty
+                                                  ? providedFilteredList
+                                                      .map(
+                                                        (entry) => Container(
+                                                          padding:
+                                                              const EdgeInsets
+                                                                  .symmetric(
+                                                                  vertical: 8.0,
+                                                                  horizontal:
+                                                                      8.0),
+                                                          decoration:
+                                                              BoxDecoration(
+                                                            border: Border(
+                                                              bottom: BorderSide(
+                                                                  color: Colors
+                                                                      .grey
+                                                                      .shade300), // Divider between rows
                                                             ),
                                                           ),
-                                                        ),
-                                                        Expanded(child: Text(entry['downloads_count']?.toString() ?? '')),
-                                                    //  Expanded(
-                                                    //   child: Column(
-                                                    //     mainAxisAlignment: MainAxisAlignment.center, // Aligns the text to the top (start)
-                                                    //     crossAxisAlignment: CrossAxisAlignment.center, // Aligns the text to the left
-                                                    //     children: [
-                                                    //       Text(
-                                                    //         entry['downloads_count']?.toString() ?? '',
-                                                    //       ),
-                                                    //     ],
-                                                    //   ),
-                                                    // ),
-                                                        // Expanded(
-                                                        //   child: Row(
-                                                        //     mainAxisAlignment: MainAxisAlignment.start,
-                                                        //     children: [
-                                                        //       SizedBox(
-                                                        //         width: 120,
-                                                        //         height: 30,
-                                                        //         child: ElevatedButton(
-                                                        //           onPressed: () {
-                                                        //             _showStopProvidingDialog(
-                                                        //               providedFilteredList.indexOf(entry),
-                                                        //               entry['file_id']!,
-                                                        //               entry['file_name']
-                                                        //             );
-                                                        //           },
-                                                        //           style: ElevatedButton.styleFrom(
-                                                        //             padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),
-                                                        //             textStyle: const TextStyle(fontSize: 12),
-                                                        //           ),
-                                                        //           child: const Text('Stop Providing'),
-                                                        //         ),
-                                                        //       ),
-                                                        //     ],
-                                                        //   ),
-                                                        // ),
-                                                      
-                                                      
-                                                        // Toggle Button for Status
-                                                        // Expanded(
-                                                        //   child: Row(
-                                                        //     mainAxisAlignment: MainAxisAlignment.start,
-                                                        //     children: [
-                                                        //       SizedBox(
-                                                        //         width: 120,
-                                                        //         height: 30,
-                                                        //        child: StatefulBuilder(
-                                                        //         builder: (context, setState) {
-                                                        //           bool isProviding = entry['is_providing'] ?? true; // Assuming initial state
-                                                        //           return Row(
-                                                        //             children: [
-                                                        //               Switch(
-                                                        //                 value: isProviding,
-                                                        //                 onChanged: (value) {
-                                                        //                   setState(() {
-                                                        //                     isProviding = value;
-                                                        //                     entry['is_providing'] = isProviding;
-                                                        //                   });
-                                                        //                 },
-                                                        //                 activeColor: Colors.green,
-                                                        //                 inactiveThumbColor: Colors.red,
-                                                        //                 inactiveTrackColor: Colors.red.withOpacity(0.3),
-                                                        //               ),
-                                                        //               Text(isProviding ? 'Resume' : 'Stop', style: TextStyle(fontSize: 12, color: isProviding ? Colors.green : Colors.red)),
-                                                        //             ],
-                                                        //           );
-                                                        //         },
-                                                        //       ),
-                                                        //       ),
-                                                        //     ],
-                                                        //   )
-                                                        // ),
-                                                        Expanded(
                                                           child: Row(
-                                                            mainAxisAlignment: MainAxisAlignment.start,
-                                                            crossAxisAlignment: CrossAxisAlignment.center,
                                                             children: [
-                                                              SizedBox(
-                                                                width: 150, // Adjusted width to accommodate icons
-                                                                height: 30,
-                                                                child: StatefulBuilder(
-                                                                  builder: (context, setState) {
-                                                                    bool isProviding = entry['is_providing'] ?? true; // Assuming initial state
-                                                                    return Row(
-                                                                      mainAxisAlignment: MainAxisAlignment.start,
-                                                                      children: [
-                                                                        IconButton(
-                                                                          icon: Icon(
-                                                                            Icons.play_arrow,
-                                                                            size: 18,
-                                                                            color: isProviding ? Colors.green : Colors.grey,
-                                                                          ),
-                                                                          onPressed: isProviding
-                                                                              ? null
-                                                                              : () {
-                                                                                  setState(() {
-                                                                                    isProviding = true;
-                                                                                    entry['is_providing'] = true;
-                                                                                  });
+                                                              Expanded(
+                                                                  child: Text(
+                                                                      entry['file_name'] ??
+                                                                          '',
+                                                                      style:
+                                                                          TextStyle(
+                                                                        color: Theme.of(context)
+                                                                            .colorScheme
+                                                                            .onSecondary, // Set text color to onSecondary
+                                                                      ))),
+                                                              Expanded(
+                                                                child:
+                                                                    MouseRegion(
+                                                                  cursor:
+                                                                      SystemMouseCursors
+                                                                          .click,
+                                                                  child:
+                                                                      GestureDetector(
+                                                                    onTap: () {
+                                                                      Clipboard.setData(ClipboardData(
+                                                                          text: entry['file_id'] ??
+                                                                              ''));
+                                                                      ScaffoldMessenger.of(
+                                                                              context)
+                                                                          .showSnackBar(
+                                                                        const SnackBar(
+                                                                            content:
+                                                                                Text("File ID copied to clipboard")),
+                                                                      );
+                                                                    },
+                                                                    child: Text(
+                                                                      (entry['file_id'] ?? '').substring(
+                                                                              0,
+                                                                              10) +
+                                                                          '...',
+                                                                      style:
+                                                                          TextStyle(
+                                                                        color: Theme.of(context)
+                                                                            .colorScheme
+                                                                            .onPrimary,
+                                                                      ),
+                                                                    ),
+                                                                  ),
+                                                                ),
+                                                              ),
+                                                              Expanded(
+                                                                  child: Text(
+                                                                      entry['downloads_count']
+                                                                              ?.toString() ??
+                                                                          '',
+                                                                      style:
+                                                                          TextStyle(
+                                                                        color: Theme.of(context)
+                                                                            .colorScheme
+                                                                            .onSecondary, // Set text color to onSecondary
+                                                                      ))),
+                                                              //  Expanded(
+                                                              //   child: Column(
+                                                              //     mainAxisAlignment: MainAxisAlignment.center, // Aligns the text to the top (start)
+                                                              //     crossAxisAlignment: CrossAxisAlignment.center, // Aligns the text to the left
+                                                              //     children: [
+                                                              //       Text(
+                                                              //         entry['downloads_count']?.toString() ?? '',
+                                                              //       ),
+                                                              //     ],
+                                                              //   ),
+                                                              // ),
+                                                              // Expanded(
+                                                              //   child: Row(
+                                                              //     mainAxisAlignment: MainAxisAlignment.start,
+                                                              //     children: [
+                                                              //       SizedBox(
+                                                              //         width: 120,
+                                                              //         height: 30,
+                                                              //         child: ElevatedButton(
+                                                              //           onPressed: () {
+                                                              //             _showStopProvidingDialog(
+                                                              //               providedFilteredList.indexOf(entry),
+                                                              //               entry['file_id']!,
+                                                              //               entry['file_name']
+                                                              //             );
+                                                              //           },
+                                                              //           style: ElevatedButton.styleFrom(
+                                                              //             padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),
+                                                              //             textStyle: const TextStyle(fontSize: 12),
+                                                              //           ),
+                                                              //           child: const Text('Stop Providing'),
+                                                              //         ),
+                                                              //       ),
+                                                              //     ],
+                                                              //   ),
+                                                              // ),
+
+                                                              // Toggle Button for Status
+                                                              // Expanded(
+                                                              //   child: Row(
+                                                              //     mainAxisAlignment: MainAxisAlignment.start,
+                                                              //     children: [
+                                                              //       SizedBox(
+                                                              //         width: 120,
+                                                              //         height: 30,
+                                                              //        child: StatefulBuilder(
+                                                              //         builder: (context, setState) {
+                                                              //           bool isProviding = entry['is_providing'] ?? true; // Assuming initial state
+                                                              //           return Row(
+                                                              //             children: [
+                                                              //               Switch(
+                                                              //                 value: isProviding,
+                                                              //                 onChanged: (value) {
+                                                              //                   setState(() {
+                                                              //                     isProviding = value;
+                                                              //                     entry['is_providing'] = isProviding;
+                                                              //                   });
+                                                              //                 },
+                                                              //                 activeColor: Colors.green,
+                                                              //                 inactiveThumbColor: Colors.red,
+                                                              //                 inactiveTrackColor: Colors.red.withOpacity(0.3),
+                                                              //               ),
+                                                              //               Text(isProviding ? 'Resume' : 'Stop', style: TextStyle(fontSize: 12, color: isProviding ? Colors.green : Colors.red)),
+                                                              //             ],
+                                                              //           );
+                                                              //         },
+                                                              //       ),
+                                                              //       ),
+                                                              //     ],
+                                                              //   )
+                                                              // ),
+                                                              Expanded(
+                                                                child: Row(
+                                                                  mainAxisAlignment:
+                                                                      MainAxisAlignment
+                                                                          .start,
+                                                                  crossAxisAlignment:
+                                                                      CrossAxisAlignment
+                                                                          .center,
+                                                                  children: [
+                                                                    SizedBox(
+                                                                      width:
+                                                                          150, // Adjusted width to accommodate icons
+                                                                      height:
+                                                                          30,
+                                                                      child:
+                                                                          StatefulBuilder(
+                                                                        builder:
+                                                                            (context,
+                                                                                setState) {
+                                                                          bool
+                                                                              isProviding =
+                                                                              entry['is_providing'] ?? true; // Assuming initial state
+                                                                          return Row(
+                                                                            mainAxisAlignment:
+                                                                                MainAxisAlignment.start,
+                                                                            children: [
+                                                                              IconButton(
+                                                                                icon: Icon(
+                                                                                  Icons.play_arrow,
+                                                                                  size: 18,
+                                                                                  color: isProviding ? Colors.green : Colors.grey,
+                                                                                ),
+                                                                                onPressed: isProviding
+                                                                                    ? null
+                                                                                    : () {
+                                                                                        setState(() {
+                                                                                          isProviding = true;
+                                                                                          entry['is_providing'] = true;
+                                                                                        });
+                                                                                      },
+                                                                                tooltip: 'Resume Providing',
+                                                                              ),
+                                                                              IconButton(
+                                                                                icon: Icon(
+                                                                                  Icons.pause,
+                                                                                  size: 18,
+                                                                                  color: !isProviding ? Colors.red : Colors.grey,
+                                                                                ),
+                                                                                onPressed: !isProviding
+                                                                                    ? null
+                                                                                    : () {
+                                                                                        stopProviding(entry['file_id'], false);
+                                                                                        setState(() {
+                                                                                          isProviding = false;
+                                                                                          entry['is_providing'] = false;
+                                                                                        });
+                                                                                      },
+                                                                                tooltip: 'Stop Providing',
+                                                                              ),
+                                                                              IconButton(
+                                                                                icon: const Icon(
+                                                                                  Icons.delete,
+                                                                                  size: 18,
+                                                                                  color: Colors.black,
+                                                                                ),
+                                                                                onPressed: () {
+                                                                                  _showStopProvidingDialog(providedFilteredList.indexOf(entry), entry['file_id']!, entry['file_name']);
+                                                                                  print('Delete clicked for ${entry}');
                                                                                 },
-                                                                          tooltip: 'Resume Providing',
-                                                                        ),
-                                                                        IconButton(
-                                                                          icon: Icon(
-                                                                            Icons.pause,
-                                                                            size: 18,
-                                                                            color: !isProviding ? Colors.red : Colors.grey,
-                                                                          ),
-                                                                          onPressed: !isProviding
-                                                                              ? null
-                                                                              : () {
-                                                                                  stopProviding(entry['file_id'],false);
-                                                                                  setState(() {
-                                                                                    isProviding = false;
-                                                                                    entry['is_providing'] = false;
-                                                                                  });
-                                                                                },
-                                                                          tooltip: 'Stop Providing',
-                                                                        ),
-                                                                        IconButton(
-                                                                          icon: const Icon(
-                                                                            Icons.delete,
-                                                                            size: 18,
-                                                                            color: Colors.black,
-                                                                          ),
-                                                                          onPressed: () {
-                                                                            _showStopProvidingDialog(
-                                                                                providedFilteredList.indexOf(entry),
-                                                                                entry['file_id']!,
-                                                                                entry['file_name']
-                                                                              );
-                                                                            print('Delete clicked for ${entry}');
-                                                                          },
-                                                                          tooltip: 'Delete',
-                                                                        ),
-                                                                      ],
-                                                                    );
-                                                                  },
+                                                                                tooltip: 'Delete',
+                                                                              ),
+                                                                            ],
+                                                                          );
+                                                                        },
+                                                                      ),
+                                                                    ),
+                                                                  ],
+                                                                ),
+                                                              ),
+                                                              Expanded(
+                                                                child: Column(
+                                                                  crossAxisAlignment:
+                                                                      CrossAxisAlignment
+                                                                          .start,
+                                                                  children: [
+                                                                    Text(
+                                                                      entry['status'] ==
+                                                                              1
+                                                                          ? 'Active'
+                                                                          : 'Inactive',
+                                                                      style:
+                                                                          TextStyle(
+                                                                        color: entry['status'] ==
+                                                                                1
+                                                                            ? Colors.green
+                                                                            : Colors.red,
+                                                                        fontWeight:
+                                                                            FontWeight.bold,
+                                                                      ),
+                                                                    ),
+                                                                  ],
                                                                 ),
                                                               ),
                                                             ],
-                                                          
                                                           ),
                                                         ),
-                                                        Expanded(
-                                                          child: Column(
-                                                            crossAxisAlignment: CrossAxisAlignment.start,
-                                                            children: [
-                                                              Text(
-                                                                entry['status'] == 1 ? 'Active' : 'Inactive',
-                                                                style: TextStyle(
-                                                                  color: entry['status'] == 1 ? Colors.green : Colors.red,
-                                                                  fontWeight: FontWeight.bold,
-                                                                ),
-                                                              ),
-                                                            ],
-                                                          ),
-                                                        ),
-                                                      ],
-                                                    ),
-                                                  ),
-                                                ).toList()
-                                              : [
-                                                  Container(
-                                                    padding: const EdgeInsets.all(16.0),
-                                                    alignment: Alignment.center,
-                                                    child: const Text('No files provided'),
-                                                  ),
-                                                ],
+                                                      )
+                                                      .toList()
+                                                  : [
+                                                      Container(
+                                                        padding:
+                                                            const EdgeInsets
+                                                                .all(16.0),
+                                                        alignment:
+                                                            Alignment.center,
+                                                        child: const Text(
+                                                            'No files provided'),
+                                                      ),
+                                                    ],
                                         ),
                                       ),
                                     ),
                                   ],
-                                ),    
+                                ),
                               ),
                             ),
-                                       
                           ],
                         ),
-                        
                       ),
                     ),
                   )
-
-
                 ],
               ),
             ),
-           
           ],
         ),
       ),
     );
   }
-
 }
 
 void main() {

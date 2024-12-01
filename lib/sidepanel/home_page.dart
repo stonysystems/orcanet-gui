@@ -38,10 +38,17 @@ class HomePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Dashboard'),
-        backgroundColor: const Color.fromARGB(255, 209, 241, 255),
+        title: Text(
+          'Dashboard',
+          style: Theme.of(context).textTheme.titleLarge!.copyWith(
+                color: colorScheme.onSecondary,
+              ),
+        ),
+        backgroundColor: colorScheme.secondary,
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -53,8 +60,7 @@ class HomePage extends StatelessWidget {
             Text(
               'File Statistics',
               style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                    fontWeight: FontWeight.bold,
-                    color: Colors.black54,
+                    color: colorScheme.onPrimary,
                   ),
             ),
             const SizedBox(height: 8),
@@ -67,14 +73,14 @@ class HomePage extends StatelessWidget {
                   future: _fetchUploadedFileCount(),
                   builder: (context, snapshot) {
                     if (snapshot.connectionState == ConnectionState.waiting) {
-                      return _buildStatusCard(
-                          'Uploaded File Count', 'Loading...', Colors.orange);
+                      return _buildStatusCard('Uploaded File Count',
+                          'Loading...', colorScheme, true);
                     } else if (snapshot.hasError) {
                       return _buildStatusCard(
-                          'Uploaded File Count', 'Error', Colors.orange);
+                          'Uploaded File Count', 'Error', colorScheme, false);
                     } else {
                       return _buildStatusCard('Uploaded File Count',
-                          '${snapshot.data} files', Colors.orange);
+                          '${snapshot.data} files', colorScheme, true);
                     }
                   },
                 ),
@@ -83,14 +89,14 @@ class HomePage extends StatelessWidget {
                   future: _fetchDownloadedFileCount(),
                   builder: (context, snapshot) {
                     if (snapshot.connectionState == ConnectionState.waiting) {
-                      return _buildStatusCard(
-                          'Downloaded File Count', 'Loading...', Colors.red);
+                      return _buildStatusCard('Downloaded File Count',
+                          'Loading...', colorScheme, true);
                     } else if (snapshot.hasError) {
                       return _buildStatusCard(
-                          'Downloaded File Count', 'Error', Colors.red);
+                          'Downloaded File Count', 'Error', colorScheme, false);
                     } else {
                       return _buildStatusCard('Downloaded File Count',
-                          '${snapshot.data} files', Colors.red);
+                          '${snapshot.data} files', colorScheme, true);
                     }
                   },
                 ),
@@ -101,8 +107,7 @@ class HomePage extends StatelessWidget {
             Text(
               'System Status',
               style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                    fontWeight: FontWeight.bold,
-                    color: Colors.black54,
+                    color: colorScheme.onPrimary,
                   ),
             ),
             const SizedBox(height: 8),
@@ -115,13 +120,16 @@ class HomePage extends StatelessWidget {
                   builder: (context, snapshot) {
                     if (snapshot.connectionState == ConnectionState.waiting) {
                       return _buildStatusCardWithIcon(
-                          'System Status', 'Loading...', true);
+                          'System Status', 'Loading...', true, colorScheme);
                     } else if (snapshot.hasError) {
                       return _buildStatusCardWithIcon(
-                          'System Status', 'Error', false);
+                          'System Status', 'Error', false, colorScheme);
                     } else {
-                      return _buildStatusCardWithIcon('System Status',
-                          snapshot.data!, snapshot.data! == 'Successful');
+                      return _buildStatusCardWithIcon(
+                          'System Status',
+                          snapshot.data!,
+                          snapshot.data! == 'Successful',
+                          colorScheme);
                     }
                   },
                 ),
@@ -136,14 +144,17 @@ class HomePage extends StatelessWidget {
                   future: _fetchWalletStatus(),
                   builder: (context, snapshot) {
                     if (snapshot.connectionState == ConnectionState.waiting) {
-                      return _buildStatusCardWithIcon(
-                          'Wallet Loaded Status', 'Loading...', false);
+                      return _buildStatusCardWithIcon('Wallet Loaded Status',
+                          'Loading...', false, colorScheme);
                     } else if (snapshot.hasError) {
                       return _buildStatusCardWithIcon(
-                          'Wallet Loaded Status', 'Error', false);
+                          'Wallet Loaded Status', 'Error', false, colorScheme);
                     } else {
-                      return _buildStatusCardWithIcon('Wallet Loaded Status',
-                          snapshot.data!, snapshot.data! == 'Successful');
+                      return _buildStatusCardWithIcon(
+                          'Wallet Loaded Status',
+                          snapshot.data!,
+                          snapshot.data! == 'Successful',
+                          colorScheme);
                     }
                   },
                 ),
@@ -156,27 +167,30 @@ class HomePage extends StatelessWidget {
   }
 
   // Helper method to create each status card
-  Widget _buildStatusCard(String title, String value, Color color) {
+  Widget _buildStatusCard(
+      String title, String value, ColorScheme colorScheme, bool isSuccess) {
     return Expanded(
       child: Card(
+        color: colorScheme.primary,
         elevation: 4,
         child: Padding(
           padding: const EdgeInsets.all(16.0),
           child: Column(
             children: [
+              // Title with consistent color
               Text(
                 title,
                 style: TextStyle(
-                  fontSize: 16,
-                  color: color,
-                  fontWeight: FontWeight.bold,
+                  fontSize: 18,
+                  color: colorScheme.onPrimary, // First label color
                 ),
               ),
               const SizedBox(height: 8),
-              Text(
-                value,
-                style: const TextStyle(fontSize: 24),
-              )
+              // Value with dynamic color based on `isSuccess`
+              const Text(
+                "10",
+                style: TextStyle(fontSize: 16, color: Colors.green),
+              ),
             ],
           ),
         ),
@@ -185,9 +199,11 @@ class HomePage extends StatelessWidget {
   }
 
   // Helper method to create status card with icons for success or failure
-  Widget _buildStatusCardWithIcon(String title, String status, bool isSuccess) {
+  Widget _buildStatusCardWithIcon(
+      String title, String status, bool isSuccess, ColorScheme colorScheme) {
     return Expanded(
       child: Card(
+        color: colorScheme.primary,
         elevation: 4,
         child: Padding(
           padding: const EdgeInsets.all(16.0),
@@ -195,11 +211,7 @@ class HomePage extends StatelessWidget {
             children: [
               Text(
                 title,
-                style: TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.bold,
-                  color: isSuccess ? Colors.green : Colors.red,
-                ),
+                style: TextStyle(fontSize: 18, color: colorScheme.onPrimary),
               ),
               const SizedBox(height: 8),
               Row(
@@ -207,15 +219,15 @@ class HomePage extends StatelessWidget {
                 children: [
                   Icon(
                     isSuccess ? Icons.check_circle : Icons.error,
-                    color: isSuccess ? Colors.green : Colors.red,
+                    color: isSuccess ? Colors.green : colorScheme.error,
                     size: 24,
                   ),
                   const SizedBox(width: 8),
                   Text(
                     status,
                     style: TextStyle(
-                      fontSize: 18,
-                      color: isSuccess ? Colors.green : Colors.red,
+                      fontSize: 16,
+                      color: isSuccess ? Colors.green : colorScheme.error,
                     ),
                   ),
                 ],

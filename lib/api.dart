@@ -199,8 +199,73 @@ class Api {
     };
   }
 
-  //Get proxy list
+  // Get Transanction List
+  static Future<List<Map<String, dynamic>>> getTransactionList() async {
+    // Simulate a network request with a delay
+    await Future.delayed(const Duration(seconds: 2));
 
+    return [
+      {
+        'txid': '1A2B3C4D5E6F7G8H9I0J',
+        'amount': 0.03567890,
+        'confirmations': 4,
+        'category': 'Deposit',
+        'time': DateTime.now()
+                .subtract(Duration(hours: 1))
+                .millisecondsSinceEpoch ~/
+            1000,
+      },
+      {
+        'txid': '2B3C4D5E6F7G8H9I0J1K',
+        'amount': -0.01234567,
+        'confirmations': 1,
+        'category': 'Withdrawal',
+        'time':
+            DateTime.now().subtract(Duration(days: 1)).millisecondsSinceEpoch ~/
+                1000,
+      },
+      {
+        'txid': '3C4D5E6F7G8H9I0J1K2L',
+        'amount': 0.10000000,
+        'confirmations': 5,
+        'category': 'Deposit',
+        'time':
+            DateTime.now().subtract(Duration(days: 2)).millisecondsSinceEpoch ~/
+                1000,
+      },
+      {
+        'txid': '4D5E6F7G8H9I0J1K2L3M',
+        'amount': -0.02567890,
+        'confirmations': 0,
+        'category': 'Withdrawal',
+        'time': DateTime.now()
+                .subtract(Duration(hours: 12))
+                .millisecondsSinceEpoch ~/
+            1000,
+      },
+      {
+        'txid': '5E6F7G8H9I0J1K2L3M4N',
+        'amount': 0.25000000,
+        'confirmations': 3,
+        'category': 'Deposit',
+        'time':
+            DateTime.now().subtract(Duration(days: 3)).millisecondsSinceEpoch ~/
+                1000,
+      },
+      {
+        'txid': '6F7G8H9I0J1K2L3M4N5O',
+        'amount': -0.00567890,
+        'confirmations': 2,
+        'category': 'Withdrawal',
+        'time': DateTime.now()
+                .subtract(Duration(hours: 5))
+                .millisecondsSinceEpoch ~/
+            1000,
+      },
+    ];
+  }
+
+  //Get proxy list
   static Future<Map<String, dynamic>> getProxyList(String txId) async {
     // Simulate a network request with a delay
     await Future.delayed(const Duration(seconds: 2));
