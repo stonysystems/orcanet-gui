@@ -21,13 +21,15 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         brightness: Brightness.light,
         useMaterial3: true,
-        colorScheme: ColorScheme.light(
-          primary: const Color.fromARGB(255, 241, 240, 243),
-          onPrimary: const Color.fromARGB(250, 21, 101, 192),
-          secondary: const Color.fromARGB(255, 209, 241, 255),
+        colorScheme: const ColorScheme.light(
+          primary:  Color.fromARGB(255, 255, 255, 255), // // Card Backgorund
+          onPrimary:  Color.fromARGB(250, 21, 101, 192),
+          secondary:  Color.fromARGB(255, 209, 241, 255),
           onSecondary: Colors.black,
-          surface: Colors.white,
+          surface: Color.fromARGB(255, 225, 224, 224), // Entire Backgorund
           onSurface: Colors.black,
+          tertiary: Color.fromARGB(250, 21, 101, 192),
+          onTertiary: Color.fromARGB(255, 255, 255, 255), // side panel label color
           error: Colors.red,
           onError: Colors.white,
         ),
@@ -46,6 +48,7 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   int _selectedIndex = 0;
+  int? _hoveredIndex; // To track hovered item
 
   static const List<Widget> _pages = <Widget>[
     HomePage(),
@@ -63,6 +66,10 @@ class _MyHomePageState extends State<MyHomePage> {
     });
   }
 
+  void myWidget(){
+
+  }
+
   @override
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
@@ -74,70 +81,57 @@ class _MyHomePageState extends State<MyHomePage> {
           NavigationRail(
             selectedIndex: _selectedIndex,
             onDestinationSelected: _onItemTapped,
-            labelType: NavigationRailLabelType.all,
-            selectedIconTheme: IconThemeData(
-              color: colorScheme.primary, // Consistent icon color for selected
+            labelType: NavigationRailLabelType.none,
+            extended: true,
+            minExtendedWidth: 230,
+            selectedIconTheme: const IconThemeData(
+              color: Colors.white,
+              size: 30,
             ),
             unselectedIconTheme: IconThemeData(
-              color:
-                  colorScheme.onPrimary, // Consistent icon color for unselected
+              color: colorScheme.tertiary,
+              size: 30,
             ),
-            indicatorColor:
-                Colors.transparent, // Disable background indicator color
-            backgroundColor: Colors.transparent, // Ensure consistent background
-            selectedLabelTextStyle: const TextStyle(
-              color: Colors.black, // Custom text color for selected labels
+            indicatorColor:colorScheme.tertiary,
+            backgroundColor: colorScheme.onTertiary,
+            selectedLabelTextStyle: TextStyle(
+              color: colorScheme.tertiary,
             ),
-            unselectedLabelTextStyle: const TextStyle(
-              color: Colors.black, // Custom text color for unselected labels
+            unselectedLabelTextStyle: TextStyle(
+              color: colorScheme.tertiary,
             ),
-            // Show all labels
-            destinations: const <NavigationRailDestination>[
-              NavigationRailDestination(
-                icon: Icon(Icons.home),
-                selectedIcon: Icon(Icons.home_filled),
-                label: Text('Home'),
+            groupAlignment: -1.0,
+            destinations: List.generate(
+              _destinations.length,
+              (index) => _buildHoverableDestination(
+                index,
+                _destinations[index]['icon'] as IconData,
+                _destinations[index]['label'] as String,
+                colorScheme,
               ),
-              NavigationRailDestination(
-                icon: Icon(Icons.insert_drive_file),
-                selectedIcon: Icon(Icons.insert_drive_file_sharp),
-                label: Text('File'),
+            ),
+            leading: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Text(
+                'Orcanet', 
+                style: TextStyle(
+                  fontSize: 35, // Approximately h3 size
+                  fontWeight: FontWeight.bold,
+                  color:colorScheme.onPrimary,
+                ),
               ),
-              NavigationRailDestination(
-                icon: Icon(Icons.people),
-                selectedIcon: Icon(Icons.people_outline),
-                label: Text('Proxy'),
-              ),
-              NavigationRailDestination(
-                icon: Icon(Icons.show_chart),
-                selectedIcon: Icon(Icons.show_chart_outlined),
-                label: Text('Market'),
-              ),
-              NavigationRailDestination(
-                icon: Icon(Icons.wallet),
-                selectedIcon: Icon(Icons.wallet_travel),
-                label: Text('Wallet'),
-              ),
-              NavigationRailDestination(
-                icon: Icon(Icons.work),
-                selectedIcon: Icon(Icons.work_outline),
-                label: Text('Mining'),
-              ),
-              NavigationRailDestination(
-                icon: Icon(Icons.settings),
-                selectedIcon: Icon(Icons.settings_outlined),
-                label: Text('Settings'),
-              ),
-            ],
+              //const SizedBox(height: 20),
+            ),
           ),
+
           // Main content view wrapped in a Container for styling
           Expanded(
             child: Container(
-              decoration: BoxDecoration(
+              decoration: const BoxDecoration(
                 color: Colors.white,
                 border: Border(
                   left: BorderSide(
-                    color: Colors.white,
+                    color: Colors.grey,
                     width: 1,
                   ),
                 ),
@@ -151,4 +145,88 @@ class _MyHomePageState extends State<MyHomePage> {
       ),
     );
   }
+  
+
+  NavigationRailDestination _buildHoverableDestination(
+    int index,
+    IconData iconData,
+    String label,
+    ColorScheme colorScheme,
+  ) {
+    return NavigationRailDestination(
+      icon: MouseRegion(
+        onEnter: (_) {
+          setState(() {
+            _hoveredIndex = index;
+          });
+        },
+        onExit: (_) {
+          setState(() {
+            _hoveredIndex = null;
+          });
+        },
+        cursor: SystemMouseCursors.click,
+        child: Container(
+          decoration: BoxDecoration(
+            color: _hoveredIndex == index ? colorScheme.tertiary.withOpacity(0.2) : null,
+            borderRadius: BorderRadius.circular(30.0), // Adjust the radius as needed
+          ),
+          padding: const EdgeInsets.all(8.0),
+          child: Icon(iconData),
+        ),
+      ),
+      selectedIcon: MouseRegion(
+        // onEnter: (_) {
+        //   setState(() {
+        //     _hoveredIndex = index;
+        //   });
+        // },
+        // onExit: (_) {
+        //   setState(() {
+        //     _hoveredIndex = null;
+        //   });
+        // },
+        cursor: SystemMouseCursors.click,
+        child: Container(
+          // decoration: BoxDecoration(
+          //   color: _hoveredIndex == index ? colorScheme.tertiary.withOpacity(0.2) : null,
+          //   borderRadius: BorderRadius.circular(30.0), // Adjust the radius as needed
+          // ),
+          padding: const EdgeInsets.all(8.0),
+          child: Icon(iconData),
+        ),
+      ),
+      label: MouseRegion(
+        onEnter: (_) {
+          setState(() {
+            _hoveredIndex = index;
+          });
+        },
+        onExit: (_) {
+          setState(() {
+            _hoveredIndex = null;
+          });
+        },
+        cursor: SystemMouseCursors.click,
+        child: Container(
+          // decoration: BoxDecoration(
+          //   color: _hoveredIndex == index ? Colors.blue.withOpacity(0.2) : null,
+          //   borderRadius: BorderRadius.circular(8.0), // Adjust the radius as needed
+          // ),
+          padding: const EdgeInsets.all(8.0),
+          child: Text(label),
+        ),
+      ),
+    );
+  }
 }
+
+const List<Map<String, dynamic>> _destinations = [
+  {'icon': Icons.home, 'label': 'Home'},
+  {'icon': Icons.insert_drive_file, 'label': 'File'},
+  {'icon': Icons.people, 'label': 'Proxy'},
+  {'icon': Icons.show_chart, 'label': 'Market'},
+  {'icon': Icons.wallet, 'label': 'Wallet'},
+  {'icon': Icons.work, 'label': 'Mining'},
+  {'icon': Icons.settings, 'label': 'Settings'},
+];

@@ -23,6 +23,7 @@ class ApiEndpoints {
   static const GET_FILE_INFO = '${FILE_ENDPOINT}/get-file-info';
   static const PROVIDE_FILE = '${FILE_ENDPOINT}/provide-file';
   static const STOP_PROVIDING = '${FILE_ENDPOINT}/stop-providing';
+   static const RESUME_PROVIDING = '${FILE_ENDPOINT}/resume-providing';
   static const DOWNLOAD_FILE = '${FILE_ENDPOINT}/download-file';
   static const GET_PROVIDERS = '${FILE_ENDPOINT}/get-providers';
 }
@@ -157,8 +158,16 @@ class Api {
   static Future<Map<String, dynamic>> stopProviding(String fileId,
       {bool permanent = false}) async {
     return Api.post(
-      '${ApiEndpoints.STOP_PROVIDING}/$fileId',
-      body: {'permanent': permanent},
+      '${ApiEndpoints.STOP_PROVIDING}/$fileId?permanent=$permanent',
+       
+      //body: {'permanent': permanent},
+    );
+  }
+
+    static Future<Map<String, dynamic>> resumeProviding(String fileId,
+      ) async {
+    return Api.post(
+      '${ApiEndpoints.RESUME_PROVIDING}/$fileId'
     );
   }
 

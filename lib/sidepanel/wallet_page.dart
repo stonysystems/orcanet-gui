@@ -212,9 +212,21 @@ class _WalletPageState extends State<WalletPage> {
     final colorScheme = Theme.of(context).colorScheme;
 
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Wallet Page'),
-      ),
+       appBar: AppBar(
+          toolbarHeight: 60,
+          title: Text(
+            'Wallet Page',
+            style: Theme.of(context).textTheme.titleLarge!.copyWith(
+                  color: colorScheme.onPrimary,
+                  fontWeight: FontWeight.bold,
+                  fontSize: 23,
+                ),
+          ),
+          backgroundColor: colorScheme.surface,
+        ),
+      // appBar: AppBar(
+      //   title: const Text('Wallet Page'),
+      // ),
       body: Container(
         padding: const EdgeInsets.all(16.0),
         child: Column(
@@ -224,196 +236,209 @@ class _WalletPageState extends State<WalletPage> {
             Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                // Available Balance Box
+                // Available Balance Box with Card and Elevation
                 Expanded(
-                  child: Container(
-                    height: 280,
-                    padding: const EdgeInsets.all(12.0),
-                    decoration: BoxDecoration(
-                      color: colorScheme.primary,
+                  child: Card(
+                    elevation: 5, // Adds elevation for shadow effect
+                    shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(8.0),
                     ),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        // Display either the loading state or the fetched balance
-                        const SizedBox(height: 12),
-                        Text(
-                          isLoadingBalance
-                              ? 'Loading Balance...'
-                              : 'Available Balance:',
-                          style: Theme.of(context)
-                              .textTheme
-                              .bodyLarge!
-                              .copyWith(
-                                  fontWeight: FontWeight.w600,
-                                  color: colorScheme.onPrimary),
-                        ),
-                        const SizedBox(height: 16),
-                        Text(
-                          isLoadingBalance
-                              ? '        ...'
-                              : '        200.00 BTC',
-                          style: Theme.of(context)
-                              .textTheme
-                              .headlineMedium!
-                              .copyWith(
-                                  fontWeight: FontWeight.bold,
-                                  color: colorScheme.onPrimary),
-                        ),
-
-                        // Add space before the new section
-                        const SizedBox(height: 20),
-
-                        // Coins Spent Section
-                        Row(
-                          children: [
-                            Icon(
-                              Icons
-                                  .trending_down, // Replaced with a cleaner icon
-                              color: colorScheme.error,
-                              size: 20,
-                            ),
-                            const SizedBox(width: 8),
-                            Text(
-                              'Spent: -359 BTC',
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .bodyLarge!
-                                  .copyWith(
-                                      fontWeight: FontWeight.w500,
-                                      color: colorScheme.onSecondary),
-                            ),
-                          ],
-                        ),
-
-                        // Space between the sections
-                        const SizedBox(height: 12),
-
-                        // Coins Earned Section
-                        Row(
-                          children: [
-                            Icon(
-                              Icons.trending_up, // Replaced with a cleaner icon
-                              color: Colors.green,
-                              size: 20,
-                            ),
-                            const SizedBox(width: 8),
-                            Text(
-                              'Earned: +160 BTC',
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .bodyLarge!
-                                  .copyWith(
-                                      fontWeight: FontWeight.w500,
-                                      color: colorScheme.onSecondary),
-                            ),
-                          ],
-                        ),
-                        const SizedBox(height: 25),
-                        Text(
-                          'Wallet ID: 1234567890ABCDEF',
-                          style: Theme.of(context)
-                              .textTheme
-                              .bodyLarge!
-                              .copyWith(color: colorScheme.onSecondary),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-
-                const SizedBox(width: 35), // Spacing between the containers
-
-                // Send BTC Section
-                Expanded(
-                  child: Container(
-                    height: 280,
-                    padding: const EdgeInsets.all(12.0),
-                    decoration: BoxDecoration(
-                      color: colorScheme.primary,
-                      borderRadius: BorderRadius.circular(8.0),
-                    ),
-                    child: Form(
+                    child: Container(
+                      height: 280,
+                      padding: const EdgeInsets.all(12.0),
+                      decoration: BoxDecoration(
+                        color: colorScheme.primary,
+                        borderRadius: BorderRadius.circular(8.0),
+                      ),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
+                          // Display either the loading state or the fetched balance
+                          const SizedBox(height: 12),
                           Text(
-                            'Send BTC',
+                            isLoadingBalance
+                                ? 'Loading Balance...'
+                                : 'Available Balance:',
                             style: Theme.of(context)
                                 .textTheme
-                                .titleLarge!
-                                .copyWith(color: colorScheme.onPrimary),
-                          ),
-                          const SizedBox(height: 10),
-                          TextFormField(
-                            controller: _addressController,
-                            decoration: InputDecoration(
-                              labelText: 'Wallet Address',
-                              border: const OutlineInputBorder(),
-                              fillColor: colorScheme.surface,
-                              filled: true,
-                              labelStyle:
-                                  TextStyle(color: colorScheme.onSecondary),
-                              focusedBorder: OutlineInputBorder(
-                                borderSide:
-                                    BorderSide(color: colorScheme.onPrimary),
-                              ),
-                            ),
-                          ),
-                          const SizedBox(height: 8),
-                          TextFormField(
-                            controller: _amountController,
-                            decoration: InputDecoration(
-                              labelText: 'Amount (BTC)',
-                              border: const OutlineInputBorder(),
-                              fillColor: colorScheme.surface,
-                              filled: true,
-                              labelStyle:
-                                  TextStyle(color: colorScheme.onSecondary),
-                              focusedBorder: OutlineInputBorder(
-                                borderSide:
-                                    BorderSide(color: colorScheme.onPrimary),
-                              ),
-                            ),
-                            keyboardType: TextInputType.number,
-                          ),
-                          const SizedBox(height: 8),
-                          TextFormField(
-                            controller: _commentController,
-                            decoration: InputDecoration(
-                              labelText: 'Comment',
-                              border: const OutlineInputBorder(),
-                              fillColor: colorScheme.surface,
-                              filled: true,
-                              labelStyle:
-                                  TextStyle(color: colorScheme.onSecondary),
-                              focusedBorder: OutlineInputBorder(
-                                borderSide:
-                                    BorderSide(color: colorScheme.onPrimary),
-                              ),
-                            ),
+                                .bodyLarge!
+                                .copyWith(
+                                    fontWeight: FontWeight.w600,
+                                    color: colorScheme.onPrimary),
                           ),
                           const SizedBox(height: 16),
-                          Align(
-                            alignment: Alignment.centerLeft,
-                            child: ElevatedButton(
-                              onPressed: _sendTransaction,
-                              style: ElevatedButton.styleFrom(
-                                backgroundColor: colorScheme.onPrimary,
-                                padding: const EdgeInsets.all(16.0),
+                          Text(
+                            isLoadingBalance
+                                ? '        ...'
+                                : '        200.00 BTC',
+                            style: Theme.of(context)
+                                .textTheme
+                                .headlineMedium!
+                                .copyWith(
+                                    fontWeight: FontWeight.bold,
+                                    color: colorScheme.onPrimary),
+                          ),
+
+                          // Add space before the new section
+                          const SizedBox(height: 20),
+
+                          // Coins Spent Section
+                          Row(
+                            children: [
+                              Icon(
+                                Icons.trending_down, // Replaced with a cleaner icon
+                                color: colorScheme.error,
+                                size: 20,
                               ),
-                              child: const Text('Send'),
-                            ),
+                              const SizedBox(width: 8),
+                              Text(
+                                'Spent: -359 BTC',
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .bodyLarge!
+                                    .copyWith(
+                                        fontWeight: FontWeight.w500,
+                                        color: colorScheme.onSecondary),
+                              ),
+                            ],
+                          ),
+
+                          // Space between the sections
+                          const SizedBox(height: 12),
+
+                          // Coins Earned Section
+                          Row(
+                            children: [
+                              Icon(
+                                Icons.trending_up, // Replaced with a cleaner icon
+                                color: Colors.green,
+                                size: 20,
+                              ),
+                              const SizedBox(width: 8),
+                              Text(
+                                'Earned: +160 BTC',
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .bodyLarge!
+                                    .copyWith(
+                                        fontWeight: FontWeight.w500,
+                                        color: colorScheme.onSecondary),
+                              ),
+                            ],
+                          ),
+                          const SizedBox(height: 25),
+                          Text(
+                            'Wallet ID: 1234567890ABCDEF',
+                            style: Theme.of(context)
+                                .textTheme
+                                .bodyLarge!
+                                .copyWith(color: colorScheme.onSecondary),
                           ),
                         ],
                       ),
                     ),
                   ),
                 ),
+
+                const SizedBox(width: 35), // Spacing between the containers
+
+                // Send BTC Section with Card and Elevation
+                Expanded(
+                  child: Card(
+                    elevation: 5, // Adds elevation for shadow effect
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(8.0),
+                    ),
+                    child: Container(
+                      height: 280,
+                      padding: const EdgeInsets.all(12.0),
+                      decoration: BoxDecoration(
+                        color: colorScheme.primary,
+                        borderRadius: BorderRadius.circular(8.0),
+                      ),
+                      child: Form(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              'Send BTC',
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .titleLarge!
+                                  .copyWith(color: colorScheme.onPrimary),
+                            ),
+                            const SizedBox(height: 10),
+                            TextFormField(
+                              controller: _addressController,
+                              decoration: InputDecoration(
+                                labelText: 'Wallet Address',
+                                border: const OutlineInputBorder(),
+                                fillColor: colorScheme.primary,
+                                filled: true,
+                                labelStyle:
+                                    TextStyle(color: colorScheme.onSecondary),
+                                focusedBorder: OutlineInputBorder(
+                                  borderSide:
+                                      BorderSide(color: colorScheme.onPrimary),
+                                ),
+                              ),
+                            ),
+                            const SizedBox(height: 8),
+                            TextFormField(
+                              controller: _amountController,
+                              decoration: InputDecoration(
+                                labelText: 'Amount (BTC)',
+                                border: const OutlineInputBorder(),
+                                fillColor: colorScheme.primary,
+                                filled: true,
+                                labelStyle:
+                                    TextStyle(color: colorScheme.onSecondary),
+                                focusedBorder: OutlineInputBorder(
+                                  borderSide:
+                                      BorderSide(color: colorScheme.onPrimary),
+                                ),
+                              ),
+                              keyboardType: TextInputType.number,
+                            ),
+                            const SizedBox(height: 8),
+                            TextFormField(
+                              controller: _commentController,
+                              decoration: InputDecoration(
+                                labelText: 'Comment',
+                                border: const OutlineInputBorder(),
+                                fillColor: colorScheme.primary,
+                                filled: true,
+                                labelStyle:
+                                    TextStyle(color: colorScheme.onSecondary),
+                                focusedBorder: OutlineInputBorder(
+                                  borderSide:
+                                      BorderSide(color: colorScheme.onPrimary),
+                                ),
+                              ),
+                            ),
+                            const SizedBox(height: 16),
+                            Align(
+                              alignment: Alignment.centerLeft,
+                              child: ElevatedButton(
+                                onPressed: _sendTransaction,
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: colorScheme.onPrimary,
+                                  padding: const EdgeInsets.all(16.0),
+                                ),
+                                child: const Text('Send'),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
               ],
             ),
+
             const SizedBox(height: 16),
+
             Text(
               'Transactions',
               style: Theme.of(context)
@@ -427,10 +452,19 @@ class _WalletPageState extends State<WalletPage> {
               controller: _searchController,
               onChanged: _filterTransactions,
               decoration: InputDecoration(
+                labelStyle: TextStyle(
+                  color: Theme.of(context)
+                      .colorScheme
+                      .onSecondary, // Label text color
+                ),
                 labelText: 'Search by Transaction ID',
                 prefixIcon: Icon(Icons.search, color: colorScheme.onPrimary),
                 border: const OutlineInputBorder(),
                 fillColor: colorScheme.surface,
+                focusedBorder: OutlineInputBorder(
+                  borderSide:
+                      BorderSide(color: colorScheme.onPrimary),
+                ),
                 filled: true,
               ),
             ),
@@ -536,6 +570,8 @@ class _WalletPageState extends State<WalletPage> {
                 ),
               ),
             ),
+          
+          
           ],
         ),
       ),

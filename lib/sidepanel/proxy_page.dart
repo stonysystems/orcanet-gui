@@ -128,11 +128,24 @@ class _ProxyPageState extends State<ProxyPage> {
     final colorScheme = Theme.of(context).colorScheme;
 
     return Scaffold(
-      appBar: AppBar(
-        backgroundColor: colorScheme.surface,
-        foregroundColor: colorScheme.onPrimary,
-        title: const Text('Proxy Page'),
-      ),
+       appBar: AppBar(
+          toolbarHeight: 60,
+          title: Text(
+            'Proxy Page',
+            style: Theme.of(context).textTheme.titleLarge!.copyWith(
+                  color: colorScheme.onPrimary,
+                  fontWeight: FontWeight.bold,
+                  fontSize: 23,
+                ),
+          ),
+          backgroundColor: colorScheme.surface,
+          foregroundColor: colorScheme.onPrimary,
+        ),
+      // appBar: AppBar(
+      //   backgroundColor: colorScheme.surface,
+      //   foregroundColor: colorScheme.onPrimary,
+      //   title: const Text('Proxy Page'),
+      // ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
@@ -142,8 +155,8 @@ class _ProxyPageState extends State<ProxyPage> {
             Container(
               padding: const EdgeInsets.all(12.0),
               decoration: BoxDecoration(
-                color: colorScheme.primary
-                    .withOpacity(0.5), // Semi-transparent primary
+                color: colorScheme.primary,
+                    //.withOpacity(0.5), // Semi-transparent primary
                 borderRadius: BorderRadius.circular(8),
               ),
               child: Column(
@@ -201,8 +214,8 @@ class _ProxyPageState extends State<ProxyPage> {
             Container(
               padding: const EdgeInsets.all(12.0),
               decoration: BoxDecoration(
-                color: colorScheme.primary
-                    .withOpacity(0.5), // Semi-transparent primary
+                color: colorScheme.primary,
+                    //.withOpacity(0.5), // Semi-transparent primary
                 borderRadius: BorderRadius.circular(8),
               ),
               child: Row(
