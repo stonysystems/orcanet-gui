@@ -714,7 +714,7 @@ class _HomePageState extends State<FilePage> with TickerProviderStateMixin {
                   Container(
                     //padding: const EdgeInsets.all(8), // Space inside the border
                     child: Card(
-                      color: colorScheme.primary, // background color
+                      // color: colorScheme.primary, // background color
                       elevation: 5,
                       //shadowColor: const Color.fromARGB(255, 102, 70, 70), // Elevation for the shadow effect
                       child: Padding(

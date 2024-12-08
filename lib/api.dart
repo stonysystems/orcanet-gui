@@ -4,6 +4,7 @@ import 'dart:developer';
 
 class ApiEndpoints {
   static const BASE_URL = "http://127.0.0.1:8000/api";
+  static const HEALTH_CHECK_ENDPOINT = 'health';
 
   // Wallet endpoints
   static const WALLET_ENDPOINT = 'wallet';
@@ -23,9 +24,16 @@ class ApiEndpoints {
   static const GET_FILE_INFO = '${FILE_ENDPOINT}/get-file-info';
   static const PROVIDE_FILE = '${FILE_ENDPOINT}/provide-file';
   static const STOP_PROVIDING = '${FILE_ENDPOINT}/stop-providing';
-   static const RESUME_PROVIDING = '${FILE_ENDPOINT}/resume-providing';
+  static const RESUME_PROVIDING = '${FILE_ENDPOINT}/resume-providing';
   static const DOWNLOAD_FILE = '${FILE_ENDPOINT}/download-file';
   static const GET_PROVIDERS = '${FILE_ENDPOINT}/get-providers';
+
+  // Proxy endpoints
+  static const PROXY_ENDPOINT = 'proxy';
+  static const GET_PROXY_PROVIDERS = '${PROXY_ENDPOINT}/get-providers';
+  static const STOP_PROXY = '${PROXY_ENDPOINT}/stop';
+  static const CONNECT_TO_PROXY = '${PROXY_ENDPOINT}/connect';
+  static const START_PROVIDING = '${PROXY_ENDPOINT}/start-providing';
 }
 
 class Api {
@@ -159,16 +167,15 @@ class Api {
       {bool permanent = false}) async {
     return Api.post(
       '${ApiEndpoints.STOP_PROVIDING}/$fileId?permanent=$permanent',
-       
+
       //body: {'permanent': permanent},
     );
   }
 
-    static Future<Map<String, dynamic>> resumeProviding(String fileId,
-      ) async {
-    return Api.post(
-      '${ApiEndpoints.RESUME_PROVIDING}/$fileId'
-    );
+  static Future<Map<String, dynamic>> resumeProviding(
+    String fileId,
+  ) async {
+    return Api.post('${ApiEndpoints.RESUME_PROVIDING}/$fileId');
   }
 
   // Download a file from a peer
@@ -274,92 +281,23 @@ class Api {
     ];
   }
 
-  //Get proxy list
-  static Future<Map<String, dynamic>> getProxyList(String txId) async {
-    // Simulate a network request with a delay
-    await Future.delayed(const Duration(seconds: 2));
+  static Future<Map<String, dynamic>> getProxyProviders() async {
+    return Api.get(ApiEndpoints.GET_PROXY_PROVIDERS);
+  }
 
-    // Return sample proxy data
-    return {
-      'proxyList': [
-        {
-          'sno': 1,
-          'ip': '10.10.10.2',
-          'location': 'New York, USA',
-          'status': 'Available',
-          'bandwidth': '1 Gbps',
-        },
-        {
-          'sno': 2,
-          'ip': '10.10.10.3',
-          'location': 'London, UK',
-          'status': 'Available',
-          'bandwidth': '500 Mbps',
-        },
-        {
-          'sno': 3,
-          'ip': '10.10.10.4',
-          'location': 'Tokyo, Japan',
-          'status': 'Available',
-          'bandwidth': '2 Gbps',
-        },
-        {
-          'sno': 4,
-          'ip': '10.10.10.5',
-          'location': 'Paris, France',
-          'status': 'Available',
-          'bandwidth': '1.5 Gbps',
-        },
-        {
-          'sno': 5,
-          'ip': '10.10.10.6',
-          'location': 'Berlin, Germany',
-          'status': 'Available',
-          'bandwidth': '1 Gbps',
-        },
-        {
-          'sno': 6,
-          'ip': '10.10.10.7',
-          'location': 'Sydney, Australia',
-          'status': 'Available',
-          'bandwidth': '750 Mbps',
-        },
-        {
-          'sno': 7,
-          'ip': '10.10.10.8',
-          'location': 'Toronto, Canada',
-          'status': 'Available',
-          'bandwidth': '1 Gbps',
-        },
-        {
-          'sno': 8,
-          'ip': '10.10.10.9',
-          'location': 'Singapore, Singapore',
-          'status': 'Available',
-          'bandwidth': '2 Gbps',
-        },
-        {
-          'sno': 9,
-          'ip': '10.10.10.10',
-          'location': 'Seoul, South Korea',
-          'status': 'Available',
-          'bandwidth': '1.5 Gbps',
-        },
-        {
-          'sno': 10,
-          'ip': '10.10.10.11',
-          'location': 'Los Angeles, USA',
-          'status': 'Available',
-          'bandwidth': '500 Mbps',
-        },
-        {
-          'sno': 11,
-          'ip': '10.10.10.12',
-          'location': 'Madrid, Spain',
-          'status': 'Available',
-          'bandwidth': '1 Gbps',
-        }
-      ]
-    };
+  static Future<Map<String, dynamic>> startProviding() async {
+    return Api.post(ApiEndpoints.START_PROVIDING);
+  }
+
+  static Future<Map<String, dynamic>> stopProxy() async {
+    return Api.post(ApiEndpoints.STOP_PROXY);
+  }
+
+  static Future<Map<String, dynamic>> connectToProxy(String peerId) async {
+    return Api.post(ApiEndpoints.STOP_PROXY, body: {'peer_id': peerId});
+  }
+
+  static Future<Map<String, dynamic>> healthCheck() async {
+    return Api.get(ApiEndpoints.HEALTH_CHECK_ENDPOINT);
   }
 }

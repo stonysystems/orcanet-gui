@@ -27,8 +27,7 @@ class _ProxyPageState extends State<ProxyPage> {
 
   Future<void> _fetchProxyList() async {
     try {
-      String txId = '12345';
-      Map<String, dynamic> response = await Api.getProxyList(txId);
+      Map<String, dynamic> response = await Api.getProxyProviders();
       setState(() {
         proxyList = List<Map<String, dynamic>>.from(response['proxyList']);
         isLoadingProxyList = false;
