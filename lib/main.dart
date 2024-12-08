@@ -1,10 +1,7 @@
 import 'package:flutter/material.dart';
 import 'sidepanel/home_page.dart';
 import 'sidepanel/file_page.dart';
-import 'sidepanel/market_page.dart';
 import 'sidepanel/wallet_page.dart';
-import 'sidepanel/mining_page.dart';
-import 'sidepanel/settings_page.dart';
 import 'sidepanel/proxy_page.dart';
 
 void main() {
@@ -22,14 +19,15 @@ class MyApp extends StatelessWidget {
         brightness: Brightness.light,
         useMaterial3: true,
         colorScheme: const ColorScheme.light(
-          primary:  Color.fromARGB(255, 255, 255, 255), // // Card Backgorund
-          onPrimary:  Color.fromARGB(250, 21, 101, 192),
-          secondary:  Color.fromARGB(255, 209, 241, 255),
+          primary: Color.fromARGB(255, 255, 255, 255), // // Card Backgorund
+          onPrimary: Color.fromARGB(250, 21, 101, 192),
+          secondary: Color.fromARGB(255, 209, 241, 255),
           onSecondary: Colors.black,
-          surface: Color.fromARGB(255, 225, 224, 224), // Entire Backgorund
+          surface: Color.fromARGB(255, 255, 253, 253), // Entire Backgorund
           onSurface: Colors.black,
           tertiary: Color.fromARGB(250, 21, 101, 192),
-          onTertiary: Color.fromARGB(255, 255, 255, 255), // side panel label color
+          onTertiary:
+              Color.fromARGB(255, 255, 255, 255), // side panel label color
           error: Colors.red,
           onError: Colors.white,
         ),
@@ -48,16 +46,13 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   int _selectedIndex = 0;
-  int? _hoveredIndex; // To track hovered item
+  int? _hoveredIndex;
 
   static const List<Widget> _pages = <Widget>[
     HomePage(),
     FilePage(),
     ProxyPage(),
-    MarketPage(),
     WalletPage(),
-    MiningPage(),
-    SettingsPage(),
   ];
 
   void _onItemTapped(int index) {
@@ -66,9 +61,7 @@ class _MyHomePageState extends State<MyHomePage> {
     });
   }
 
-  void myWidget(){
-
-  }
+  void myWidget() {}
 
   @override
   Widget build(BuildContext context) {
@@ -77,7 +70,6 @@ class _MyHomePageState extends State<MyHomePage> {
     return Scaffold(
       body: Row(
         children: [
-          // Navigation Rail for the side menu
           NavigationRail(
             selectedIndex: _selectedIndex,
             onDestinationSelected: _onItemTapped,
@@ -92,8 +84,8 @@ class _MyHomePageState extends State<MyHomePage> {
               color: colorScheme.tertiary,
               size: 30,
             ),
-            indicatorColor:colorScheme.tertiary,
-            backgroundColor: colorScheme.onTertiary,
+            indicatorColor: colorScheme.tertiary,
+            backgroundColor: Color.fromARGB(248, 216, 230, 248),
             selectedLabelTextStyle: TextStyle(
               color: colorScheme.tertiary,
             ),
@@ -113,14 +105,13 @@ class _MyHomePageState extends State<MyHomePage> {
             leading: Padding(
               padding: const EdgeInsets.all(8.0),
               child: Text(
-                'Orcanet', 
+                'Orcanet',
                 style: TextStyle(
-                  fontSize: 35, // Approximately h3 size
+                  fontSize: 35,
                   fontWeight: FontWeight.bold,
-                  color:colorScheme.onPrimary,
+                  color: colorScheme.onPrimary,
                 ),
               ),
-              //const SizedBox(height: 20),
             ),
           ),
 
@@ -132,7 +123,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 border: Border(
                   left: BorderSide(
                     color: Colors.grey,
-                    width: 1,
+                    width: 0,
                   ),
                 ),
               ),
@@ -145,7 +136,6 @@ class _MyHomePageState extends State<MyHomePage> {
       ),
     );
   }
-  
 
   NavigationRailDestination _buildHoverableDestination(
     int index,
@@ -168,30 +158,18 @@ class _MyHomePageState extends State<MyHomePage> {
         cursor: SystemMouseCursors.click,
         child: Container(
           decoration: BoxDecoration(
-            color: _hoveredIndex == index ? colorScheme.tertiary.withOpacity(0.2) : null,
-            borderRadius: BorderRadius.circular(30.0), // Adjust the radius as needed
+            color: _hoveredIndex == index
+                ? colorScheme.tertiary.withOpacity(0.2)
+                : null,
+            borderRadius: BorderRadius.circular(30.0),
           ),
           padding: const EdgeInsets.all(8.0),
           child: Icon(iconData),
         ),
       ),
       selectedIcon: MouseRegion(
-        // onEnter: (_) {
-        //   setState(() {
-        //     _hoveredIndex = index;
-        //   });
-        // },
-        // onExit: (_) {
-        //   setState(() {
-        //     _hoveredIndex = null;
-        //   });
-        // },
         cursor: SystemMouseCursors.click,
         child: Container(
-          // decoration: BoxDecoration(
-          //   color: _hoveredIndex == index ? colorScheme.tertiary.withOpacity(0.2) : null,
-          //   borderRadius: BorderRadius.circular(30.0), // Adjust the radius as needed
-          // ),
           padding: const EdgeInsets.all(8.0),
           child: Icon(iconData),
         ),
@@ -209,10 +187,6 @@ class _MyHomePageState extends State<MyHomePage> {
         },
         cursor: SystemMouseCursors.click,
         child: Container(
-          // decoration: BoxDecoration(
-          //   color: _hoveredIndex == index ? Colors.blue.withOpacity(0.2) : null,
-          //   borderRadius: BorderRadius.circular(8.0), // Adjust the radius as needed
-          // ),
           padding: const EdgeInsets.all(8.0),
           child: Text(label),
         ),
@@ -225,8 +199,5 @@ const List<Map<String, dynamic>> _destinations = [
   {'icon': Icons.home, 'label': 'Home'},
   {'icon': Icons.insert_drive_file, 'label': 'File'},
   {'icon': Icons.people, 'label': 'Proxy'},
-  {'icon': Icons.show_chart, 'label': 'Market'},
   {'icon': Icons.wallet, 'label': 'Wallet'},
-  {'icon': Icons.work, 'label': 'Mining'},
-  {'icon': Icons.settings, 'label': 'Settings'},
 ];

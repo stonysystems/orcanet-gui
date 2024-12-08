@@ -127,24 +127,19 @@ class _ProxyPageState extends State<ProxyPage> {
     final colorScheme = Theme.of(context).colorScheme;
 
     return Scaffold(
-       appBar: AppBar(
-          toolbarHeight: 60,
-          title: Text(
-            'Proxy Page',
-            style: Theme.of(context).textTheme.titleLarge!.copyWith(
-                  color: colorScheme.onPrimary,
-                  fontWeight: FontWeight.bold,
-                  fontSize: 23,
-                ),
-          ),
-          backgroundColor: colorScheme.surface,
-          foregroundColor: colorScheme.onPrimary,
+      appBar: AppBar(
+        toolbarHeight: 60,
+        title: Text(
+          'Proxy Page',
+          style: Theme.of(context).textTheme.titleLarge!.copyWith(
+                color: colorScheme.onPrimary,
+                fontWeight: FontWeight.bold,
+                fontSize: 23,
+              ),
         ),
-      // appBar: AppBar(
-      //   backgroundColor: colorScheme.surface,
-      //   foregroundColor: colorScheme.onPrimary,
-      //   title: const Text('Proxy Page'),
-      // ),
+        backgroundColor: colorScheme.surface,
+        foregroundColor: colorScheme.onPrimary,
+      ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
@@ -155,7 +150,6 @@ class _ProxyPageState extends State<ProxyPage> {
               padding: const EdgeInsets.all(12.0),
               decoration: BoxDecoration(
                 color: colorScheme.primary,
-                    //.withOpacity(0.5), // Semi-transparent primary
                 borderRadius: BorderRadius.circular(8),
               ),
               child: Column(
@@ -189,21 +183,6 @@ class _ProxyPageState extends State<ProxyPage> {
                       style: Theme.of(context).textTheme.bodySmall,
                     ),
                   ],
-                  if (isBeAProxyEnabled) ...[
-                    const SizedBox(height: 8),
-                    Text(
-                      'Connected Peers: $connectedPeers',
-                      style: Theme.of(context).textTheme.bodySmall,
-                    ),
-                    Text(
-                      'Data Transfer: $dataTransfer',
-                      style: Theme.of(context).textTheme.bodySmall,
-                    ),
-                    Text(
-                      'Coins Earned: $coinsEarned',
-                      style: Theme.of(context).textTheme.bodySmall,
-                    ),
-                  ]
                 ],
               ),
             ),
@@ -214,7 +193,7 @@ class _ProxyPageState extends State<ProxyPage> {
               padding: const EdgeInsets.all(12.0),
               decoration: BoxDecoration(
                 color: colorScheme.primary,
-                    //.withOpacity(0.5), // Semi-transparent primary
+                //.withOpacity(0.5), // Semi-transparent primary
                 borderRadius: BorderRadius.circular(8),
               ),
               child: Row(
@@ -232,6 +211,10 @@ class _ProxyPageState extends State<ProxyPage> {
                     onChanged: (value) {
                       _toggleBeAProxy();
                     },
+                    activeColor: Colors.black,
+                    inactiveThumbColor: Colors.black,
+                    activeTrackColor: Colors.black.withOpacity(0.3),
+                    inactiveTrackColor: Colors.black.withOpacity(0.1),
                   ),
                 ],
               ),
@@ -240,7 +223,7 @@ class _ProxyPageState extends State<ProxyPage> {
 
             // Connect to Proxy Section
             Text(
-              'Connect to Proxy',
+              'Available Proxy',
               style: Theme.of(context)
                   .textTheme
                   .titleLarge!
@@ -257,25 +240,19 @@ class _ProxyPageState extends State<ProxyPage> {
                 child: isLoadingProxyList
                     ? const Center(child: CircularProgressIndicator())
                     : ScrollableTableView(
-                        headers: [
-                          "S.No",
-                          "Server IP",
-                          "Location",
-                          "Availability",
-                          "Bandwidth",
-                          "Connect"
-                        ].asMap().entries.map((entry) {
+                        headers: ["S.No", "Server IP", "Location", "Connect"]
+                            .asMap()
+                            .entries
+                            .map((entry) {
                           final index = entry.key;
                           final label = entry.value;
 
                           // Define custom widths for each column (adjust as needed)
                           const columnWidths = [
                             0.1, // S.No (10% of the container width)
-                            0.2, // Server IP (20%)
-                            0.2, // Location (20%)
-                            0.1, // Availability (10%)
-                            0.2, // Bandwidth (20%)
-                            0.1, // Connect (10%)
+                            0.25, // Server IP (20%)
+                            0.25, // Location (20%)
+                            0.25, // Connect (10%)
                           ];
 
                           return TableViewHeader(
@@ -348,6 +325,12 @@ class _ProxyPageState extends State<ProxyPage> {
                                   onChanged: (value) {
                                     _toggleConnectToProxy(index);
                                   },
+                                  activeColor: Colors.black,
+                                  inactiveThumbColor: Colors.black,
+                                  activeTrackColor:
+                                      Colors.black.withOpacity(0.3),
+                                  inactiveTrackColor:
+                                      Colors.black.withOpacity(0.1),
                                 ),
                               ),
                             ],

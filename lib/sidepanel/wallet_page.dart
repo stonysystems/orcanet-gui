@@ -95,7 +95,7 @@ class _WalletPageState extends State<WalletPage> {
 
     try {
       transactions =
-          await Api.getTransactionList(); // Await the transaction list
+          await Api.getTransactionList();// Await the transaction list
       filteredTransactions =
           List.from(transactions); // Initialize filteredTransactions
     } catch (e) {
@@ -174,12 +174,6 @@ class _WalletPageState extends State<WalletPage> {
         ),
       ],
       rows: transactions.map((transaction) {
-        // String status =
-        //     transaction['confirmations'] >= 6
-        //         ? 'Completed'
-        //         : transaction['confirmations'] > 0
-        //             ? 'Pending'
-        //             : 'Failed';
         var status =
             transaction['confirmations'] >= 3 ? 'Completed' : 'Pending';
         var statusColor = status == 'Completed' ? Colors.green : Colors.red;
@@ -212,18 +206,18 @@ class _WalletPageState extends State<WalletPage> {
     final colorScheme = Theme.of(context).colorScheme;
 
     return Scaffold(
-       appBar: AppBar(
-          toolbarHeight: 60,
-          title: Text(
-            'Wallet Page',
-            style: Theme.of(context).textTheme.titleLarge!.copyWith(
-                  color: colorScheme.onPrimary,
-                  fontWeight: FontWeight.bold,
-                  fontSize: 23,
-                ),
-          ),
-          backgroundColor: colorScheme.surface,
+      appBar: AppBar(
+        toolbarHeight: 60,
+        title: Text(
+          'Wallet Page',
+          style: Theme.of(context).textTheme.titleLarge!.copyWith(
+                color: colorScheme.onPrimary,
+                fontWeight: FontWeight.bold,
+                fontSize: 23,
+              ),
         ),
+        backgroundColor: colorScheme.surface,
+      ),
       // appBar: AppBar(
       //   title: const Text('Wallet Page'),
       // ),
@@ -261,78 +255,22 @@ class _WalletPageState extends State<WalletPage> {
                                 : 'Available Balance:',
                             style: Theme.of(context)
                                 .textTheme
-                                .bodyLarge!
-                                .copyWith(
-                                    fontWeight: FontWeight.w600,
-                                    color: colorScheme.onPrimary),
+                                .titleLarge!
+                                .copyWith(color: colorScheme.onPrimary),
                           ),
                           const SizedBox(height: 16),
                           Text(
                             isLoadingBalance
-                                ? '        ...'
-                                : '        200.00 BTC',
+                                ? '...'
+                                : balance, // Display either loading or fetched balance
                             style: Theme.of(context)
                                 .textTheme
                                 .headlineMedium!
                                 .copyWith(
-                                    fontWeight: FontWeight.bold,
-                                    color: colorScheme.onPrimary),
-                          ),
-
-                          // Add space before the new section
-                          const SizedBox(height: 20),
-
-                          // Coins Spent Section
-                          Row(
-                            children: [
-                              Icon(
-                                Icons.trending_down, // Replaced with a cleaner icon
-                                color: colorScheme.error,
-                                size: 20,
-                              ),
-                              const SizedBox(width: 8),
-                              Text(
-                                'Spent: -359 BTC',
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .bodyLarge!
-                                    .copyWith(
-                                        fontWeight: FontWeight.w500,
-                                        color: colorScheme.onSecondary),
-                              ),
-                            ],
-                          ),
-
-                          // Space between the sections
-                          const SizedBox(height: 12),
-
-                          // Coins Earned Section
-                          Row(
-                            children: [
-                              Icon(
-                                Icons.trending_up, // Replaced with a cleaner icon
-                                color: Colors.green,
-                                size: 20,
-                              ),
-                              const SizedBox(width: 8),
-                              Text(
-                                'Earned: +160 BTC',
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .bodyLarge!
-                                    .copyWith(
-                                        fontWeight: FontWeight.w500,
-                                        color: colorScheme.onSecondary),
-                              ),
-                            ],
-                          ),
-                          const SizedBox(height: 25),
-                          Text(
-                            'Wallet ID: 1234567890ABCDEF',
-                            style: Theme.of(context)
-                                .textTheme
-                                .bodyLarge!
-                                .copyWith(color: colorScheme.onSecondary),
+                                  fontWeight: FontWeight.bold,
+                                  color: colorScheme
+                                      .onPrimary, // Color of the text
+                                ),
                           ),
                         ],
                       ),
@@ -462,11 +400,11 @@ class _WalletPageState extends State<WalletPage> {
                 border: const OutlineInputBorder(),
                 fillColor: colorScheme.surface,
                 focusedBorder: OutlineInputBorder(
-                  borderSide:
-                      BorderSide(color: colorScheme.onPrimary),
+                  borderSide: BorderSide(color: colorScheme.onPrimary),
                 ),
                 filled: true,
               ),
+              cursorColor: colorScheme.onPrimary,
             ),
             const SizedBox(height: 8),
             // Transactions Table
@@ -570,8 +508,6 @@ class _WalletPageState extends State<WalletPage> {
                 ),
               ),
             ),
-          
-          
           ],
         ),
       ),
