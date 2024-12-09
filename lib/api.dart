@@ -34,6 +34,7 @@ class ApiEndpoints {
   static const STOP_PROXY = '${PROXY_ENDPOINT}/stop';
   static const CONNECT_TO_PROXY = '${PROXY_ENDPOINT}/connect';
   static const START_PROVIDING = '${PROXY_ENDPOINT}/start-providing';
+  static const PROXY_STATUS = '${PROXY_ENDPOINT}/proxy-status';
 }
 
 class Api {
@@ -295,6 +296,10 @@ class Api {
 
   static Future<Map<String, dynamic>> connectToProxy(String peerId) async {
     return Api.post(ApiEndpoints.CONNECT_TO_PROXY, body: {'peer_id': peerId});
+  }
+
+  static Future<Map<String, dynamic>> getProxyStatus() async {
+    return Api.get(ApiEndpoints.PROXY_STATUS);
   }
 
   static Future<Map<String, dynamic>> healthCheck() async {

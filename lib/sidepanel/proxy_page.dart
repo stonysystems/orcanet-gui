@@ -27,6 +27,9 @@ class _ProxyPageState extends State<ProxyPage> {
 
   Future<void> _fetchProxyList() async {
     try {
+      var r = await Api.getProxyStatus();
+      print(r);
+
       var response = await Api.getProxyProviders();
       var data = List<Map<String, dynamic>>.from(response['data']);
       print(response);
