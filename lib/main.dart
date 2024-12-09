@@ -119,7 +119,7 @@ class _MyHomePageState extends State<MyHomePage> {
           Expanded(
             child: Container(
               decoration: const BoxDecoration(
-                color: Colors.white,
+                color: Colors.grey,
                 border: Border(
                   left: BorderSide(
                     color: Colors.grey,

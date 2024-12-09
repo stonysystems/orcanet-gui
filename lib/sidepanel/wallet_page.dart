@@ -12,6 +12,7 @@ class WalletPage extends StatefulWidget {
 
 class _WalletPageState extends State<WalletPage> {
   String balance = ''; // To store the fetched balance
+  String btcAddress = '';
   bool isLoadingBalance = true; // To show loading state for balance
   bool isLoadingTransactions = false; // To show loading state for transactions
   List<Map<String, dynamic>> transactions = [];
@@ -46,7 +47,8 @@ class _WalletPageState extends State<WalletPage> {
       print(response);
       if (response['success']) {
         setState(() {
-          balance = response['data']; // Set the balance data
+          balance = response['data']['balance'].toString(); // Set the balance data
+          btcAddress = response['data']['address'];
           isLoadingBalance = false; // Stop showing loading indicator
         });
       } else {
@@ -95,7 +97,7 @@ class _WalletPageState extends State<WalletPage> {
 
     try {
       transactions =
-          await Api.getTransactionList();// Await the transaction list
+          await Api.getTransactionList(); // Await the transaction list
       filteredTransactions =
           List.from(transactions); // Initialize filteredTransactions
     } catch (e) {
@@ -209,7 +211,7 @@ class _WalletPageState extends State<WalletPage> {
       appBar: AppBar(
         toolbarHeight: 60,
         title: Text(
-          'Wallet Page',
+          'Wallet',
           style: Theme.of(context).textTheme.titleLarge!.copyWith(
                 color: colorScheme.onPrimary,
                 fontWeight: FontWeight.bold,
@@ -260,9 +262,31 @@ class _WalletPageState extends State<WalletPage> {
                           ),
                           const SizedBox(height: 16),
                           Text(
+                            isLoadingBalance ? '...' : balance,
+                            // Display either loading or fetched balance
+                            style: Theme.of(context)
+                                .textTheme
+                                .headlineMedium!
+                                .copyWith(
+                                  fontWeight: FontWeight.bold,
+                                  color: colorScheme
+                                      .onPrimary, // Color of the text
+                                ),
+                          ),
+                          const SizedBox(height: 50),
+                          Text(
                             isLoadingBalance
-                                ? '...'
-                                : balance, // Display either loading or fetched balance
+                                ? 'Loading Address...'
+                                : 'Bitcoin address:',
+                            style: Theme.of(context)
+                                .textTheme
+                                .titleLarge!
+                                .copyWith(color: colorScheme.onPrimary),
+                          ),
+                          const SizedBox(height: 16),
+                          Text(
+                            btcAddress == '' ? '...' : btcAddress.substring(0, 26) + '..',
+                            // Display either loading or fetched balance
                             style: Theme.of(context)
                                 .textTheme
                                 .headlineMedium!

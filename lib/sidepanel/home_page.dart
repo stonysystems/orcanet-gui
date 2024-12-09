@@ -26,7 +26,7 @@ class HomePage extends StatelessWidget {
   Future<String> _fetchSystemStatus() async {
     // Make the API call using healthCheck method
     final response = await Api.healthCheck();
-    if (response != null && response['status'] == true) {
+    if (response != null && response['success'] == true) {
       return 'Successful';
     } else {
       return 'Error';
@@ -36,7 +36,7 @@ class HomePage extends StatelessWidget {
   Future<String> _fetchWalletStatus() async {
     // Make the API call using healthCheck method for wallet status
     final response = await Api.healthCheck();
-    if (response != null && response['status'] == true) {
+    if (response != null && response['success'] == true) {
       return 'Successful';
     } else {
       return 'Error';

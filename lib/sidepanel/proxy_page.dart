@@ -29,7 +29,7 @@ class _ProxyPageState extends State<ProxyPage> {
     try {
       Map<String, dynamic> response = await Api.getProxyProviders();
       setState(() {
-        proxyList = List<Map<String, dynamic>>.from(response['proxyList']);
+        proxyList = List<Map<String, dynamic>>.from(response['data']);
         isLoadingProxyList = false;
       });
     } catch (e) {
@@ -92,7 +92,21 @@ class _ProxyPageState extends State<ProxyPage> {
   }
 
   void _toggleBeAProxy() {
-    _showConfirmationDialog('Enable Be a Proxy?', () {
+    _showConfirmationDialog('Enable Be a Proxy?', () async {
+      bool success = false;
+
+      if(!isBeAProxyEnabled) {
+        Map<String, dynamic> response = await Api.startProviding();
+        success = response['success'];
+      } else {
+        Map<String, dynamic> response = await Api.stopProxy();
+        success = response['success'];
+      }
+
+      if(!success) {
+        return;
+      }
+
       setState(() {
         isBeAProxyEnabled = !isBeAProxyEnabled;
         selectedProxyIndex = null;
@@ -130,7 +144,7 @@ class _ProxyPageState extends State<ProxyPage> {
       appBar: AppBar(
         toolbarHeight: 60,
         title: Text(
-          'Proxy Page',
+          'Proxy',
           style: Theme.of(context).textTheme.titleLarge!.copyWith(
                 color: colorScheme.onPrimary,
                 fontWeight: FontWeight.bold,
@@ -223,7 +237,7 @@ class _ProxyPageState extends State<ProxyPage> {
 
             // Connect to Proxy Section
             Text(
-              'Available Proxy',
+              'Available Proxies',
               style: Theme.of(context)
                   .textTheme
                   .titleLarge!

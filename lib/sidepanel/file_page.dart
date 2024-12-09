@@ -585,7 +585,7 @@ class _HomePageState extends State<FilePage> with TickerProviderStateMixin {
         appBar: AppBar(
           toolbarHeight: 60,
           title: Text(
-            'Files Status Page',
+            'Files',
             style: Theme.of(context).textTheme.titleLarge!.copyWith(
                   color: colorScheme.onPrimary,
                   fontWeight: FontWeight.bold,
