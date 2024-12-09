@@ -300,4 +300,20 @@ class Api {
   static Future<Map<String, dynamic>> healthCheck() async {
     return Api.get(ApiEndpoints.HEALTH_CHECK_ENDPOINT);
   }
+
+  static Future<String> getIPLocation(String ip) async {
+    final response = await http.get(
+      Uri.parse('https://ipinfo.io/$ip/json'),
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    );
+
+    if(response.statusCode == 200) {
+      Map<String, dynamic> body = jsonDecode(response.body);
+      return "${body['city']}, ${body['region']}, ${body['country']}";
+    } else {
+      return 'Unknown';
+    }
+  }
 }

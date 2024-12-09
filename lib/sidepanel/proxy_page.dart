@@ -11,13 +11,13 @@ class ProxyPage extends StatefulWidget {
 
 class _ProxyPageState extends State<ProxyPage> {
   bool isBeAProxyEnabled = false;
-  int? selectedProxyIndex;
+  String? selectedProxyId;
   String proxyStatus = 'Ready';
   String connectedPeers = '0';
   String dataTransfer = '0 MB';
   String coinsEarned = '0';
   bool isLoadingProxyList = true;
-  List<Map<String, dynamic>> proxyList = [];
+  Map<String, Map<String, dynamic>> proxyList = {};
 
   @override
   void initState() {
@@ -27,9 +27,22 @@ class _ProxyPageState extends State<ProxyPage> {
 
   Future<void> _fetchProxyList() async {
     try {
-      Map<String, dynamic> response = await Api.getProxyProviders();
+      var response = await Api.getProxyProviders();
+      var data = List<Map<String, dynamic>>.from(response['data']);
+      print(response);
+      Map<String, Map<String, dynamic>> proxies = Map();
+
+      for (var row in data) {
+        var metadata = Map<String, dynamic>.from(row['proxy_metadata']);
+        metadata['ip'] = metadata['proxy_address']!.split(':')[0];
+        metadata['location'] = await Api.getIPLocation(metadata['ip']!);
+        proxies[row['peer_id']] = metadata;
+      }
+
+      print(proxies);
+
       setState(() {
-        proxyList = List<Map<String, dynamic>>.from(response['data']);
+        proxyList = proxies;
         isLoadingProxyList = false;
       });
     } catch (e) {
@@ -95,7 +108,7 @@ class _ProxyPageState extends State<ProxyPage> {
     _showConfirmationDialog('Enable Be a Proxy?', () async {
       bool success = false;
 
-      if(!isBeAProxyEnabled) {
+      if (!isBeAProxyEnabled) {
         Map<String, dynamic> response = await Api.startProviding();
         success = response['success'];
       } else {
@@ -103,13 +116,13 @@ class _ProxyPageState extends State<ProxyPage> {
         success = response['success'];
       }
 
-      if(!success) {
+      if (!success) {
         return;
       }
 
       setState(() {
         isBeAProxyEnabled = !isBeAProxyEnabled;
-        selectedProxyIndex = null;
+        selectedProxyId = null;
         proxyStatus = isBeAProxyEnabled ? 'Serving as Proxy' : 'Ready';
         connectedPeers = isBeAProxyEnabled ? '5' : '0';
         dataTransfer = isBeAProxyEnabled ? '200 MB' : '0 MB';
@@ -118,14 +131,19 @@ class _ProxyPageState extends State<ProxyPage> {
     });
   }
 
-  void _toggleConnectToProxy(int index) {
-    _showConfirmationDialog('Connect to Proxy Server?', () {
+  void _toggleConnectToProxy(String proxyId) {
+    _showConfirmationDialog('Connect to Proxy Server?', () async {
+      var response = await Api.connectToProxy(proxyId);
+      if(!response['success']) {
+        return;
+      }
+
       setState(() {
-        selectedProxyIndex = selectedProxyIndex == index ? null : index;
+        selectedProxyId = selectedProxyId == proxyId ? null : selectedProxyId;
         isBeAProxyEnabled = false;
-        if (selectedProxyIndex != null) {
+        if (selectedProxyId != null) {
           proxyStatus =
-              'Connected to Proxy: ${proxyList[selectedProxyIndex!]['ip']}';
+              'Connected to Proxy: ${proxyList[selectedProxyId!]?['ip']}';
           connectedPeers = '2';
           dataTransfer = '50 MB';
           coinsEarned = '10 Coins';
@@ -182,18 +200,18 @@ class _ProxyPageState extends State<ProxyPage> {
                       ),
                     ],
                   ),
-                  if (selectedProxyIndex != null) ...[
+                  if (selectedProxyId != null) ...[
                     const SizedBox(height: 8),
                     Text(
-                      'IP: ${proxyList[selectedProxyIndex!]['ip']}',
+                      'IP: ${proxyList[selectedProxyId!]?['ip']}',
                       style: Theme.of(context).textTheme.bodySmall,
                     ),
                     Text(
-                      'Location: ${proxyList[selectedProxyIndex!]['location']}',
+                      'Location: ${proxyList[selectedProxyId!]?['location']}',
                       style: Theme.of(context).textTheme.bodySmall,
                     ),
                     Text(
-                      'Bandwidth: ${proxyList[selectedProxyIndex!]['bandwidth']}',
+                      'Bandwidth: ${proxyList[selectedProxyId!]?['bandwidth']}',
                       style: Theme.of(context).textTheme.bodySmall,
                     ),
                   ],
@@ -254,27 +272,32 @@ class _ProxyPageState extends State<ProxyPage> {
                 child: isLoadingProxyList
                     ? const Center(child: CircularProgressIndicator())
                     : ScrollableTableView(
-                        headers: ["S.No", "Server IP", "Location", "Connect"]
-                            .asMap()
-                            .entries
-                            .map((entry) {
+                        headers: [
+                          "S.No",
+                          "Server IP",
+                          "Location",
+                          "Fee rate per kb",
+                          "Connect"
+                        ].asMap().entries.map((entry) {
                           final index = entry.key;
                           final label = entry.value;
 
                           // Define custom widths for each column (adjust as needed)
                           const columnWidths = [
-                            0.1, // S.No (10% of the container width)
-                            0.25, // Server IP (20%)
-                            0.25, // Location (20%)
-                            0.25, // Connect (10%)
+                            0.10, // S.No (10% of the container width)
+                            0.10, // Server IP (20%)
+                            0.20, // Location (20%)
+                            0.10,
+                            0.20, // Connect (10%)
                           ];
 
                           return TableViewHeader(
-                            label: label, // Set the header label
+                            label: label,
+                            // Set the header label
                             width: MediaQuery.of(context).size.width *
                                 columnWidths[index],
-                            alignment:
-                                Alignment.center, // Center-align the label
+                            alignment: Alignment.center,
+                            // Center-align the label
                             textStyle: TextStyle(
                               color: Theme.of(context)
                                   .colorScheme
@@ -285,59 +308,34 @@ class _ProxyPageState extends State<ProxyPage> {
                                 8.0), // Optional: Adjust padding
                           );
                         }).toList(),
-                        rows: proxyList.map((proxy) {
-                          int index = proxyList.indexOf(proxy);
+                        rows: proxyList.entries.indexed.map((item) {
+                          final (index, entry) = item;
+                          String proxyId = entry.key;
+                          var metadata = entry.value;
+
+                          var data = [
+                            (index + 1).toString(), // SNo
+                            metadata['ip']!,
+                            metadata['location']!,
+                            metadata['fee_rate_per_kb']!.toString()
+                          ];
+
                           return TableViewRow(
                             height: 60,
                             cells: [
-                              TableViewCell(
-                                child: Text(
-                                  proxy['sno'].toString(),
-                                  style: TextStyle(
-                                    color: colorScheme.onSecondary,
-                                  ),
-                                ),
-                              ),
-                              TableViewCell(
-                                child: Text(
-                                  proxy['ip'],
-                                  style: TextStyle(
-                                    color: colorScheme.onSecondary,
-                                  ),
-                                ),
-                              ),
-                              TableViewCell(
-                                child: Text(
-                                  proxy['location'],
-                                  style: TextStyle(
-                                    color: colorScheme.onSecondary,
-                                  ),
-                                ),
-                              ),
-                              TableViewCell(
-                                child: Text(
-                                  proxy['status'],
-                                  style: TextStyle(
-                                    color: proxy['status'] == 'Available'
-                                        ? Colors.green
-                                        : colorScheme.error,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                              ),
-                              TableViewCell(
-                                child: Text(
-                                  proxy['bandwidth'],
-                                  style: TextStyle(
-                                    color: colorScheme.onSecondary,
-                                  ),
-                                ),
-                              ),
+                              ...data.map((value) => TableViewCell(
+                                    child: Text(
+                                      value,
+                                      style: TextStyle(
+                                        color: colorScheme.onSecondary,
+                                      ),
+                                    ),
+                                  )),
                               TableViewCell(
                                 child: Switch(
-                                  value: selectedProxyIndex == index,
+                                  value: selectedProxyId == proxyId,
                                   onChanged: (value) {
-                                    _toggleConnectToProxy(index);
+                                    _toggleConnectToProxy(proxyId);
                                   },
                                   activeColor: Colors.black,
                                   inactiveThumbColor: Colors.black,
