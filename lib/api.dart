@@ -294,7 +294,7 @@ class Api {
   }
 
   static Future<Map<String, dynamic>> connectToProxy(String peerId) async {
-    return Api.post(ApiEndpoints.STOP_PROXY, body: {'peer_id': peerId});
+    return Api.post(ApiEndpoints.CONNECT_TO_PROXY, body: {'peer_id': peerId});
   }
 
   static Future<Map<String, dynamic>> healthCheck() async {

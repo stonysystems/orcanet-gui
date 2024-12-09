@@ -134,6 +134,7 @@ class _ProxyPageState extends State<ProxyPage> {
   void _toggleConnectToProxy(String proxyId) {
     _showConfirmationDialog('Connect to Proxy Server?', () async {
       var response = await Api.connectToProxy(proxyId);
+      print(response);
       if(!response['success']) {
         return;
       }
